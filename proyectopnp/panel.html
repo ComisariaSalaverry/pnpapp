@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Panel de registros</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    --tinta:#0d1f14; --musgo:#0b3d24; --lino:#f2f1ec; --papel:#ffffff;
+    --cobre:#97781a; --linea:#d6d3c4; --verde:#3c7a56; --dorado:#c9a227;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; min-height:100vh; background:var(--lino);
+    font-family:'Inter',sans-serif; color:var(--tinta);
+  }
+
+  #vistaLogin{
+    min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;
+  }
+  .caja-login{
+    width:100%; max-width:400px; background:var(--papel); border:1px solid var(--linea);
+    border-radius:20px; padding:40px 32px; box-shadow:0 20px 40px rgba(20,38,31,0.1);
+  }
+  .caja-login h1{ font-family:'Fraunces',serif; font-size:1.7rem; margin:0 0 6px 0; }
+  .caja-login p{ margin:0 0 28px 0; color:#5c6b63; font-size:0.95rem; }
+  .caja-login label{ display:block; font-weight:600; font-size:0.85rem; margin:16px 0 6px 0; color:var(--musgo); }
+  .caja-login input{
+    width:100%; padding:13px 14px; border-radius:10px; border:2px solid var(--linea);
+    background:var(--lino); font-size:1rem; font-family:'Inter',sans-serif; outline:none;
+  }
+  .caja-login input:focus{ border-color:var(--musgo); }
+  .caja-login button{
+    width:100%; margin-top:22px; padding:14px; background:var(--musgo); color:var(--papel);
+    border:none; border-radius:10px; font-weight:700; font-size:1rem; cursor:pointer;
+  }
+  .error-login{ color:#a13a2a; font-size:0.88rem; margin-top:14px; min-height:18px; }
+
+  .logo-institucional{ width:56px; height:56px; object-fit:contain; flex-shrink:0; }
+  .cabecera-institucional-login{
+    display:flex; align-items:center; gap:14px; margin-bottom:24px;
+    padding-bottom:18px; border-bottom:2px solid var(--dorado);
+  }
+  .cabecera-institucional{ display:flex; align-items:center; gap:14px; }
+  .texto-institucional .linea1{
+    font-size:0.75rem; font-weight:700; letter-spacing:0.02em;
+    color:var(--musgo); text-transform:uppercase;
+  }
+  .texto-institucional .linea2{ font-size:0.85rem; color:#5c6b63; }
+
+  /* ---- Panel ---- */
+  #vistaPanel{ display:none; max-width:840px; margin:0 auto; padding:36px 24px 60px 24px; }
+  .cabecera{
+    display:flex; align-items:center; justify-content:space-between; margin-bottom:28px;
+    flex-wrap:wrap; gap:14px;
+  }
+  .cabecera h1{ font-family:'Fraunces',serif; font-size:1.9rem; margin:0; }
+  .cabecera .sub{ color:#5c6b63; font-size:0.9rem; }
+  .salir{ background:none; border:1px solid var(--linea); color:var(--musgo); padding:8px 14px;
+    border-radius:8px; font-size:0.85rem; cursor:pointer; font-weight:600; }
+
+  .lista{ display:flex; flex-direction:column; gap:10px; }
+  .fila{
+    background:var(--papel); border:1px solid var(--linea); border-radius:14px;
+    padding:16px 18px; display:flex; align-items:center; justify-content:space-between; gap:12px;
+  }
+  .fila.nueva{ animation: resaltar 1.8s ease; }
+  @keyframes resaltar{
+    0%{ background:#fdf0e4; border-color:var(--cobre); }
+    100%{ background:var(--papel); border-color:var(--linea); }
+  }
+  .info-cliente .nombre{ font-weight:700; font-size:1.05rem; }
+  .info-cliente .hora{ color:#5c6b63; font-size:0.82rem; margin-top:2px; }
+  .estado-btn{
+    border:none; padding:9px 16px; border-radius:8px; font-weight:600; font-size:0.85rem; cursor:pointer;
+  }
+  .estado-btn.pendiente{ background:#fde8da; color:var(--cobre); }
+  .estado-btn.atendido{ background:#e2ede6; color:var(--verde); }
+
+  .vacio{ text-align:center; padding:60px 20px; color:#5c6b63; }
+
+  .btn-notificaciones{
+    width:100%; margin-bottom:18px; padding:13px; border-radius:12px; border:2px solid var(--musgo);
+    background:var(--papel); color:var(--musgo); font-weight:700; font-size:0.95rem; cursor:pointer;
+    font-family:'Inter',sans-serif;
+  }
+  .btn-notificaciones.activo{ background:var(--musgo); color:var(--papel); cursor:default; }
+</style>
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#1f3d31">
+</head>
+<body>
+
+
+<div id="vistaLogin">
+  <div class="caja-login">
+    <div class="cabecera-institucional-login">
+      <img src="./logo.png" alt="Policía Nacional del Perú" class="logo-institucional">
+      <div class="texto-institucional">
+        <div class="linea1">Policía Nacional del Perú</div>
+        <div class="linea2">Panel de área</div>
+      </div>
+    </div>
+    <p>Ingrese con la cuenta de su área para ver los registros.</p>
+    <label for="correo">Correo</label>
+    <input type="text" id="correo" autocomplete="username" />
+    <label for="clave">Contraseña</label>
+    <input type="password" id="clave" autocomplete="current-password" />
+    <button id="btnEntrar">Ingresar</button>
+    <div class="error-login" id="errorLogin"></div>
+  </div>
+</div>
+
+<!-- PANEL -->
+<div id="vistaPanel">
+  <div class="cabecera">
+    <div class="cabecera-institucional">
+      <img src="./logo.png" alt="Policía Nacional del Perú" class="logo-institucional">
+      <div>
+        <h1 id="nombreArea">Registros</h1>
+        <div class="sub">Se actualiza automáticamente al llegar un nuevo registro</div>
+      </div>
+    </div>
+    <button class="salir" id="btnSalir">Cerrar sesión</button>
+  </div>
+  <button id="btnNotificaciones" class="btn-notificaciones">🔔 Activar notificaciones en este dispositivo</button>
+  <div class="lista" id="lista"></div>
+</div>
+
+<script>
+  function reproducirAviso(){
+    try{
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(880, ctx.currentTime);
+      osc.frequency.setValueAtTime(660, ctx.currentTime + 0.12);
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(); osc.stop(ctx.currentTime + 0.4);
+    }catch(e){ /* el navegador puede bloquear audio antes de una interacción; se ignora */ }
+  }
+</script>
+
+<script>
+  const SUPABASE_URL = "https://cthpbxqwsjcgpdfqkdwr.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_qTNkWQAQLrzS2-81BpeDeA_DFDCrVol";
+
+  const VAPID_PUBLIC_KEY = "TU-VAPID-PUBLIC-KEY";
+
+
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const btnNotificaciones = document.getElementById('btnNotificaciones');
+
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').catch(console.error);
+  }
+
+  function urlBase64AUint8Array(base64String) {
+    const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+    const rawData = atob(base64);
+    return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)));
+  }
+
+  async function activarNotificaciones() {
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+      alert('Este navegador no soporta notificaciones push.');
+      return;
+    }
+    const permiso = await Notification.requestPermission();
+    if (permiso !== 'granted') {
+      alert('No se activaron las notificaciones. Puedes intentarlo de nuevo cuando quieras.');
+      return;
+    }
+
+    const registro = await navigator.serviceWorker.ready;
+    const suscripcion = await registro.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64AUint8Array(VAPID_PUBLIC_KEY)
+    });
+
+    const { data: { user } } = await supabase.auth.getUser();
+
+    await supabase.from('push_suscripciones').insert({
+      usuario_id: user.id,
+      area: miArea,
+      suscripcion: suscripcion.toJSON()
+    });
+
+    btnNotificaciones.textContent = '🔔 Notificaciones activadas en este dispositivo';
+    btnNotificaciones.classList.add('activo');
+    btnNotificaciones.disabled = true;
+  }
+
+  btnNotificaciones.addEventListener('click', activarNotificaciones);
+
+  const vistaLogin = document.getElementById('vistaLogin');
+  const vistaPanel = document.getElementById('vistaPanel');
+  const btnEntrar = document.getElementById('btnEntrar');
+  const errorLogin = document.getElementById('errorLogin');
+  const nombreAreaEl = document.getElementById('nombreArea');
+  const lista = document.getElementById('lista');
+  const btnSalir = document.getElementById('btnSalir');
+
+  let miArea = null;
+
+  async function iniciar(){
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session){
+      await entrarAlPanel();
+    }
+  }
+
+  btnEntrar.addEventListener('click', async () => {
+    const correo = document.getElementById('correo').value.trim();
+    const clave = document.getElementById('clave').value;
+    errorLogin.textContent = '';
+    btnEntrar.disabled = true;
+    btnEntrar.textContent = 'Ingresando...';
+
+    const { error } = await supabase.auth.signInWithPassword({ email: correo, password: clave });
+
+    btnEntrar.disabled = false;
+    btnEntrar.textContent = 'Ingresar';
+
+    if (error){
+      errorLogin.textContent = 'Correo o contraseña incorrectos.';
+      return;
+    }
+    await entrarAlPanel();
+  });
+
+  btnSalir.addEventListener('click', async () => {
+    await supabase.auth.signOut();
+    location.reload();
+  });
+
+  async function entrarAlPanel(){
+    // Trae el área asignada a este usuario (la política RLS solo deja ver su propia fila)
+    const { data: perfil, error } = await supabase
+      .from('perfiles')
+      .select('area, nombre_area_visible')
+      .single();
+
+    if (error || !perfil){
+      errorLogin.textContent = 'Esta cuenta no tiene un área asignada. Contacta al administrador.';
+      await supabase.auth.signOut();
+      return;
+    }
+
+    miArea = perfil.area;
+    nombreAreaEl.textContent = perfil.nombre_area_visible || perfil.area;
+    vistaLogin.style.display = 'none';
+    vistaPanel.style.display = 'block';
+
+    await cargarRegistros();
+    escucharNuevos();
+  }
+
+  function formatoHora(fechaISO){
+    const f = new Date(fechaISO);
+    return f.toLocaleString('es', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
+  }
+
+  function pintarFila(registro, esNueva){
+    const fila = document.createElement('div');
+    fila.className = 'fila' + (esNueva ? ' nueva' : '');
+    fila.id = 'reg-' + registro.id;
+    fila.innerHTML = `
+      <div class="info-cliente">
+        <div class="nombre">DNI ${escaparHTML(registro.nombre)}</div>
+        <div class="hora">${formatoHora(registro.creado_en)}</div>
+      </div>
+      <button class="estado-btn ${registro.atendido ? 'atendido' : 'pendiente'}">
+        ${registro.atendido ? 'Atendido' : 'Marcar atendido'}
+      </button>
+    `;
+    fila.querySelector('button').addEventListener('click', () => marcarAtendido(registro.id, fila));
+    return fila;
+  }
+
+  function escaparHTML(texto){
+    const div = document.createElement('div');
+    div.textContent = texto;
+    return div.innerHTML;
+  }
+
+  async function marcarAtendido(id, fila){
+    const { error } = await supabase.from('registros').update({ atendido: true }).eq('id', id);
+    if (!error){
+      const btn = fila.querySelector('button');
+      btn.textContent = 'Atendido';
+      btn.className = 'estado-btn atendido';
+    }
+  }
+
+  async function cargarRegistros(){
+    const { data, error } = await supabase
+      .from('registros')
+      .select('*')
+      .order('creado_en', { ascending: false })
+      .limit(50);
+
+    lista.innerHTML = '';
+    if (error){
+      lista.innerHTML = '<div class="vacio">No se pudieron cargar los registros.</div>';
+      return;
+    }
+    if (!data || data.length === 0){
+      lista.innerHTML = '<div class="vacio">Todavía no hay registros para tu área.</div>';
+      return;
+    }
+    data.forEach(r => lista.appendChild(pintarFila(r, false)));
+  }
+
+  function escucharNuevos(){
+  
+    supabase
+      .channel('registros-en-vivo')
+      .on('postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'registros' },
+        (payload) => {
+          const vacio = lista.querySelector('.vacio');
+          if (vacio) vacio.remove();
+          lista.prepend(pintarFila(payload.new, true));
+          reproducirAviso();
+        }
+      )
+      .subscribe();
+  }
+
+  iniciar();
+</script>
+</body>
+</html>
