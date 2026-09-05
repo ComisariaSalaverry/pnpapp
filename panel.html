@@ -1,9 +1,12 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>Panel de registros - Comisaría Salaverry</title>
 
@@ -28,6 +31,8 @@
       --linea:#d6d3c4;
       --verde:#3c7a56;
       --dorado:#c9a227;
+      --rojo:#a13a2a;
+      --rojo-fondo:#f8e4df;
     }
 
     *{
@@ -52,6 +57,7 @@
       overflow-y:auto;
       -webkit-overflow-scrolling:touch;
     }
+
 
     /* =========================
        LOGIN
@@ -85,13 +91,13 @@
     .caja-login p{
       margin:0 0 28px 0;
       color:#5c6b63;
-      font-size:0.95rem;
+      font-size:.95rem;
     }
 
     .caja-login label{
       display:block;
       font-weight:600;
-      font-size:0.85rem;
+      font-size:.85rem;
       margin:16px 0 6px 0;
       color:var(--musgo);
     }
@@ -130,11 +136,12 @@
     }
 
     .error-login{
-      color:#a13a2a;
+      color:var(--rojo);
       font-size:.88rem;
       margin-top:14px;
       min-height:18px;
     }
+
 
     /* =========================
        LOGO
@@ -175,6 +182,7 @@
       font-size:.85rem;
       color:#5c6b63;
     }
+
 
     /* =========================
        PANEL
@@ -223,6 +231,7 @@
       flex-shrink:0;
     }
 
+
     /* =========================
        FILTRO ADMIN
     ========================= */
@@ -255,6 +264,11 @@
       color:var(--papel);
       border-color:var(--musgo);
     }
+
+
+    /* =========================
+       LISTA
+    ========================= */
 
     .lista{
       display:flex;
@@ -325,6 +339,18 @@
       margin-top:2px;
     }
 
+
+    /* =========================
+       BOTONES DE REGISTRO
+    ========================= */
+
+    .acciones-registro{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-shrink:0;
+    }
+
     .estado-btn{
       border:none;
       padding:9px 16px;
@@ -346,11 +372,37 @@
       color:var(--verde);
     }
 
+    .eliminar-btn{
+      border:none;
+      padding:9px 12px;
+      border-radius:8px;
+      font-weight:700;
+      font-size:.85rem;
+      cursor:pointer;
+      white-space:nowrap;
+      background:var(--rojo-fondo);
+      color:var(--rojo);
+    }
+
+    .eliminar-btn:hover{
+      background:#f2d4ce;
+    }
+
+    .eliminar-btn:active{
+      transform:scale(.97);
+    }
+
+
+    /* =========================
+       VACÍO
+    ========================= */
+
     .vacio{
       text-align:center;
       padding:60px 20px;
       color:#5c6b63;
     }
+
 
     /* =========================
        NOTIFICACIONES
@@ -376,6 +428,7 @@
       cursor:default;
     }
 
+
     /* =========================
        ADMIN
     ========================= */
@@ -390,6 +443,7 @@
       font-size:.72rem;
       font-weight:700;
     }
+
 
     /* =========================
        MÓVIL
@@ -475,7 +529,13 @@
         gap:10px;
       }
 
-      .estado-btn{
+      .acciones-registro{
+        flex-direction:column;
+        align-items:stretch;
+      }
+
+      .estado-btn,
+      .eliminar-btn{
         padding:8px 10px;
         font-size:.78rem;
       }
@@ -491,6 +551,7 @@
       }
 
     }
+
 
     /* =========================
        CELULARES MUY PEQUEÑOS
@@ -509,7 +570,13 @@
         align-items:stretch;
       }
 
-      .estado-btn{
+      .acciones-registro{
+        width:100%;
+        flex-direction:column;
+      }
+
+      .estado-btn,
+      .eliminar-btn{
         width:100%;
         padding:10px;
       }
@@ -528,7 +595,11 @@
   </style>
 
   <link rel="manifest" href="./manifest.json">
-  <meta name="theme-color" content="#1f3d31">
+
+  <meta
+    name="theme-color"
+    content="#1f3d31"
+  >
 
 </head>
 
@@ -648,7 +719,7 @@
 
 
   <!-- ===================================================
-       FILTROS DEL ADMINISTRADOR
+       FILTROS ADMINISTRADOR
   ==================================================== -->
 
   <div
@@ -1508,30 +1579,52 @@
       </div>
 
 
-      <button
-        class="estado-btn ${
-          registro.atendido
-            ? "atendido"
-            : "pendiente"
-        }"
-      >
+      <div class="acciones-registro">
+
+        <button
+          class="estado-btn ${
+            registro.atendido
+              ? "atendido"
+              : "pendiente"
+          }"
+        >
+
+          ${
+            registro.atendido
+              ? "Atendido"
+              : "Marcar atendido"
+          }
+
+        </button>
 
         ${
-          registro.atendido
-            ? "Atendido"
-            : "Marcar atendido"
+          miRol === "admin"
+            ? `
+              <button
+                class="eliminar-btn"
+                type="button"
+                title="Eliminar registro"
+              >
+                🗑️ Eliminar
+              </button>
+            `
+            : ""
         }
 
-      </button>
+      </div>
 
     `;
 
 
-    const boton =
-      fila.querySelector("button");
+    /* =====================================================
+       BOTÓN ATENDIDO
+    ===================================================== */
+
+    const botonEstado =
+      fila.querySelector(".estado-btn");
 
 
-    boton.addEventListener(
+    botonEstado.addEventListener(
       "click",
       () => {
 
@@ -1542,6 +1635,32 @@
 
       }
     );
+
+
+    /* =====================================================
+       BOTÓN ELIMINAR
+    ===================================================== */
+
+    if(miRol === "admin"){
+
+      const botonEliminar =
+        fila.querySelector(".eliminar-btn");
+
+
+      botonEliminar.addEventListener(
+        "click",
+        () => {
+
+          eliminarRegistro(
+            registro.id,
+            fila,
+            nombre
+          );
+
+        }
+      );
+
+    }
 
 
     return fila;
@@ -1591,7 +1710,9 @@
 
 
       const boton =
-        fila.querySelector("button");
+        fila.querySelector(
+          ".estado-btn"
+        );
 
 
       boton.textContent =
@@ -1608,6 +1729,128 @@
         "Error:",
         error
       );
+
+    }
+
+  }
+
+
+  /* =====================================================
+     ELIMINAR REGISTRO
+  ===================================================== */
+
+  async function eliminarRegistro(
+    id,
+    fila,
+    nombre
+  ){
+
+    /* Seguridad adicional en el frontend */
+
+    if(miRol !== "admin"){
+
+      alert(
+        "No tienes permiso para eliminar registros."
+      );
+
+      return;
+
+    }
+
+
+    const confirmar =
+      confirm(
+        `¿Seguro que deseas eliminar el registro de "${nombre}"?\n\nEsta acción no se puede deshacer.`
+      );
+
+
+    if(!confirmar){
+      return;
+    }
+
+
+    const botonEliminar =
+      fila.querySelector(
+        ".eliminar-btn"
+      );
+
+
+    botonEliminar.disabled =
+      true;
+
+    botonEliminar.textContent =
+      "Eliminando...";
+
+
+    try{
+
+      const {
+        error
+      } =
+        await supabaseClient
+          .from("registros")
+          .delete()
+          .eq(
+            "id",
+            id
+          );
+
+
+      if(error){
+
+        console.error(
+          "Error eliminando registro:",
+          error
+        );
+
+        alert(
+          "No se pudo eliminar el registro. Verifica los permisos de Supabase."
+        );
+
+        botonEliminar.disabled =
+          false;
+
+        botonEliminar.textContent =
+          "🗑️ Eliminar";
+
+        return;
+
+      }
+
+
+      /* Quitar de la pantalla */
+
+      fila.remove();
+
+
+      /* Si ya no quedan registros */
+
+      if(
+        lista.children.length === 0
+      ){
+
+        lista.innerHTML =
+          '<div class="vacio">Todavía no hay registros.</div>';
+
+      }
+
+
+    }catch(error){
+
+      console.error(
+        "Error inesperado eliminando:",
+        error
+      );
+
+      alert(
+        "Ocurrió un error al eliminar el registro."
+      );
+
+      botonEliminar.disabled =
+        false;
+
+      botonEliminar.textContent =
+        "🗑️ Eliminar";
 
     }
 
