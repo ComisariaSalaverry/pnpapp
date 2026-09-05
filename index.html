@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -7,7 +8,7 @@
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
   />
 
-  <title>Bienvenido</title>
+  <title>Comisaría Salaverry</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link
@@ -237,7 +238,6 @@
       min-height: 20px;
     }
 
-    /* Pantalla de confirmación */
     .confirmacion {
       display: none;
       text-align: center;
@@ -280,7 +280,6 @@
       margin: 0;
     }
 
-    /* Adaptación para pantallas pequeñas */
     @media (max-width: 600px) {
       .escena {
         padding: 16px;
@@ -345,49 +344,51 @@
   <div class="escena">
     <div class="tarjeta">
 
-      <!-- FORMULARIO -->
       <div class="formulario" id="formulario">
 
         <div class="cabecera-institucional">
 
           <img
             src="./logo.png"
-            alt="Policía Nacional del Perú"
+            alt="Comisaría Salaverry"
             class="logo-institucional"
           >
 
           <div class="texto-institucional">
+
             <div class="linea1">
-              Policía Nacional del Perú
+              Comisaría Salaverry
             </div>
 
             <div class="linea2">
               Sistema de registro de visitantes
             </div>
+
           </div>
 
         </div>
 
         <div class="encabezado">
+
           <h1>Bienvenido</h1>
 
           <p>
-            Ingrese su documento de identidad y seleccione el área a la que se dirige.
+            Ingrese sus nombres y apellidos y seleccione el área a la que se dirige.
           </p>
+
         </div>
 
         <label for="nombre">
-          Documento de identidad
+          Nombres y apellidos
         </label>
 
         <input
           type="text"
           id="nombre"
-          inputmode="numeric"
-          pattern="[0-9]*"
-          maxlength="8"
-          placeholder="Ej. 12345678"
-          autocomplete="off"
+          inputmode="text"
+          maxlength="100"
+          placeholder="Ej. Juan Carlos Pérez García"
+          autocomplete="name"
         >
 
         <label>
@@ -455,8 +456,6 @@
       "sb_publishable_qTNkWQAQLrzS2-81BpeDeA_DFDCrVol";
 
 
-
-
     const AREAS = [
       "Sección de delitos y faltas",
       "Familia",
@@ -466,12 +465,10 @@
     ];
 
 
-
     const supabaseClient = window.supabase.createClient(
       SUPABASE_URL,
       SUPABASE_ANON_KEY
     );
-
 
 
     const contenedorAreas =
@@ -496,9 +493,7 @@
       document.getElementById("confNombre");
 
 
-
     let areaElegida = null;
-
 
 
     AREAS.forEach((area) => {
@@ -535,33 +530,31 @@
     });
 
 
-
     inputNombre.addEventListener("input", () => {
 
-      // Solo permite números
+      // Permitir solamente letras, espacios y tildes.
       inputNombre.value =
         inputNombre.value
-          .replace(/\D/g, "")
-          .slice(0, 8);
+          .replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, "")
+          .replace(/\s{2,}/g, " ")
+          .slice(0, 100);
 
       revisarListo();
 
     });
 
 
-
     function revisarListo() {
 
-      const documentoOk =
-        /^[0-9]{8}$/.test(
+      const nombreOk =
+        /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]+(?:\s+[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]+)+$/.test(
           inputNombre.value.trim()
         );
 
       btnEnviar.disabled =
-        !(documentoOk && areaElegida);
+        !(nombreOk && areaElegida);
 
     }
-
 
 
     btnEnviar.addEventListener("click", async () => {
@@ -574,7 +567,6 @@
       }
 
 
-      // Estado de procesamiento
       btnEnviar.disabled = true;
       btnEnviar.textContent = "Procesando...";
       aviso.textContent = "";
@@ -610,16 +602,13 @@
         }
 
 
-        // ============================================================
-        // REGISTRO EXITOSO
-        // ============================================================
-
         confNombre.textContent =
           "Registro exitoso";
 
         formulario.classList.add("oculto");
 
         confirmacion.classList.add("visible");
+
 
         setTimeout(() => {
 
@@ -672,6 +661,7 @@
 
     });
 
+
     window.addEventListener("load", () => {
       inputNombre.focus();
     });
@@ -680,3 +670,4 @@
 
 </body>
 </html>
+```
