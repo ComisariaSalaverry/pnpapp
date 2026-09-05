@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -33,12 +34,23 @@
       box-sizing:border-box;
     }
 
+    html{
+      min-height:100%;
+      height:auto;
+      overflow-x:hidden;
+      overflow-y:auto;
+    }
+
     body{
       margin:0;
       min-height:100vh;
+      height:auto;
       background:var(--lino);
       font-family:'Inter',sans-serif;
       color:var(--tinta);
+      overflow-x:hidden;
+      overflow-y:auto;
+      -webkit-overflow-scrolling:touch;
     }
 
     /* =========================
@@ -47,6 +59,7 @@
 
     #vistaLogin{
       min-height:100vh;
+      height:auto;
       display:flex;
       align-items:center;
       justify-content:center;
@@ -147,6 +160,7 @@
       display:flex;
       align-items:center;
       gap:14px;
+      min-width:0;
     }
 
     .texto-institucional .linea1{
@@ -168,9 +182,13 @@
 
     #vistaPanel{
       display:none;
+      width:100%;
       max-width:840px;
       margin:0 auto;
       padding:36px 24px 60px 24px;
+      min-height:100vh;
+      height:auto;
+      overflow:visible;
     }
 
     .cabecera{
@@ -202,6 +220,7 @@
       font-size:.85rem;
       cursor:pointer;
       font-weight:600;
+      flex-shrink:0;
     }
 
     /* =========================
@@ -241,9 +260,11 @@
       display:flex;
       flex-direction:column;
       gap:10px;
+      width:100%;
     }
 
     .fila{
+      width:100%;
       background:var(--papel);
       border:1px solid var(--linea);
       border-radius:14px;
@@ -272,15 +293,22 @@
 
     }
 
+    .info-cliente{
+      min-width:0;
+      flex:1;
+    }
+
     .info-cliente .nombre{
       font-weight:700;
       font-size:1.05rem;
+      overflow-wrap:anywhere;
     }
 
     .info-cliente .dni{
       color:#5c6b63;
       font-size:.85rem;
       margin-top:2px;
+      overflow-wrap:anywhere;
     }
 
     .info-cliente .area{
@@ -288,6 +316,7 @@
       font-size:.85rem;
       font-weight:600;
       margin-top:2px;
+      overflow-wrap:anywhere;
     }
 
     .info-cliente .hora{
@@ -304,6 +333,7 @@
       font-size:.85rem;
       cursor:pointer;
       white-space:nowrap;
+      flex-shrink:0;
     }
 
     .estado-btn.pendiente{
@@ -367,12 +397,82 @@
 
     @media(max-width:600px){
 
+      html,
+      body{
+        height:auto;
+        min-height:100%;
+        overflow-x:hidden;
+        overflow-y:auto;
+        -webkit-overflow-scrolling:touch;
+      }
+
+      #vistaLogin{
+        min-height:100vh;
+        height:auto;
+        padding:18px 14px 40px 14px;
+        align-items:flex-start;
+      }
+
+      .caja-login{
+        margin-top:20px;
+        padding:30px 22px;
+      }
+
       #vistaPanel{
-        padding:24px 14px 40px 14px;
+        width:100%;
+        min-height:100vh;
+        height:auto;
+        padding:24px 14px 80px 14px;
+        overflow:visible;
+      }
+
+      .cabecera{
+        align-items:flex-start;
+        margin-bottom:22px;
+      }
+
+      .cabecera-institucional{
+        width:100%;
+      }
+
+      .cabecera h1{
+        font-size:1.6rem;
+      }
+
+      .cabecera .sub{
+        line-height:1.4;
+        margin-top:3px;
+      }
+
+      .salir{
+        width:100%;
+        padding:11px;
+      }
+
+      .filtro-admin{
+        flex-wrap:nowrap;
+        overflow-x:auto;
+        overflow-y:hidden;
+        padding-bottom:8px;
+        margin-bottom:18px;
+        -webkit-overflow-scrolling:touch;
+        scrollbar-width:thin;
+      }
+
+      .filtro-area{
+        white-space:nowrap;
+        flex-shrink:0;
+      }
+
+      .btn-notificaciones{
+        margin-bottom:18px;
+        line-height:1.4;
       }
 
       .fila{
         align-items:flex-start;
+        padding:14px;
+        gap:10px;
       }
 
       .estado-btn{
@@ -380,18 +480,47 @@
         font-size:.78rem;
       }
 
+      .info-cliente .nombre{
+        font-size:.98rem;
+      }
+
+      .info-cliente .dni,
+      .info-cliente .area,
+      .info-cliente .hora{
+        font-size:.8rem;
+      }
+
+    }
+
+    /* =========================
+       CELULARES MUY PEQUEÑOS
+    ========================= */
+
+    @media(max-width:380px){
+
+      #vistaPanel{
+        padding-left:10px;
+        padding-right:10px;
+        padding-bottom:80px;
+      }
+
+      .fila{
+        flex-direction:column;
+        align-items:stretch;
+      }
+
+      .estado-btn{
+        width:100%;
+        padding:10px;
+      }
+
+      .logo-institucional{
+        width:48px;
+        height:48px;
+      }
+
       .cabecera h1{
-        font-size:1.6rem;
-      }
-
-      .filtro-admin{
-        flex-wrap:nowrap;
-        overflow-x:auto;
-        padding-bottom:4px;
-      }
-
-      .filtro-area{
-        white-space:nowrap;
+        font-size:1.45rem;
       }
 
     }
@@ -1497,10 +1626,6 @@
 
     try{
 
-      /*
-        Creamos la consulta base.
-      */
-
       let consulta =
         supabaseClient
           .from("registros")
@@ -1513,17 +1638,6 @@
           )
           .limit(50);
 
-
-      /*
-        ADMIN:
-        TODAS = muestra todas las áreas.
-
-        Si selecciona un área:
-        solamente muestra esa área.
-
-        USUARIO NORMAL:
-        solamente su área.
-      */
 
       if(miRol === "admin"){
 
@@ -1632,10 +1746,6 @@
 
   function escucharNuevos(){
 
-    /*
-      Evitar canales duplicados.
-    */
-
     if(canalRegistros){
 
       supabaseClient
@@ -1671,11 +1781,6 @@
             );
 
 
-            /*
-              USUARIO NORMAL:
-              solamente recibe su área.
-            */
-
             if(
               miRol !== "admin" &&
               payload.new.area &&
@@ -1687,17 +1792,6 @@
 
             }
 
-
-            /*
-              ADMIN:
-              si seleccionó un área,
-              solamente recibe registros
-              de esa área.
-
-              ADMIN:
-              si está en TODAS,
-              recibe cualquier área.
-            */
 
             if(
               miRol === "admin" &&
@@ -1722,10 +1816,6 @@
 
             }
 
-
-            /*
-              Evitar duplicados.
-            */
 
             const existente =
               document.getElementById(
@@ -1882,13 +1972,6 @@
       }
 
 
-      /*
-        Para el administrador:
-        miArea debe ser TODAS.
-        Así recibe notificaciones de todas
-        las áreas mediante smooth-responder.
-      */
-
       const areaSuscripcion =
         miRol === "admin"
           ? "TODAS"
@@ -2011,3 +2094,4 @@
 
 </body>
 </html>
+```
