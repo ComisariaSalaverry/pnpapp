@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Panel de registros</title>
+  <title>Panel de registros - Comisaría Salaverry</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
 
@@ -244,6 +244,19 @@
       font-size:1.05rem;
     }
 
+    .info-cliente .dni{
+      color:#5c6b63;
+      font-size:.85rem;
+      margin-top:2px;
+    }
+
+    .info-cliente .area{
+      color:var(--musgo);
+      font-size:.85rem;
+      font-weight:600;
+      margin-top:2px;
+    }
+
     .info-cliente .hora{
       color:#5c6b63;
       font-size:.82rem;
@@ -257,6 +270,7 @@
       font-weight:600;
       font-size:.85rem;
       cursor:pointer;
+      white-space:nowrap;
     }
 
     .estado-btn.pendiente{
@@ -299,6 +313,46 @@
       cursor:default;
     }
 
+    /* =========================
+       ADMIN
+    ========================= */
+
+    .etiqueta-admin{
+      display:inline-block;
+      margin-top:5px;
+      padding:4px 8px;
+      border-radius:6px;
+      background:#f3ead0;
+      color:var(--cobre);
+      font-size:.72rem;
+      font-weight:700;
+    }
+
+    /* =========================
+       MÓVIL
+    ========================= */
+
+    @media(max-width:600px){
+
+      #vistaPanel{
+        padding:24px 14px 40px 14px;
+      }
+
+      .fila{
+        align-items:flex-start;
+      }
+
+      .estado-btn{
+        padding:8px 10px;
+        font-size:.78rem;
+      }
+
+      .cabecera h1{
+        font-size:1.6rem;
+      }
+
+    }
+
   </style>
 
   <link rel="manifest" href="./manifest.json">
@@ -321,14 +375,14 @@
 
       <img
         src="./logo.png"
-        alt="Policía Nacional del Perú"
+        alt="Comisaría Salaverry"
         class="logo-institucional"
       >
 
       <div class="texto-institucional">
 
         <div class="linea1">
-          Policía Nacional del Perú
+          Comisaría Salaverry
         </div>
 
         <div class="linea2">
@@ -351,7 +405,7 @@
       type="email"
       id="correo"
       autocomplete="username"
-      placeholder="correo@pnp.local"
+      placeholder="correo@pnp.pe"
     >
 
     <label for="clave">
@@ -390,7 +444,7 @@
 
       <img
         src="./logo.png"
-        alt="Policía Nacional del Perú"
+        alt="Comisaría Salaverry"
         class="logo-institucional"
       >
 
@@ -400,7 +454,10 @@
           Registros
         </h1>
 
-        <div class="sub">
+        <div
+          class="sub"
+          id="subtituloPanel"
+        >
           Se actualiza automáticamente al llegar un nuevo registro
         </div>
 
@@ -448,25 +505,20 @@
     "https://cthpbxqwsjcgpdfqkdwr.supabase.co";
 
   const SUPABASE_ANON_KEY =
-    "sb_publishable_qTNkWQAQLrzS2-81BpeDeA_DFDCrVol";
+    "sb_publishable_qTNkWQAQLrzS-2-81BpeDeA_DFDCrVol";
 
 
-  /*
-    Esta clave NO es la contraseña de ningún usuario.
+  /* =====================================================
+     VAPID
+  ===================================================== */
 
-    Las notificaciones push todavía necesitan
-    una VAPID PUBLIC KEY real.
+  const VAPID_PUBLIC_KEY =
+    "BHG6sCGAQQmYuGMRmrJ4EYKd55Bzngbc7WQdJuFpjHgFzs-zbQYQeof-yerGrD_yjIqQijnzdvqySvrehpeZgUA";
 
-    Por ahora dejamos esto sin activar.
-  */
 
-const VAPID_PUBLIC_KEY =
-  "BHG6sCGAQQmYuGMRmrJ4EYKd55Bzngbc7WQdJuFpjHgFzs-zbQYQeof-yerGrD_yjIqQijnzdvqySvrehpeZgUA";
-
-/*
-  IMPORTANTE:
-    ESTA ES LA ÚNICA DECLARACIÓN DE supabase.
-  */
+  /* =====================================================
+     SUPABASE CLIENT
+  ===================================================== */
 
   const supabaseClient =
     window.supabase.createClient(
@@ -500,6 +552,9 @@ const VAPID_PUBLIC_KEY =
   const nombreAreaEl =
     document.getElementById("nombreArea");
 
+  const subtituloPanel =
+    document.getElementById("subtituloPanel");
+
   const lista =
     document.getElementById("lista");
 
@@ -511,10 +566,12 @@ const VAPID_PUBLIC_KEY =
 
 
   /* =====================================================
-     VARIABLE DEL ÁREA
+     VARIABLES DEL USUARIO
   ===================================================== */
 
   let miArea = null;
+
+  let miRol = "usuario";
 
   let canalRegistros = null;
 
@@ -626,11 +683,6 @@ const VAPID_PUBLIC_KEY =
     iniciarSesion
   );
 
-
-  /*
-    También permite presionar ENTER
-    en los campos del formulario.
-  */
 
   correoInput.addEventListener(
     "keydown",
@@ -765,7 +817,7 @@ const VAPID_PUBLIC_KEY =
 
 
   /* =====================================================
-     COMPROBAR SESIÓN AL CARGAR
+     COMPROBAR SESIÓN
   ===================================================== */
 
   async function iniciar(){
@@ -825,10 +877,6 @@ const VAPID_PUBLIC_KEY =
 
     try{
 
-      /*
-        Obtener usuario autenticado.
-      */
-
       const {
         data,
         error:userError
@@ -870,13 +918,9 @@ const VAPID_PUBLIC_KEY =
       );
 
 
-      /*
-        BUSCAMOS EL PERFIL MEDIANTE EL UID.
-
-        auth.users.id
-              =
-        perfiles.id
-      */
+      /* =================================================
+         OBTENER PERFIL
+      ================================================= */
 
       const {
         data:perfil,
@@ -885,7 +929,7 @@ const VAPID_PUBLIC_KEY =
         await supabaseClient
           .from("perfiles")
           .select(
-            "area, nombre_area_visible"
+            "area, nombre_area_visible, rol"
           )
           .eq(
             "id",
@@ -919,12 +963,15 @@ const VAPID_PUBLIC_KEY =
       }
 
 
-      /*
-        Guardamos el área.
-      */
+      /* =================================================
+         GUARDAR ÁREA Y ROL
+      ================================================= */
 
       miArea =
         perfil.area;
+
+      miRol =
+        perfil.rol || "usuario";
 
 
       console.log(
@@ -932,20 +979,41 @@ const VAPID_PUBLIC_KEY =
         miArea
       );
 
-
-      /*
-        Mostramos el nombre del área.
-      */
-
-      nombreAreaEl.textContent =
-        perfil.nombre_area_visible ||
-        perfil.area ||
-        "Registros";
+      console.log(
+        "Rol del usuario:",
+        miRol
+      );
 
 
-      /*
-        Cambiamos de login a panel.
-      */
+      /* =================================================
+         MOSTRAR CABECERA
+      ================================================= */
+
+      if(miRol === "admin"){
+
+        nombreAreaEl.textContent =
+          perfil.nombre_area_visible ||
+          "Administrador";
+
+        subtituloPanel.textContent =
+          "Vista administrativa: todos los registros de todas las áreas";
+
+      }else{
+
+        nombreAreaEl.textContent =
+          perfil.nombre_area_visible ||
+          perfil.area ||
+          "Registros";
+
+        subtituloPanel.textContent =
+          "Se actualiza automáticamente al llegar un nuevo registro";
+
+      }
+
+
+      /* =================================================
+         MOSTRAR PANEL
+      ================================================= */
 
       vistaLogin.style.display =
         "none";
@@ -954,16 +1022,16 @@ const VAPID_PUBLIC_KEY =
         "block";
 
 
-      /*
-        Cargar registros.
-      */
+      /* =================================================
+         CARGAR REGISTROS
+      ================================================= */
 
       await cargarRegistros();
 
 
-      /*
-        Escuchar registros nuevos.
-      */
+      /* =================================================
+         ESCUCHAR REGISTROS NUEVOS
+      ================================================= */
 
       escucharNuevos();
 
@@ -1092,24 +1160,45 @@ const VAPID_PUBLIC_KEY =
       registro.id;
 
 
+    const nombre =
+      registro.nombre ||
+      "Visitante";
+
+
+    const dni =
+      registro.dni ||
+      "No registrado";
+
+
+    const area =
+      registro.area ||
+      "Sin área";
+
+
     fila.innerHTML = `
 
       <div class="info-cliente">
 
         <div class="nombre">
-
-          DNI ${escaparHTML(
-            registro.nombre
-          )}
-
+          ${escaparHTML(nombre)}
         </div>
 
+        <div class="dni">
+          DNI ${escaparHTML(dni)}
+        </div>
+
+        ${
+          miRol === "admin"
+            ? `
+              <div class="area">
+                Área: ${escaparHTML(area)}
+              </div>
+            `
+            : ""
+        }
+
         <div class="hora">
-
-          ${formatoHora(
-            registro.creado_en
-          )}
-
+          ${formatoHora(registro.creado_en)}
         </div>
 
       </div>
@@ -1234,14 +1323,11 @@ const VAPID_PUBLIC_KEY =
     try{
 
       /*
-        Primero obtenemos los registros.
+        Creamos la consulta base.
       */
 
-      const {
-        data,
-        error
-      } =
-        await supabaseClient
+      let consulta =
+        supabaseClient
           .from("registros")
           .select("*")
           .order(
@@ -1251,6 +1337,32 @@ const VAPID_PUBLIC_KEY =
             }
           )
           .limit(50);
+
+
+      /*
+        USUARIO NORMAL:
+        solamente su área.
+
+        ADMIN:
+        no se aplica filtro de área.
+      */
+
+      if(miRol !== "admin"){
+
+        consulta =
+          consulta.eq(
+            "area",
+            miArea
+          );
+
+      }
+
+
+      const {
+        data,
+        error
+      } =
+        await consulta;
 
 
       if(error){
@@ -1277,7 +1389,9 @@ const VAPID_PUBLIC_KEY =
       ){
 
         lista.innerHTML =
-          '<div class="vacio">Todavía no hay registros para tu área.</div>';
+          miRol === "admin"
+            ? '<div class="vacio">Todavía no hay registros.</div>'
+            : '<div class="vacio">Todavía no hay registros para tu área.</div>';
 
         return;
 
@@ -1359,12 +1473,15 @@ const VAPID_PUBLIC_KEY =
 
 
             /*
-              Si el registro tiene área,
-              solamente mostramos el que
-              corresponde al área del usuario.
+              ADMIN:
+              recibe cualquier área.
+
+              USUARIO NORMAL:
+              solamente recibe su área.
             */
 
             if(
+              miRol !== "admin" &&
               payload.new.area &&
               miArea &&
               payload.new.area !== miArea
