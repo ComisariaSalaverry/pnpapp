@@ -3,6 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
+
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
@@ -35,15 +36,28 @@
       box-sizing: border-box;
     }
 
-    html,
+    html {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      height: auto;
+      background: var(--lino);
+      overflow-x: hidden;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
     body {
       margin: 0;
       padding: 0;
-      height: 100%;
+      min-height: 100vh;
+      height: auto;
       background: var(--lino);
       font-family: 'Inter', sans-serif;
       color: var(--tinta);
-      overflow: hidden;
+      overflow-x: hidden;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .franja-institucional {
@@ -111,12 +125,13 @@
     }
 
     .escena {
-      height: 100%;
+      min-height: 100vh;
+      height: auto;
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 32px;
+      padding: 40px 32px;
     }
 
     .tarjeta {
@@ -127,6 +142,7 @@
       padding: 56px 48px;
       box-shadow: 0 30px 60px rgba(20, 38, 31, 0.12);
       border: 1px solid var(--linea);
+      margin: 20px 0;
     }
 
     .encabezado {
@@ -146,6 +162,7 @@
       margin: 0;
       color: #5c6b63;
       font-size: 1.05rem;
+      line-height: 1.5;
     }
 
     label {
@@ -192,6 +209,7 @@
       text-align: left;
       transition: all 0.15s ease;
       font-family: 'Inter', sans-serif;
+      min-height: 64px;
     }
 
     .area-btn:hover {
@@ -221,6 +239,7 @@
       cursor: pointer;
       font-family: 'Inter', sans-serif;
       transition: opacity 0.15s ease, transform 0.1s ease;
+      min-height: 64px;
     }
 
     .enviar:disabled {
@@ -237,9 +256,12 @@
       font-size: 0.95rem;
       color: #a13a2a;
       min-height: 20px;
+      line-height: 1.4;
     }
 
-    /* Pantalla de confirmación */
+    /* ============================================================
+       PANTALLA DE CONFIRMACIÓN
+       ============================================================ */
 
     .confirmacion {
       display: none;
@@ -281,19 +303,62 @@
       color: #5c6b63;
       font-size: 1.1rem;
       margin: 0;
+      line-height: 1.5;
     }
 
-    /* Adaptación para pantallas pequeñas */
+    /* ============================================================
+       TABLETS
+       ============================================================ */
 
-    @media (max-width: 600px) {
+    @media (max-width: 800px) {
 
       .escena {
-        padding: 16px;
+        padding: 30px 20px;
+        align-items: flex-start;
       }
 
       .tarjeta {
-        padding: 32px 24px;
-        border-radius: 22px;
+        max-width: 700px;
+        padding: 42px 32px;
+        margin: 20px 0;
+      }
+    }
+
+    /* ============================================================
+       CELULARES
+       ============================================================ */
+
+    @media (max-width: 600px) {
+
+      html,
+      body {
+        height: auto;
+        min-height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .franja-institucional {
+        height: 6px;
+      }
+
+      .escena {
+        width: 100%;
+        min-height: 100vh;
+        height: auto;
+        padding: 22px 12px 40px 12px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+      }
+
+      .tarjeta {
+        width: 100%;
+        max-width: 100%;
+        padding: 28px 20px 32px 20px;
+        border-radius: 20px;
+        margin: 12px 0 20px 0;
       }
 
       .cabecera-institucional {
@@ -307,16 +372,21 @@
         height: 52px;
       }
 
+      .texto-institucional {
+        min-width: 0;
+      }
+
       .texto-institucional .linea1 {
         font-size: 0.68rem;
       }
 
       .texto-institucional .linea2 {
         font-size: 0.75rem;
+        line-height: 1.35;
       }
 
       .encabezado {
-        margin-bottom: 28px;
+        margin-bottom: 24px;
       }
 
       .encabezado h1 {
@@ -325,6 +395,18 @@
 
       .encabezado p {
         font-size: 0.95rem;
+        line-height: 1.5;
+      }
+
+      label {
+        margin-top: 24px;
+        margin-bottom: 9px;
+      }
+
+      input[type="text"] {
+        padding: 16px;
+        font-size: 1.1rem;
+        min-height: 58px;
       }
 
       .areas {
@@ -334,10 +416,85 @@
 
       .area-btn {
         padding: 16px;
+        font-size: 1rem;
+        min-height: 58px;
       }
 
       .enviar {
         margin-top: 28px;
+        padding: 18px;
+        font-size: 1.1rem;
+        min-height: 60px;
+      }
+
+      .aviso {
+        margin-top: 12px;
+        font-size: 0.9rem;
+      }
+
+      .confirmacion {
+        padding: 30px 0;
+      }
+
+      .confirmacion h2 {
+        font-size: 1.8rem;
+      }
+
+      .confirmacion p {
+        font-size: 1rem;
+      }
+    }
+
+    /* ============================================================
+       CELULARES MUY PEQUEÑOS
+       ============================================================ */
+
+    @media (max-width: 380px) {
+
+      .escena {
+        padding: 18px 8px 35px 8px;
+      }
+
+      .tarjeta {
+        padding: 24px 16px 28px 16px;
+        border-radius: 18px;
+      }
+
+      .cabecera-institucional {
+        gap: 9px;
+      }
+
+      .logo-institucional {
+        width: 46px;
+        height: 46px;
+      }
+
+      .texto-institucional .linea1 {
+        font-size: 0.62rem;
+      }
+
+      .texto-institucional .linea2 {
+        font-size: 0.68rem;
+      }
+
+      .encabezado h1 {
+        font-size: 1.8rem;
+      }
+
+      .encabezado p {
+        font-size: 0.9rem;
+      }
+
+      input[type="text"] {
+        font-size: 1rem;
+      }
+
+      .area-btn {
+        font-size: 0.95rem;
+      }
+
+      .enviar {
+        font-size: 1rem;
       }
     }
   </style>
@@ -645,13 +802,9 @@
         inputNombre.value.trim();
 
 
-      // DNI exactamente 8 números
-
       const dniOk =
         /^[0-9]{8}$/.test(dni);
 
-
-      // Nombre y apellidos
 
       const nombreOk =
         /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s'-]{3,100}$/.test(nombre) &&
@@ -709,8 +862,6 @@
 
       }
 
-
-      // Estado de procesamiento
 
       btnEnviar.disabled = true;
 
@@ -808,6 +959,13 @@
 
           inputDni.focus();
 
+
+          // Volver al inicio de la página
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+          });
+
         }, 4000);
 
 
@@ -836,7 +994,9 @@
     // ============================================================
 
     window.addEventListener("load", () => {
+
       inputDni.focus();
+
     });
 
   </script>
