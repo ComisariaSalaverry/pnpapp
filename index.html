@@ -1,337 +1,193 @@
-```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-  />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Comisaría Salaverry</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link
-    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap"
-    rel="stylesheet"
-  >
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
-    :root {
-      --tinta: #0d1f14;
-      --musgo: #0b3d24;
-      --dorado: #c9a227;
-      --dorado-oscuro: #97781a;
-      --lino: #f2f1ec;
-      --papel: #ffffff;
-      --cobre: #97781a;
-      --linea: #d6d3c4;
-    }
-
     * {
       box-sizing: border-box;
     }
 
-    html,
     body {
       margin: 0;
-      padding: 0;
-      height: 100%;
-      background: var(--lino);
-      font-family: 'Inter', sans-serif;
-      color: var(--tinta);
-      overflow: hidden;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f4f6f8;
+      color: #1f2937;
     }
 
-    .franja-institucional {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 8px;
-      background: linear-gradient(
-        90deg,
-        var(--musgo) 0%,
-        var(--musgo) 60%,
-        var(--dorado) 60%,
-        var(--dorado) 100%
-      );
-      z-index: 10;
-    }
-
-    .cabecera-institucional {
+    .contenedor {
+      min-height: 100vh;
       display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 28px;
-      padding-bottom: 20px;
-      border-bottom: 2px solid var(--dorado);
-    }
-
-    .espacio-logo {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      border: 2px dashed var(--linea);
-      display: flex;
-      align-items: center;
       justify-content: center;
-      font-size: 0.65rem;
-      color: #9a9686;
-      text-align: center;
-      flex-shrink: 0;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .logo-institucional {
-      width: 64px;
-      height: 64px;
-      object-fit: contain;
-      flex-shrink: 0;
-    }
-
-    .texto-institucional {
-      line-height: 1.25;
-    }
-
-    .texto-institucional .linea1 {
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.02em;
-      color: var(--musgo);
-      text-transform: uppercase;
-    }
-
-    .texto-institucional .linea2 {
-      font-size: 0.85rem;
-      color: #5c6b63;
-    }
-
-    .escena {
-      height: 100%;
-      width: 100%;
-      display: flex;
       align-items: center;
-      justify-content: center;
-      padding: 32px;
+      padding: 20px;
     }
 
     .tarjeta {
       width: 100%;
-      max-width: 760px;
-      background: var(--papel);
-      border-radius: 28px;
-      padding: 56px 48px;
-      box-shadow: 0 30px 60px rgba(20, 38, 31, 0.12);
-      border: 1px solid var(--linea);
+      max-width: 500px;
+      background: white;
+      border-radius: 18px;
+      padding: 30px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.10);
     }
 
     .encabezado {
-      text-align: left;
-      margin-bottom: 40px;
+      text-align: center;
+      margin-bottom: 25px;
     }
 
-    .encabezado h1 {
-      font-family: 'Fraunces', serif;
-      font-weight: 600;
-      font-size: 2.4rem;
-      margin: 0 0 8px 0;
-      line-height: 1.1;
+    .logo {
+      width: 90px;
+      height: 90px;
+      object-fit: contain;
+      margin-bottom: 10px;
     }
 
-    .encabezado p {
+    h1 {
       margin: 0;
-      color: #5c6b63;
-      font-size: 1.05rem;
+      font-size: 26px;
+      color: #123c69;
+    }
+
+    .subtitulo {
+      margin-top: 8px;
+      color: #667085;
+      font-size: 15px;
+    }
+
+    .descripcion {
+      text-align: center;
+      margin: 20px 0;
+      color: #475467;
+      line-height: 1.5;
+    }
+
+    .campo {
+      margin-bottom: 18px;
     }
 
     label {
       display: block;
-      font-weight: 600;
-      font-size: 0.95rem;
-      margin: 28px 0 10px 0;
-      color: var(--musgo);
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #344054;
     }
 
-    input[type="text"] {
+    input,
+    select {
       width: 100%;
-      padding: 18px 20px;
-      font-size: 1.3rem;
-      border-radius: 14px;
-      border: 2px solid var(--linea);
-      background: var(--lino);
-      font-family: 'Inter', sans-serif;
-      color: var(--tinta);
+      padding: 14px;
+      border: 1px solid #d0d5dd;
+      border-radius: 10px;
+      font-size: 16px;
       outline: none;
-      transition: border-color 0.15s ease;
+      background: white;
     }
 
-    input[type="text"]:focus {
-      border-color: var(--musgo);
+    input:focus,
+    select:focus {
+      border-color: #123c69;
+      box-shadow: 0 0 0 3px rgba(18,60,105,0.10);
     }
 
     .areas {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
-      margin-top: 10px;
+      grid-template-columns: 1fr;
+      gap: 10px;
     }
 
-    .area-btn {
-      padding: 20px 18px;
-      border-radius: 16px;
-      border: 2px solid var(--linea);
-      background: var(--lino);
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--musgo);
+    .area {
+      border: 1px solid #d0d5dd;
+      border-radius: 10px;
+      padding: 14px;
       cursor: pointer;
-      text-align: left;
-      transition: all 0.15s ease;
-      font-family: 'Inter', sans-serif;
+      background: #fff;
+      transition: 0.2s;
+      text-align: center;
     }
 
-    .area-btn:hover {
-      border-color: var(--musgo);
+    .area:hover {
+      border-color: #123c69;
     }
 
-    .area-btn:active {
-      transform: scale(0.97);
+    .area.seleccionada {
+      background: #123c69;
+      color: white;
+      border-color: #123c69;
     }
 
-    .area-btn.activa {
-      background: var(--musgo);
-      border-color: var(--musgo);
-      color: var(--papel);
-    }
-
-    .enviar {
+    button {
       width: 100%;
-      margin-top: 36px;
-      padding: 20px;
-      font-size: 1.25rem;
-      font-weight: 700;
-      background: var(--cobre);
-      color: var(--papel);
+      margin-top: 20px;
+      padding: 15px;
       border: none;
-      border-radius: 16px;
+      border-radius: 10px;
+      background: #123c69;
+      color: white;
+      font-size: 17px;
+      font-weight: bold;
       cursor: pointer;
-      font-family: 'Inter', sans-serif;
-      transition: opacity 0.15s ease, transform 0.1s ease;
     }
 
-    .enviar:disabled {
-      opacity: 0.4;
+    button:hover:not(:disabled) {
+      background: #0d3156;
+    }
+
+    button:disabled {
+      background: #98a2b3;
       cursor: not-allowed;
     }
 
-    .enviar:active:not(:disabled) {
-      transform: scale(0.985);
-    }
-
-    .aviso {
-      margin-top: 16px;
-      font-size: 0.95rem;
-      color: #a13a2a;
-      min-height: 20px;
-    }
-
-    .confirmacion {
+    .mensaje {
       display: none;
       text-align: center;
-      padding: 40px 0;
+      padding: 25px 10px;
     }
 
-    .confirmacion.visible {
-      display: block;
+    .mensaje .icono {
+      font-size: 55px;
+      margin-bottom: 10px;
     }
 
-    .formulario.oculto {
+    .mensaje h2 {
+      color: #123c69;
+      margin-bottom: 10px;
+    }
+
+    .mensaje p {
+      color: #475467;
+      line-height: 1.5;
+    }
+
+    .error {
       display: none;
+      color: #d92d20;
+      background: #fef3f2;
+      border: 1px solid #fecdca;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 10px;
+      font-size: 14px;
     }
 
-    .check {
-      width: 84px;
-      height: 84px;
-      border-radius: 50%;
-      background: var(--musgo);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 28px auto;
+    .pie {
+      text-align: center;
+      margin-top: 20px;
+      color: #98a2b3;
+      font-size: 12px;
     }
 
-    .check svg {
-      width: 42px;
-      height: 42px;
-    }
-
-    .confirmacion h2 {
-      font-family: 'Fraunces', serif;
-      font-size: 2rem;
-      margin: 0 0 12px 0;
-    }
-
-    .confirmacion p {
-      color: #5c6b63;
-      font-size: 1.1rem;
-      margin: 0;
-    }
-
-    @media (max-width: 600px) {
-      .escena {
-        padding: 16px;
-      }
-
+    @media (max-width: 500px) {
       .tarjeta {
-        padding: 32px 24px;
-        border-radius: 22px;
+        padding: 22px;
       }
 
-      .cabecera-institucional {
-        gap: 12px;
-        margin-bottom: 22px;
-        padding-bottom: 16px;
-      }
-
-      .logo-institucional {
-        width: 52px;
-        height: 52px;
-      }
-
-      .texto-institucional .linea1 {
-        font-size: 0.68rem;
-      }
-
-      .texto-institucional .linea2 {
-        font-size: 0.75rem;
-      }
-
-      .encabezado {
-        margin-bottom: 28px;
-      }
-
-      .encabezado h1 {
-        font-size: 2rem;
-      }
-
-      .encabezado p {
-        font-size: 0.95rem;
-      }
-
-      .areas {
-        grid-template-columns: 1fr;
-        gap: 10px;
-      }
-
-      .area-btn {
-        padding: 16px;
-      }
-
-      .enviar {
-        margin-top: 28px;
+      h1 {
+        font-size: 23px;
       }
     }
   </style>
@@ -339,115 +195,135 @@
 
 <body>
 
-  <div class="franja-institucional"></div>
+  <div class="contenedor">
 
-  <div class="escena">
     <div class="tarjeta">
 
-      <div class="formulario" id="formulario">
+      <!-- FORMULARIO -->
+      <div id="formulario">
 
-        <div class="cabecera-institucional">
+        <div class="encabezado">
 
+          <!-- Si tienes tu logo, puedes mantener estos nombres -->
           <img
-            src="./logo.png"
+            src="./icon-192.png"
             alt="Comisaría Salaverry"
-            class="logo-institucional"
+            class="logo"
           >
 
-          <div class="texto-institucional">
+          <h1>Comisaría Salaverry</h1>
 
-            <div class="linea1">
-              Comisaría Salaverry
-            </div>
-
-            <div class="linea2">
-              Sistema de registro de visitantes
-            </div>
-
+          <div class="subtitulo">
+            Sistema de registro de visitantes
           </div>
 
         </div>
 
-        <div class="encabezado">
+        <div class="descripcion">
+          Ingrese su DNI, sus nombres y apellidos y seleccione
+          el área a la que se dirige.
+        </div>
 
-          <h1>Bienvenido</h1>
 
-          <p>
-            Ingrese sus nombres y apellidos y seleccione el área a la que se dirige.
-          </p>
+        <!-- DNI -->
+        <div class="campo">
+
+          <label for="dni">
+            Documento de identidad (DNI)
+          </label>
+
+          <input
+            type="text"
+            id="dni"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            maxlength="8"
+            placeholder="Ej. 12345678"
+            autocomplete="off"
+          >
 
         </div>
 
-        <label for="nombre">
-          Nombres y apellidos
-        </label>
 
-        <input
-          type="text"
-          id="nombre"
-          inputmode="text"
-          maxlength="100"
-          placeholder="Ej. Juan Carlos Pérez García"
-          autocomplete="name"
-        >
+        <!-- NOMBRES -->
+        <div class="campo">
 
-        <label>
-          Área que desea visitar
-        </label>
+          <label for="nombre">
+            Nombres y apellidos
+          </label>
 
-        <div class="areas" id="areas"></div>
+          <input
+            type="text"
+            id="nombre"
+            maxlength="100"
+            placeholder="Ej. Juan Carlos Pérez García"
+            autocomplete="name"
+          >
+
+        </div>
+
+
+        <!-- ÁREA -->
+        <div class="campo">
+
+          <label>
+            Área a la que se dirige
+          </label>
+
+          <div id="areas" class="areas"></div>
+
+        </div>
+
+
+        <div id="error" class="error"></div>
+
 
         <button
-          class="enviar"
           id="btnEnviar"
           disabled
         >
           Registrar visita
         </button>
 
-        <div
-          class="aviso"
-          id="aviso"
-          role="alert"
-        ></div>
+
+        <div class="pie">
+          Comisaría Salaverry
+        </div>
 
       </div>
 
-      <div
-        class="confirmacion"
-        id="confirmacion"
-      >
 
-        <div class="check">
+      <!-- CONFIRMACIÓN -->
+      <div id="mensajeExito" class="mensaje">
 
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#fffdf8"
-            stroke-width="3"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <polyline points="20 6 9 17 4 12"></polyline>
-          </svg>
-
+        <div class="icono">
+          ✓
         </div>
 
-        <h2 id="confNombre">
-          Registro exitoso
-        </h2>
+        <h2>Registro realizado</h2>
 
-        <p id="confTexto">
-          Se notificó al área correspondiente.
-          En breve será atendido.
+        <p>
+          Su visita ha sido registrada correctamente.
         </p>
+
+        <p id="detalleRegistro"></p>
 
       </div>
 
     </div>
+
   </div>
 
+
+  <!-- SUPABASE -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
   <script>
+
+    // ==========================================
+    // CONFIGURACIÓN SUPABASE
+    // ==========================================
 
     const SUPABASE_URL =
       "https://cthpbxqwsjcgpdfqkdwr.supabase.co";
@@ -455,6 +331,46 @@
     const SUPABASE_ANON_KEY =
       "sb_publishable_qTNkWQAQLrzS2-81BpeDeA_DFDCrVol";
 
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+      );
+
+
+    // ==========================================
+    // ELEMENTOS
+    // ==========================================
+
+    const inputDni =
+      document.getElementById("dni");
+
+    const inputNombre =
+      document.getElementById("nombre");
+
+    const areasContainer =
+      document.getElementById("areas");
+
+    const btnEnviar =
+      document.getElementById("btnEnviar");
+
+    const errorDiv =
+      document.getElementById("error");
+
+    const formulario =
+      document.getElementById("formulario");
+
+    const mensajeExito =
+      document.getElementById("mensajeExito");
+
+    const detalleRegistro =
+      document.getElementById("detalleRegistro");
+
+
+    // ==========================================
+    // ÁREAS
+    // ==========================================
 
     const AREAS = [
       "Sección de delitos y faltas",
@@ -464,79 +380,67 @@
       "Comisario"
     ];
 
-
-    const supabaseClient = window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
-    );
-
-
-    const contenedorAreas =
-      document.getElementById("areas");
-
-    const inputNombre =
-      document.getElementById("nombre");
-
-    const btnEnviar =
-      document.getElementById("btnEnviar");
-
-    const aviso =
-      document.getElementById("aviso");
-
-    const formulario =
-      document.getElementById("formulario");
-
-    const confirmacion =
-      document.getElementById("confirmacion");
-
-    const confNombre =
-      document.getElementById("confNombre");
-
-
-    let areaElegida = null;
+    let areaElegida = "";
 
 
     AREAS.forEach((area) => {
 
-      const btn =
-        document.createElement("button");
+      const div =
+        document.createElement("div");
 
-      btn.className = "area-btn";
+      div.className = "area";
 
-      btn.type = "button";
+      div.textContent = area;
 
-      btn.textContent = area;
-
-
-      btn.addEventListener("click", () => {
-
-        areaElegida = area;
+      div.addEventListener("click", () => {
 
         document
-          .querySelectorAll(".area-btn")
-          .forEach((b) => {
-            b.classList.remove("activa");
+          .querySelectorAll(".area")
+          .forEach((elemento) => {
+            elemento.classList.remove(
+              "seleccionada"
+            );
           });
 
-        btn.classList.add("activa");
+        div.classList.add("seleccionada");
+
+        areaElegida = area;
 
         revisarListo();
 
       });
 
-
-      contenedorAreas.appendChild(btn);
+      areasContainer.appendChild(div);
 
     });
 
 
+    // ==========================================
+    // VALIDACIÓN DNI
+    // ==========================================
+
+    inputDni.addEventListener("input", () => {
+
+      inputDni.value =
+        inputDni.value
+          .replace(/\D/g, "")
+          .slice(0, 8);
+
+      revisarListo();
+
+    });
+
+
+    // ==========================================
+    // VALIDACIÓN NOMBRE
+    // ==========================================
+
     inputNombre.addEventListener("input", () => {
 
-      // Permitir solamente letras, espacios y tildes.
       inputNombre.value =
         inputNombre.value
-          .replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, "")
-          .replace(/\s{2,}/g, " ")
+          .replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s'-]/g, "")
+          .replace(/\s+/g, " ")
           .slice(0, 100);
 
       revisarListo();
@@ -544,43 +448,125 @@
     });
 
 
+    // ==========================================
+    // REVISAR FORMULARIO
+    // ==========================================
+
     function revisarListo() {
 
-      const nombreOk =
-        /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]+(?:\s+[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]+)+$/.test(
-          inputNombre.value.trim()
+      const dniOk =
+        /^[0-9]{8}$/.test(
+          inputDni.value.trim()
         );
 
-      btnEnviar.disabled =
-        !(nombreOk && areaElegida);
-
-    }
-
-
-    btnEnviar.addEventListener("click", async () => {
 
       const nombre =
         inputNombre.value.trim();
 
-      if (!nombre || !areaElegida) {
+
+      const nombreOk =
+        /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s'-]{3,100}$/.test(
+          nombre
+        ) &&
+        nombre.split(" ").filter(Boolean).length >= 2;
+
+
+      btnEnviar.disabled =
+        !(dniOk && nombreOk && areaElegida);
+
+    }
+
+
+    // ==========================================
+    // MOSTRAR ERROR
+    // ==========================================
+
+    function mostrarError(mensaje) {
+
+      errorDiv.textContent = mensaje;
+
+      errorDiv.style.display = "block";
+
+    }
+
+
+    function ocultarError() {
+
+      errorDiv.textContent = "";
+
+      errorDiv.style.display = "none";
+
+    }
+
+
+    // ==========================================
+    // ENVIAR REGISTRO
+    // ==========================================
+
+    btnEnviar.addEventListener("click", async () => {
+
+      ocultarError();
+
+      const dni =
+        inputDni.value.trim();
+
+      const nombre =
+        inputNombre.value.trim();
+
+
+      // Validación final
+
+      if (!/^[0-9]{8}$/.test(dni)) {
+
+        mostrarError(
+          "El DNI debe tener exactamente 8 números."
+        );
+
         return;
       }
 
 
+      if (
+        nombre.split(" ").filter(Boolean).length < 2
+      ) {
+
+        mostrarError(
+          "Ingrese sus nombres y apellidos."
+        );
+
+        return;
+      }
+
+
+      if (!areaElegida) {
+
+        mostrarError(
+          "Seleccione un área."
+        );
+
+        return;
+      }
+
+
+      // Desactivar botón
+
       btnEnviar.disabled = true;
-      btnEnviar.textContent = "Procesando...";
-      aviso.textContent = "";
+
+      btnEnviar.textContent =
+        "Registrando...";
 
 
       try {
 
-        const { error } =
-          await supabaseClient
-            .from("registros")
-            .insert({
-              nombre: nombre,
-              area: areaElegida
-            });
+        const {
+          error
+        } = await supabaseClient
+          .from("registros")
+          .insert({
+            dni: dni,
+            nombre: nombre,
+            area: areaElegida
+          });
 
 
         if (error) {
@@ -590,67 +576,37 @@
             error
           );
 
-          aviso.textContent =
-            "No se pudo registrar. Intente nuevamente.";
+          throw error;
 
-          btnEnviar.disabled = false;
-
-          btnEnviar.textContent =
-            "Registrar visita";
-
-          return;
         }
 
 
-        confNombre.textContent =
-          "Registro exitoso";
+        // ==========================================
+        // REGISTRO CORRECTO
+        // ==========================================
 
-        formulario.classList.add("oculto");
+        detalleRegistro.innerHTML =
+          `
+          <strong>${nombre}</strong><br>
+          DNI: ${dni}<br>
+          Área: ${areaElegida}
+          `;
 
-        confirmacion.classList.add("visible");
 
+        formulario.style.display =
+          "none";
 
-        setTimeout(() => {
-
-          inputNombre.value = "";
-
-          areaElegida = null;
-
-          document
-            .querySelectorAll(".area-btn")
-            .forEach((b) => {
-              b.classList.remove("activa");
-            });
-
-          btnEnviar.disabled = true;
-
-          btnEnviar.textContent =
-            "Registrar visita";
-
-          aviso.textContent = "";
-
-          confirmacion.classList.remove(
-            "visible"
-          );
-
-          formulario.classList.remove(
-            "oculto"
-          );
-
-          inputNombre.focus();
-
-        }, 4000);
+        mensajeExito.style.display =
+          "block";
 
 
       } catch (error) {
 
-        console.error(
-          "Error inesperado:",
-          error
-        );
+        console.error(error);
 
-        aviso.textContent =
-          "No se pudo conectar con el sistema. Intente nuevamente.";
+        mostrarError(
+          "No se pudo registrar la visita. Inténtelo nuevamente."
+        );
 
         btnEnviar.disabled = false;
 
@@ -661,13 +617,7 @@
 
     });
 
-
-    window.addEventListener("load", () => {
-      inputNombre.focus();
-    });
-
   </script>
 
 </body>
 </html>
-```
