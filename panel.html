@@ -204,6 +204,39 @@
       font-weight:600;
     }
 
+    /* =========================
+       FILTRO ADMIN
+    ========================= */
+
+    .filtro-admin{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-bottom:18px;
+    }
+
+    .filtro-area{
+      border:1px solid var(--linea);
+      background:var(--papel);
+      color:var(--musgo);
+      padding:9px 12px;
+      border-radius:8px;
+      font-size:.82rem;
+      font-weight:600;
+      cursor:pointer;
+      font-family:'Inter',sans-serif;
+    }
+
+    .filtro-area:hover{
+      border-color:var(--musgo);
+    }
+
+    .filtro-area.activo{
+      background:var(--musgo);
+      color:var(--papel);
+      border-color:var(--musgo);
+    }
+
     .lista{
       display:flex;
       flex-direction:column;
@@ -351,6 +384,16 @@
         font-size:1.6rem;
       }
 
+      .filtro-admin{
+        flex-wrap:nowrap;
+        overflow-x:auto;
+        padding-bottom:4px;
+      }
+
+      .filtro-area{
+        white-space:nowrap;
+      }
+
     }
 
   </style>
@@ -475,6 +518,61 @@
   </div>
 
 
+  <!-- ===================================================
+       FILTROS DEL ADMINISTRADOR
+  ==================================================== -->
+
+  <div
+    id="filtroAdmin"
+    class="filtro-admin"
+    style="display:none;"
+  >
+
+    <button
+      class="filtro-area activo"
+      data-area="TODAS"
+    >
+      Todas
+    </button>
+
+    <button
+      class="filtro-area"
+      data-area="Sección de delitos y faltas"
+    >
+      Sección de delitos y faltas
+    </button>
+
+    <button
+      class="filtro-area"
+      data-area="Familia"
+    >
+      Familia
+    </button>
+
+    <button
+      class="filtro-area"
+      data-area="Policía comunitaria"
+    >
+      Policía comunitaria
+    </button>
+
+    <button
+      class="filtro-area"
+      data-area="Secretaría"
+    >
+      Secretaría
+    </button>
+
+    <button
+      class="filtro-area"
+      data-area="Comisario"
+    >
+      Comisario
+    </button>
+
+  </div>
+
+
   <button
     id="btnNotificaciones"
     class="btn-notificaciones"
@@ -504,8 +602,8 @@
   const SUPABASE_URL =
     "https://cthpbxqwsjcgpdfqkdwr.supabase.co";
 
- const SUPABASE_ANON_KEY =
-  "sb_publishable_qTNkWQAQLrzS2-81BpeDeA_DFDCrVol";
+  const SUPABASE_ANON_KEY =
+    "sb_publishable_qTNkWQAQLrzS2-81BpeDeA_DFDCrVol";
 
 
   /* =====================================================
@@ -514,6 +612,19 @@
 
   const VAPID_PUBLIC_KEY =
     "BHG6sCGAQQmYuGMRmrJ4EYKd55Bzngbc7WQdJuFpjHgFzs-zbQYQeof-yerGrD_yjIqQijnzdvqySvrehpeZgUA";
+
+
+  /* =====================================================
+     ÁREAS
+  ===================================================== */
+
+  const AREAS = [
+    "Sección de delitos y faltas",
+    "Familia",
+    "Policía comunitaria",
+    "Secretaría",
+    "Comisario"
+  ];
 
 
   /* =====================================================
@@ -564,6 +675,9 @@
   const claveInput =
     document.getElementById("clave");
 
+  const filtroAdmin =
+    document.getElementById("filtroAdmin");
+
 
   /* =====================================================
      VARIABLES DEL USUARIO
@@ -572,6 +686,8 @@
   let miArea = null;
 
   let miRol = "usuario";
+
+  let areaFiltroAdmin = "TODAS";
 
   let canalRegistros = null;
 
@@ -973,6 +1089,9 @@
       miRol =
         perfil.rol || "usuario";
 
+      areaFiltroAdmin =
+        "TODAS";
+
 
       console.log(
         "Área del usuario:",
@@ -996,7 +1115,14 @@
           "Administrador";
 
         subtituloPanel.textContent =
-          "Vista administrativa: todos los registros de todas las áreas";
+          "Vista administrativa: selecciona un área para filtrar los registros.";
+
+        filtroAdmin.style.display =
+          "flex";
+
+        activarBotonFiltro(
+          "TODAS"
+        );
 
       }else{
 
@@ -1007,6 +1133,9 @@
 
         subtituloPanel.textContent =
           "Se actualiza automáticamente al llegar un nuevo registro";
+
+        filtroAdmin.style.display =
+          "none";
 
       }
 
@@ -1047,6 +1176,52 @@
         "No se pudo abrir el panel.";
 
     }
+
+  }
+
+
+  /* =====================================================
+     FILTROS ADMIN
+  ===================================================== */
+
+  document
+    .querySelectorAll(".filtro-area")
+    .forEach(boton => {
+
+      boton.addEventListener(
+        "click",
+        async () => {
+
+          const area =
+            boton.dataset.area;
+
+          areaFiltroAdmin =
+            area;
+
+          activarBotonFiltro(
+            area
+          );
+
+          await cargarRegistros();
+
+        }
+      );
+
+    });
+
+
+  function activarBotonFiltro(area){
+
+    document
+      .querySelectorAll(".filtro-area")
+      .forEach(boton => {
+
+        boton.classList.toggle(
+          "activo",
+          boton.dataset.area === area
+        );
+
+      });
 
   }
 
@@ -1340,14 +1515,29 @@
 
 
       /*
+        ADMIN:
+        TODAS = muestra todas las áreas.
+
+        Si selecciona un área:
+        solamente muestra esa área.
+
         USUARIO NORMAL:
         solamente su área.
-
-        ADMIN:
-        no se aplica filtro de área.
       */
 
-      if(miRol !== "admin"){
+      if(miRol === "admin"){
+
+        if(areaFiltroAdmin !== "TODAS"){
+
+          consulta =
+            consulta.eq(
+              "area",
+              areaFiltroAdmin
+            );
+
+        }
+
+      }else{
 
         consulta =
           consulta.eq(
@@ -1388,10 +1578,19 @@
         data.length === 0
       ){
 
-        lista.innerHTML =
-          miRol === "admin"
-            ? '<div class="vacio">Todavía no hay registros.</div>'
-            : '<div class="vacio">Todavía no hay registros para tu área.</div>';
+        if(miRol === "admin"){
+
+          lista.innerHTML =
+            areaFiltroAdmin === "TODAS"
+              ? '<div class="vacio">Todavía no hay registros.</div>'
+              : `<div class="vacio">Todavía no hay registros para ${escaparHTML(areaFiltroAdmin)}.</div>`;
+
+        }else{
+
+          lista.innerHTML =
+            '<div class="vacio">Todavía no hay registros para tu área.</div>';
+
+        }
 
         return;
 
@@ -1473,9 +1672,6 @@
 
 
             /*
-              ADMIN:
-              recibe cualquier área.
-
               USUARIO NORMAL:
               solamente recibe su área.
             */
@@ -1485,6 +1681,28 @@
               payload.new.area &&
               miArea &&
               payload.new.area !== miArea
+            ){
+
+              return;
+
+            }
+
+
+            /*
+              ADMIN:
+              si seleccionó un área,
+              solamente recibe registros
+              de esa área.
+
+              ADMIN:
+              si está en TODAS,
+              recibe cualquier área.
+            */
+
+            if(
+              miRol === "admin" &&
+              areaFiltroAdmin !== "TODAS" &&
+              payload.new.area !== areaFiltroAdmin
             ){
 
               return;
@@ -1664,6 +1882,19 @@
       }
 
 
+      /*
+        Para el administrador:
+        miArea debe ser TODAS.
+        Así recibe notificaciones de todas
+        las áreas mediante smooth-responder.
+      */
+
+      const areaSuscripcion =
+        miRol === "admin"
+          ? "TODAS"
+          : miArea;
+
+
       const {
         error
       } =
@@ -1673,7 +1904,7 @@
 
             usuario_id:user.id,
 
-            area:miArea,
+            area:areaSuscripcion,
 
             suscripcion:
               suscripcion.toJSON()
