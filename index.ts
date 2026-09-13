@@ -1,5 +1,3 @@
-
-
 import webpush from "npm:web-push@3.6.7";
 import { createClient } from "npm:@supabase/supabase-js@2";
 
@@ -34,7 +32,7 @@ Deno.serve(async (req) => {
 
     const mensaje = JSON.stringify({
       titulo: `Nuevo registro — ${registroNuevo.area}`,
-      cuerpo: `Documento ${registroNuevo.nombre} acaba de registrarse.`
+      cuerpo: `${registroNuevo.nombre} (DNI ${registroNuevo.dni}) acaba de registrarse.`
     });
 
     const resultados = await Promise.allSettled(
