@@ -259,10 +259,6 @@
       line-height: 1.4;
     }
 
-    /* ============================================================
-       PANTALLA DE CONFIRMACIÓN
-       ============================================================ */
-
     .confirmacion {
       display: none;
       text-align: center;
@@ -306,10 +302,6 @@
       line-height: 1.5;
     }
 
-    /* ============================================================
-       TABLETS
-       ============================================================ */
-
     @media (max-width: 800px) {
 
       .escena {
@@ -323,10 +315,6 @@
         margin: 20px 0;
       }
     }
-
-    /* ============================================================
-       CELULARES
-       ============================================================ */
 
     @media (max-width: 600px) {
 
@@ -445,10 +433,6 @@
       }
     }
 
-    /* ============================================================
-       CELULARES MUY PEQUEÑOS
-       ============================================================ */
-
     @media (max-width: 380px) {
 
       .escena {
@@ -508,8 +492,6 @@
 
     <div class="tarjeta">
 
-      <!-- FORMULARIO -->
-
       <div class="formulario" id="formulario">
 
         <div class="cabecera-institucional">
@@ -534,7 +516,6 @@
 
         </div>
 
-
         <div class="encabezado">
 
           <h1>Bienvenido</h1>
@@ -545,9 +526,6 @@
           </p>
 
         </div>
-
-
-        <!-- DNI -->
 
         <label for="dni">
           Documento de identidad (DNI)
@@ -563,9 +541,6 @@
           autocomplete="off"
         >
 
-
-        <!-- NOMBRES Y APELLIDOS -->
-
         <label for="nombre">
           Nombres y apellidos
         </label>
@@ -578,9 +553,6 @@
           autocomplete="name"
         >
 
-
-        <!-- ÁREA -->
-
         <label>
           Área que desea visitar
         </label>
@@ -590,7 +562,6 @@
           id="areas"
         ></div>
 
-
         <button
           class="enviar"
           id="btnEnviar"
@@ -599,7 +570,6 @@
           Registrar visita
         </button>
 
-
         <div
           class="aviso"
           id="aviso"
@@ -607,9 +577,6 @@
         ></div>
 
       </div>
-
-
-      <!-- CONFIRMACIÓN -->
 
       <div
         class="confirmacion"
@@ -646,23 +613,13 @@
 
   </div>
 
-
   <script>
-
-    // ============================================================
-    // CONFIGURACIÓN SUPABASE
-    // ============================================================
 
     const SUPABASE_URL =
       "https://cthpbxqwsjcgpdfqkdwr.supabase.co";
 
     const SUPABASE_ANON_KEY =
       "sb_publishable_qTNkWQAQLrzS2-81BpeDeA_DFDCrVol";
-
-
-    // ============================================================
-    // ÁREAS
-    // ============================================================
 
     const AREAS = [
       "Sección de delitos y faltas",
@@ -672,21 +629,11 @@
       "Comisario"
     ];
 
-
-    // ============================================================
-    // CLIENTE SUPABASE
-    // ============================================================
-
     const supabaseClient =
       window.supabase.createClient(
         SUPABASE_URL,
         SUPABASE_ANON_KEY
       );
-
-
-    // ============================================================
-    // ELEMENTOS
-    // ============================================================
 
     const contenedorAreas =
       document.getElementById("areas");
@@ -712,13 +659,7 @@
     const confNombre =
       document.getElementById("confNombre");
 
-
     let areaElegida = null;
-
-
-    // ============================================================
-    // CREAR BOTONES DE ÁREAS
-    // ============================================================
 
     AREAS.forEach((area) => {
 
@@ -731,11 +672,9 @@
 
       btn.textContent = area;
 
-
       btn.addEventListener("click", () => {
 
         areaElegida = area;
-
 
         document
           .querySelectorAll(".area-btn")
@@ -743,22 +682,15 @@
             b.classList.remove("activa");
           });
 
-
         btn.classList.add("activa");
 
         revisarListo();
 
       });
 
-
       contenedorAreas.appendChild(btn);
 
     });
-
-
-    // ============================================================
-    // DNI
-    // ============================================================
 
     inputDni.addEventListener("input", () => {
 
@@ -770,11 +702,6 @@
       revisarListo();
 
     });
-
-
-    // ============================================================
-    // NOMBRES Y APELLIDOS
-    // ============================================================
 
     inputNombre.addEventListener("input", () => {
 
@@ -788,11 +715,6 @@
 
     });
 
-
-    // ============================================================
-    // VALIDAR FORMULARIO
-    // ============================================================
-
     function revisarListo() {
 
       const dni =
@@ -801,25 +723,17 @@
       const nombre =
         inputNombre.value.trim();
 
-
       const dniOk =
         /^[0-9]{8}$/.test(dni);
-
 
       const nombreOk =
         /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s'-]{3,100}$/.test(nombre) &&
         nombre.split(/\s+/).filter(Boolean).length >= 2;
 
-
       btnEnviar.disabled =
         !(dniOk && nombreOk && areaElegida);
 
     }
-
-
-    // ============================================================
-    // ENVIAR REGISTRO
-    // ============================================================
 
     btnEnviar.addEventListener("click", async () => {
 
@@ -829,7 +743,6 @@
       const nombre =
         inputNombre.value.trim();
 
-
       if (!/^[0-9]{8}$/.test(dni)) {
 
         aviso.textContent =
@@ -838,7 +751,6 @@
         return;
 
       }
-
 
       if (
         !nombre ||
@@ -852,7 +764,6 @@
 
       }
 
-
       if (!areaElegida) {
 
         aviso.textContent =
@@ -862,7 +773,6 @@
 
       }
 
-
       btnEnviar.disabled = true;
 
       btnEnviar.textContent =
@@ -870,12 +780,7 @@
 
       aviso.textContent = "";
 
-
       try {
-
-        // ========================================================
-        // INSERTAR EN SUPABASE
-        // ========================================================
 
         const { error } =
           await supabaseClient
@@ -885,7 +790,6 @@
               nombre: nombre,
               area: areaElegida
             });
-
 
         if (error) {
 
@@ -906,23 +810,12 @@
 
         }
 
-
-        // ========================================================
-        // REGISTRO EXITOSO
-        // ========================================================
-
         confNombre.textContent =
           "Registro exitoso";
-
 
         formulario.classList.add("oculto");
 
         confirmacion.classList.add("visible");
-
-
-        // ========================================================
-        // REINICIAR DESPUÉS DE 4 SEGUNDOS
-        // ========================================================
 
         setTimeout(() => {
 
@@ -932,13 +825,11 @@
 
           areaElegida = null;
 
-
           document
             .querySelectorAll(".area-btn")
             .forEach((b) => {
               b.classList.remove("activa");
             });
-
 
           btnEnviar.disabled = true;
 
@@ -946,7 +837,6 @@
             "Registrar visita";
 
           aviso.textContent = "";
-
 
           confirmacion.classList.remove(
             "visible"
@@ -956,18 +846,14 @@
             "oculto"
           );
 
-
           inputDni.focus();
 
-
-          // Volver al inicio de la página
           window.scrollTo({
             top: 0,
             behavior: "smooth"
           });
 
         }, 4000);
-
 
       } catch (error) {
 
@@ -987,11 +873,6 @@
       }
 
     });
-
-
-    // ============================================================
-    // AL CARGAR LA PÁGINA
-    // ============================================================
 
     window.addEventListener("load", () => {
 
