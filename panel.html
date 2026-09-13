@@ -256,6 +256,47 @@
     }
 
     /* =========================
+       DESCARGA ADMIN
+    ========================= */
+
+    .descarga-admin{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-bottom:18px;
+    }
+
+    .descarga-admin input[type=date]{
+      flex:1;
+      min-width:150px;
+      padding:10px 12px;
+      border-radius:8px;
+      border:1px solid var(--linea);
+      background:var(--papel);
+      color:var(--tinta);
+      font-family:'Inter',sans-serif;
+      font-size:.85rem;
+    }
+
+    .descarga-admin button{
+      padding:10px 16px;
+      border-radius:8px;
+      border:none;
+      background:var(--cobre);
+      color:#fff;
+      font-weight:700;
+      font-size:.85rem;
+      cursor:pointer;
+      font-family:'Inter',sans-serif;
+      white-space:nowrap;
+    }
+
+    .descarga-admin button:disabled{
+      opacity:.5;
+      cursor:not-allowed;
+    }
+
+    /* =========================
        LISTA
     ========================= */
 
@@ -752,6 +793,28 @@
   </div>
 
 
+  <!-- ===================================================
+       DESCARGA POR DÍA (SOLO ADMIN)
+  ==================================================== -->
+
+  <div
+    id="descargaAdmin"
+    class="descarga-admin"
+    style="display:none;"
+  >
+
+    <input
+      type="date"
+      id="fechaDescarga"
+    >
+
+    <button id="btnDescargar">
+      ⬇ Descargar registros del día
+    </button>
+
+  </div>
+
+
   <button
     id="btnNotificaciones"
     class="btn-notificaciones"
@@ -856,6 +919,9 @@ const SUPABASE_ANON_KEY =
 
   const filtroAdmin =
     document.getElementById("filtroAdmin");
+
+  const descargaAdmin =
+    document.getElementById("descargaAdmin");
 
 
   /* =====================================================
@@ -1299,6 +1365,9 @@ const SUPABASE_ANON_KEY =
         filtroAdmin.style.display =
           "flex";
 
+        descargaAdmin.style.display =
+          "flex";
+
         activarBotonFiltro(
           "TODAS"
         );
@@ -1314,6 +1383,9 @@ const SUPABASE_ANON_KEY =
           "Se actualiza automáticamente al llegar un nuevo registro";
 
         filtroAdmin.style.display =
+          "none";
+
+        descargaAdmin.style.display =
           "none";
 
       }
@@ -2142,10 +2214,7 @@ const SUPABASE_ANON_KEY =
   }
 
 
-  /* =====================================================
-     NOTIFICACIONES
-  ===================================================== */
-
+  
   btnNotificaciones.addEventListener(
     "click",
     activarNotificaciones
@@ -2324,10 +2393,6 @@ const SUPABASE_ANON_KEY =
   }
 
 
-  /* =====================================================
-     CONVERSIÓN VAPID
-  ===================================================== */
-
   function urlBase64AUint8Array(
     base64String
   ){
@@ -2368,10 +2433,174 @@ const SUPABASE_ANON_KEY =
   }
 
 
-  /* =====================================================
-     INICIAR SISTEMA
-  ===================================================== */
 
+  const inputFechaDescarga =
+    document.getElementById("fechaDescarga");
+
+  const btnDescargar =
+    document.getElementById("btnDescargar");
+
+  if(inputFechaDescarga){
+
+    inputFechaDescarga.value =
+      new Date().toISOString().slice(0, 10);
+
+  }
+
+  if(btnDescargar){
+
+    btnDescargar.addEventListener(
+      "click",
+      async () => {
+
+        if(miRol !== "admin"){
+
+          alert(
+            "Solo el administrador puede descargar registros."
+          );
+
+          return;
+
+        }
+
+
+        const fecha =
+          inputFechaDescarga.value;
+
+        if(!fecha){
+
+          alert(
+            "Selecciona una fecha primero."
+          );
+
+          return;
+
+        }
+
+
+        btnDescargar.disabled = true;
+
+        btnDescargar.textContent =
+          "Generando...";
+
+
+      
+        const inicioDia =
+          `${fecha}T00:00:00-05:00`;
+
+        const finDia =
+          `${fecha}T23:59:59-05:00`;
+
+
+        let consulta =
+          supabaseClient
+            .from("registros")
+            .select("dni, nombre, area, creado_en, atendido")
+            .gte("creado_en", inicioDia)
+            .lte("creado_en", finDia)
+            .order("area", { ascending:true })
+            .order("creado_en", { ascending:true });
+
+        if(areaFiltroAdmin !== "TODAS"){
+
+          consulta =
+            consulta.eq(
+              "area",
+              areaFiltroAdmin
+            );
+
+        }
+
+
+        const { data, error } =
+          await consulta;
+
+
+        btnDescargar.disabled = false;
+
+        btnDescargar.textContent =
+          "⬇ Descargar registros del día";
+
+
+        if(error){
+
+          console.error(
+            "Error generando CSV:",
+            error
+          );
+
+          alert(
+            "No se pudo generar el archivo. Intenta de nuevo."
+          );
+
+          return;
+
+        }
+
+
+        if(!data || data.length === 0){
+
+          alert(
+            "No hay registros para esa fecha (con el filtro elegido)."
+          );
+
+          return;
+
+        }
+
+
+        const encabezados =
+          ["DNI", "Nombre completo", "Área", "Fecha y hora", "Atendido"];
+
+        const filas =
+          data.map((r) => [
+            `="${r.dni}"`,   // el ="..." obliga a Excel a tratarlo como texto, no número
+            r.nombre,
+            r.area,
+            new Date(r.creado_en).toLocaleString("es-PE"),
+            r.atendido ? "Sí" : "No"
+          ]);
+
+        const csv =
+          [encabezados, ...filas]
+            .map((fila) =>
+              fila
+                .map((campo) => `"${String(campo).replace(/"/g, '""')}"`)
+                .join(",")
+            )
+            .join("\n");
+
+        // El BOM evita que Excel muestre mal las tildes/ñ
+        const blob =
+          new Blob(["\uFEFF" + csv], { type:"text/csv;charset=utf-8;" });
+
+        const url =
+          URL.createObjectURL(blob);
+
+        const nombreArea =
+          areaFiltroAdmin === "TODAS"
+            ? "TODAS_LAS_AREAS"
+            : areaFiltroAdmin.replace(/\s+/g, "_");
+
+        const enlace =
+          document.createElement("a");
+
+        enlace.href = url;
+
+        enlace.download =
+          `registros_${nombreArea}_${fecha}.csv`;
+
+        enlace.click();
+
+        URL.revokeObjectURL(url);
+
+      }
+    );
+
+  }
+
+
+  
   iniciar();
 
 </script>
