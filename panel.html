@@ -853,12 +853,12 @@
       Todas
     </button>
 
-    <button
-      class="filtro-area"
-      data-area="Sección de delitos y faltas"
-    >
-      Sección de delitos y faltas
-    </button>
+  <button
+  class="filtro-area"
+  data-area="Sección de Delitos, Faltas y Tránsito"
+  >
+  Sección de Delitos, Faltas y Tránsito
+  </button>
 
     <button
       class="filtro-area"
@@ -887,7 +887,12 @@
     >
       Comisario
     </button>
-
+<button
+  class="filtro-area"
+  data-area="Copias certificadas y medidas de protección"
+>
+  Copias certificadas y medidas de protección
+</button>
   </div>
 
   <div
@@ -1005,13 +1010,14 @@ const SUPABASE_ANON_KEY =
   const VAPID_PUBLIC_KEY =
     "BHG6sCGAQQmYuGMRmrJ4EYKd55Bzngbc7WQdJuFpjHgFzs-zbQYQeof-yerGrD_yjIqQijnzdvqySvrehpeZgUA";
 
-  const AREAS = [
-    "Sección de delitos y faltas",
-    "Familia",
-    "Policía comunitaria",
-    "Secretaría",
-    "Comisario"
-  ];
+ const AREAS = [
+  "Sección de Delitos, Faltas y Tránsito",
+  "Familia",
+  "Policía comunitaria",
+  "Secretaría",
+  "Comisario",
+  "Copias certificadas y medidas de protección"
+];
 
   const supabaseClient =
     window.supabase.createClient(
