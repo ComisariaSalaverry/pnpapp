@@ -226,6 +226,58 @@
       color: var(--papel);
     }
 
+    .nacionalidad-toggle {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .nac-btn {
+      flex: 1;
+      padding: 14px 12px;
+      border-radius: 12px;
+      border: 2px solid var(--linea);
+      background: var(--lino);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--musgo);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .nac-btn:active {
+      transform: scale(0.97);
+    }
+
+    .nac-btn.activa {
+      background: var(--musgo);
+      border-color: var(--musgo);
+      color: var(--papel);
+    }
+
+    .fila-celular {
+      display: flex;
+      gap: 8px;
+    }
+
+    .fila-celular select {
+      flex: 0 0 auto;
+      width: 130px;
+      padding: 12px 8px;
+      border-radius: 12px;
+      border: 2px solid var(--linea);
+      background: var(--lino);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      color: var(--tinta);
+    }
+
+    .fila-celular input {
+      flex: 1;
+      min-width: 0;
+    }
+
     .enviar {
       width: 100%;
       margin-top: 36px;
@@ -527,7 +579,33 @@
 
         </div>
 
-        <label for="dni">
+        <label>
+          Nacionalidad
+        </label>
+
+        <div class="nacionalidad-toggle">
+
+          <button
+            type="button"
+            class="nac-btn activa"
+            id="btnPeruano"
+            data-valor="Peruana"
+          >
+            Peruano
+          </button>
+
+          <button
+            type="button"
+            class="nac-btn"
+            id="btnExtranjero"
+            data-valor="Extranjera"
+          >
+            Extranjero
+          </button>
+
+        </div>
+
+        <label for="dni" id="labelDni">
           Documento de identidad (DNI)
         </label>
 
@@ -537,7 +615,7 @@
           inputmode="numeric"
           pattern="[0-9]*"
           maxlength="8"
-          placeholder="Ej. 12345678"
+          placeholder="12345678"
           autocomplete="off"
         >
 
@@ -549,9 +627,52 @@
           type="text"
           id="nombre"
           maxlength="100"
-          placeholder="Ej. Juan Carlos Pérez García"
+          placeholder="Juan Carlos Pérez García"
           autocomplete="name"
         >
+
+        <label for="celular">
+          Número de celular
+        </label>
+
+        <div class="fila-celular">
+
+          <select id="prefijoCelular">
+            <option value="+51" selected>🇵🇪 +51 Perú</option>
+            <option value="+54">🇦🇷 +54 Argentina</option>
+            <option value="+591">🇧🇴 +591 Bolivia</option>
+            <option value="+55">🇧🇷 +55 Brasil</option>
+            <option value="+56">🇨🇱 +56 Chile</option>
+            <option value="+57">🇨🇴 +57 Colombia</option>
+            <option value="+593">🇪🇨 +593 Ecuador</option>
+            <option value="+34">🇪🇸 +34 España</option>
+            <option value="+1">🇺🇸 +1 EE. UU. / Canadá</option>
+            <option value="+52">🇲🇽 +52 México</option>
+            <option value="+595">🇵🇾 +595 Paraguay</option>
+            <option value="+598">🇺🇾 +598 Uruguay</option>
+            <option value="+58">🇻🇪 +58 Venezuela</option>
+            <option value="otro">🌐 Otro país</option>
+          </select>
+
+          <input
+            type="text"
+            id="prefijoPersonalizado"
+            placeholder="+000"
+            maxlength="5"
+            style="display:none; width:70px; flex:0 0 auto;"
+          >
+
+          <input
+            type="text"
+            id="celular"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            maxlength="9"
+            placeholder="987654321"
+            autocomplete="tel"
+          >
+
+        </div>
 
         <label>
           Área que desea visitar
@@ -641,8 +762,28 @@
     const inputDni =
       document.getElementById("dni");
 
+    const labelDni =
+      document.getElementById("labelDni");
+
+    const btnPeruano =
+      document.getElementById("btnPeruano");
+
+    const btnExtranjero =
+      document.getElementById("btnExtranjero");
+
+    let nacionalidad = "Peruana";
+
     const inputNombre =
       document.getElementById("nombre");
+
+    const inputCelular =
+      document.getElementById("celular");
+
+    const selectPrefijo =
+      document.getElementById("prefijoCelular");
+
+    const inputPrefijoPersonalizado =
+      document.getElementById("prefijoPersonalizado");
 
     const btnEnviar =
       document.getElementById("btnEnviar");
@@ -692,12 +833,61 @@
 
     });
 
+    function seleccionarNacionalidad(valor) {
+
+      nacionalidad = valor;
+
+      btnPeruano.classList.toggle("activa", valor === "Peruana");
+      btnExtranjero.classList.toggle("activa", valor === "Extranjera");
+
+      inputDni.value = "";
+
+      if (valor === "Peruana") {
+
+        labelDni.textContent = "Documento de identidad (DNI)";
+        inputDni.placeholder = "Ej. 12345678";
+        inputDni.setAttribute("inputmode", "numeric");
+        inputDni.setAttribute("maxlength", "8");
+
+      } else {
+
+        labelDni.textContent = "Documento de identidad (CE / Pasaporte)";
+        inputDni.placeholder = "Ej. AB1234567";
+        inputDni.setAttribute("inputmode", "text");
+        inputDni.setAttribute("maxlength", "15");
+
+      }
+
+      revisarListo();
+
+    }
+
+    btnPeruano.addEventListener("click", () => {
+      seleccionarNacionalidad("Peruana");
+    });
+
+    btnExtranjero.addEventListener("click", () => {
+      seleccionarNacionalidad("Extranjera");
+    });
+
     inputDni.addEventListener("input", () => {
 
-      inputDni.value =
-        inputDni.value
-          .replace(/\D/g, "")
-          .slice(0, 8);
+      if (nacionalidad === "Peruana") {
+
+        inputDni.value =
+          inputDni.value
+            .replace(/\D/g, "")
+            .slice(0, 8);
+
+      } else {
+
+        inputDni.value =
+          inputDni.value
+            .replace(/[^a-zA-Z0-9]/g, "")
+            .toUpperCase()
+            .slice(0, 15);
+
+      }
 
       revisarListo();
 
@@ -715,6 +905,74 @@
 
     });
 
+    function actualizarLongitudCelular() {
+
+      const prefijo = obtenerPrefijo();
+      const maxDigitos = prefijo === "+51" ? 9 : 12;
+
+      inputCelular.setAttribute("maxlength", String(maxDigitos));
+      inputCelular.value = inputCelular.value.slice(0, maxDigitos);
+
+    }
+
+    inputCelular.addEventListener("input", () => {
+
+      const prefijo = obtenerPrefijo();
+      const maxDigitos = prefijo === "+51" ? 9 : 12;
+
+      inputCelular.value =
+        inputCelular.value
+          .replace(/\D/g, "")
+          .slice(0, maxDigitos);
+
+      revisarListo();
+
+    });
+
+    selectPrefijo.addEventListener("change", () => {
+
+      if (selectPrefijo.value === "otro") {
+
+        inputPrefijoPersonalizado.style.display = "block";
+        inputPrefijoPersonalizado.value = "+";
+        inputPrefijoPersonalizado.focus();
+
+      } else {
+
+        inputPrefijoPersonalizado.style.display = "none";
+        inputPrefijoPersonalizado.value = "";
+
+      }
+
+      actualizarLongitudCelular();
+      revisarListo();
+
+    });
+
+    inputPrefijoPersonalizado.addEventListener("input", () => {
+
+      let valor =
+        inputPrefijoPersonalizado.value.replace(/[^0-9+]/g, "");
+
+      if (!valor.startsWith("+")) valor = "+" + valor.replace(/\+/g, "");
+
+      inputPrefijoPersonalizado.value = valor.slice(0, 5);
+
+      actualizarLongitudCelular();
+      revisarListo();
+
+    });
+
+    function obtenerPrefijo() {
+
+      if (selectPrefijo.value === "otro") {
+        return inputPrefijoPersonalizado.value.trim();
+      }
+
+      return selectPrefijo.value;
+
+    }
+
     function revisarListo() {
 
       const dni =
@@ -723,15 +981,31 @@
       const nombre =
         inputNombre.value.trim();
 
+      const celular =
+        inputCelular.value.trim();
+
       const dniOk =
-        /^[0-9]{8}$/.test(dni);
+        nacionalidad === "Peruana"
+          ? /^[0-9]{8}$/.test(dni)
+          : /^[a-zA-Z0-9]{5,15}$/.test(dni);
 
       const nombreOk =
         /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s'-]{3,100}$/.test(nombre) &&
         nombre.split(/\s+/).filter(Boolean).length >= 2;
 
+      const prefijo =
+        obtenerPrefijo();
+
+      const prefijoOk =
+        /^\+[0-9]{1,4}$/.test(prefijo);
+
+      const celularOk =
+        prefijo === "+51"
+          ? /^9[0-9]{8}$/.test(celular)
+          : /^[0-9]{6,12}$/.test(celular);
+
       btnEnviar.disabled =
-        !(dniOk && nombreOk && areaElegida);
+        !(dniOk && nombreOk && celularOk && prefijoOk && areaElegida);
 
     }
 
@@ -743,10 +1017,20 @@
       const nombre =
         inputNombre.value.trim();
 
-      if (!/^[0-9]{8}$/.test(dni)) {
+      const celular =
+        inputCelular.value.trim();
+
+      const dniValidoAlEnviar =
+        nacionalidad === "Peruana"
+          ? /^[0-9]{8}$/.test(dni)
+          : /^[a-zA-Z0-9]{5,15}$/.test(dni);
+
+      if (!dniValidoAlEnviar) {
 
         aviso.textContent =
-          "Ingrese un DNI válido de 8 números.";
+          nacionalidad === "Peruana"
+            ? "Ingrese un DNI válido de 8 números."
+            : "Ingrese un documento válido (5 a 15 caracteres).";
 
         return;
 
@@ -759,6 +1043,34 @@
 
         aviso.textContent =
           "Ingrese sus nombres y apellidos.";
+
+        return;
+
+      }
+
+      const prefijo =
+        obtenerPrefijo();
+
+      if (!/^\+[0-9]{1,4}$/.test(prefijo)) {
+
+        aviso.textContent =
+          "Ingrese un código de país válido (ej. +51).";
+
+        return;
+
+      }
+
+      const celularValidoAlEnviar =
+        prefijo === "+51"
+          ? /^9[0-9]{8}$/.test(celular)
+          : /^[0-9]{6,12}$/.test(celular);
+
+      if (!celularValidoAlEnviar) {
+
+        aviso.textContent =
+          prefijo === "+51"
+            ? "Ingrese un número de celular válido (9 dígitos, empieza con 9)."
+            : "Ingrese un número de celular válido (6 a 12 dígitos).";
 
         return;
 
@@ -788,7 +1100,10 @@
             .insert({
               dni: dni,
               nombre: nombre,
-              area: areaElegida
+              celular: celular,
+              prefijo_celular: prefijo,
+              area: areaElegida,
+              nacionalidad: nacionalidad
             });
 
         if (error) {
@@ -822,6 +1137,15 @@
           inputDni.value = "";
 
           inputNombre.value = "";
+
+          inputCelular.value = "";
+
+          selectPrefijo.value = "+51";
+          inputPrefijoPersonalizado.style.display = "none";
+          inputPrefijoPersonalizado.value = "";
+          actualizarLongitudCelular();
+
+          seleccionarNacionalidad("Peruana");
 
           areaElegida = null;
 
