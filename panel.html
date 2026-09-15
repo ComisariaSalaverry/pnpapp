@@ -7,7 +7,7 @@
   <title>Panel de registros - Comisaría Salaverry</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
-
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600;700&display=swap"
     rel="stylesheet"
@@ -16,25 +16,23 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-
     :root{
       --tinta:#0d1f14;
       --musgo:#0b3d24;
       --lino:#f2f1ec;
-      --papel:#ffffff;
+      --papel:#fff;
       --cobre:#97781a;
       --linea:#d6d3c4;
       --verde:#3c7a56;
       --dorado:#c9a227;
+      --rojo:#a13a2a;
+      --azul:#365d85;
     }
 
-    *{
-      box-sizing:border-box;
-    }
+    *{box-sizing:border-box}
 
     html{
       min-height:100%;
-      height:auto;
       overflow-x:hidden;
       overflow-y:auto;
     }
@@ -42,18 +40,20 @@
     body{
       margin:0;
       min-height:100vh;
-      height:auto;
       background:var(--lino);
-      font-family:'Inter',sans-serif;
       color:var(--tinta);
+      font-family:'Inter',sans-serif;
       overflow-x:hidden;
       overflow-y:auto;
       -webkit-overflow-scrolling:touch;
     }
 
+    button,input,textarea,select{
+      font-family:'Inter',sans-serif;
+    }
+
     #vistaLogin{
       min-height:100vh;
-      height:auto;
       display:flex;
       align-items:center;
       justify-content:center;
@@ -67,67 +67,20 @@
       border:1px solid var(--linea);
       border-radius:20px;
       padding:40px 32px;
-      box-shadow:0 20px 40px rgba(20,38,31,0.1);
+      box-shadow:0 20px 40px rgba(20,38,31,.1);
     }
 
-    .caja-login h1{
-      font-family:'Fraunces',serif;
-      font-size:1.7rem;
-      margin:0 0 6px 0;
+    .cabecera-institucional-login,
+    .cabecera-institucional{
+      display:flex;
+      align-items:center;
+      gap:14px;
     }
 
-    .caja-login p{
-      margin:0 0 28px 0;
-      color:#5c6b63;
-      font-size:0.95rem;
-    }
-
-    .caja-login label{
-      display:block;
-      font-weight:600;
-      font-size:0.85rem;
-      margin:16px 0 6px 0;
-      color:var(--musgo);
-    }
-
-    .caja-login input{
-      width:100%;
-      padding:13px 14px;
-      border-radius:10px;
-      border:2px solid var(--linea);
-      background:var(--lino);
-      font-size:1rem;
-      font-family:'Inter',sans-serif;
-      outline:none;
-    }
-
-    .caja-login input:focus{
-      border-color:var(--musgo);
-    }
-
-    .caja-login button{
-      width:100%;
-      margin-top:22px;
-      padding:14px;
-      background:var(--musgo);
-      color:var(--papel);
-      border:none;
-      border-radius:10px;
-      font-weight:700;
-      font-size:1rem;
-      cursor:pointer;
-    }
-
-    .caja-login button:disabled{
-      opacity:.7;
-      cursor:not-allowed;
-    }
-
-    .error-login{
-      color:#a13a2a;
-      font-size:.88rem;
-      margin-top:14px;
-      min-height:18px;
+    .cabecera-institucional-login{
+      margin-bottom:24px;
+      padding-bottom:18px;
+      border-bottom:2px solid var(--dorado);
     }
 
     .logo-institucional{
@@ -137,26 +90,9 @@
       flex-shrink:0;
     }
 
-    .cabecera-institucional-login{
-      display:flex;
-      align-items:center;
-      gap:14px;
-      margin-bottom:24px;
-      padding-bottom:18px;
-      border-bottom:2px solid var(--dorado);
-    }
-
-    .cabecera-institucional{
-      display:flex;
-      align-items:center;
-      gap:14px;
-      min-width:0;
-    }
-
     .texto-institucional .linea1{
       font-size:.75rem;
       font-weight:700;
-      letter-spacing:.02em;
       color:var(--musgo);
       text-transform:uppercase;
     }
@@ -166,24 +102,88 @@
       color:#5c6b63;
     }
 
+    .caja-login h1{
+      font-family:'Fraunces',serif;
+      font-size:1.7rem;
+      margin:0 0 6px;
+    }
+
+    .caja-login p{
+      margin:0 0 28px;
+      color:#5c6b63;
+      font-size:.95rem;
+    }
+
+    .caja-login label,
+    .caja-modal label{
+      display:block;
+      font-weight:600;
+      font-size:.85rem;
+      margin:16px 0 6px;
+      color:var(--musgo);
+    }
+
+    .caja-login input,
+    .editable-input,
+    .caja-modal input,
+    .caja-modal textarea{
+      width:100%;
+      padding:12px 13px;
+      border-radius:10px;
+      border:2px solid var(--linea);
+      background:var(--lino);
+      color:var(--tinta);
+      font-size:.95rem;
+      outline:none;
+    }
+
+    .caja-login input:focus,
+    .editable-input:focus,
+    .caja-modal input:focus,
+    .caja-modal textarea:focus{
+      border-color:var(--musgo);
+    }
+
+    .caja-login button{
+      width:100%;
+      margin-top:22px;
+      padding:14px;
+      background:var(--musgo);
+      color:#fff;
+      border:0;
+      border-radius:10px;
+      font-weight:700;
+      font-size:1rem;
+      cursor:pointer;
+    }
+
+    .caja-login button:disabled{
+      opacity:.7;
+    }
+
+    .error-login{
+      color:var(--rojo);
+      font-size:.88rem;
+      margin-top:14px;
+      min-height:18px;
+    }
+
     #vistaPanel{
       display:none;
       width:100%;
-      max-width:840px;
+      max-width:900px;
       margin:0 auto;
-      padding:36px 24px 60px 24px;
+      padding:32px 24px 70px;
       min-height:100vh;
-      height:auto;
-      overflow:visible;
     }
 
     .cabecera{
       display:flex;
       align-items:center;
       justify-content:space-between;
-      margin-bottom:28px;
-      flex-wrap:wrap;
       gap:14px;
+      flex-wrap:wrap;
+      margin-bottom:22px;
     }
 
     .cabecera h1{
@@ -192,50 +192,69 @@
       margin:0;
     }
 
-    .cabecera .sub{
+    .sub{
       color:#5c6b63;
       font-size:.9rem;
+      margin-top:3px;
     }
 
     .salir{
-      background:none;
+      background:#fff;
       border:1px solid var(--linea);
       color:var(--musgo);
-      padding:8px 14px;
+      padding:9px 14px;
       border-radius:8px;
-      font-size:.85rem;
-      cursor:pointer;
       font-weight:600;
-      flex-shrink:0;
+      cursor:pointer;
     }
 
     .filtro-admin{
       display:flex;
-      flex-wrap:wrap;
       gap:8px;
       margin-bottom:18px;
+      overflow-x:auto;
+      padding-bottom:5px;
+      -webkit-overflow-scrolling:touch;
     }
 
     .filtro-area{
+      flex-shrink:0;
       border:1px solid var(--linea);
-      background:var(--papel);
+      background:#fff;
       color:var(--musgo);
       padding:9px 12px;
       border-radius:8px;
       font-size:.82rem;
       font-weight:600;
       cursor:pointer;
-      font-family:'Inter',sans-serif;
-    }
-
-    .filtro-area:hover{
-      border-color:var(--musgo);
     }
 
     .filtro-area.activo{
       background:var(--musgo);
-      color:var(--papel);
+      color:#fff;
       border-color:var(--musgo);
+    }
+
+    .pestanas{
+      display:flex;
+      gap:8px;
+      margin-bottom:18px;
+    }
+
+    .pestana{
+      flex:1;
+      border:1px solid var(--linea);
+      background:#fff;
+      color:var(--musgo);
+      padding:12px;
+      border-radius:10px;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .pestana.activa{
+      background:var(--musgo);
+      color:#fff;
     }
 
     .descarga-admin{
@@ -245,34 +264,23 @@
       margin-bottom:18px;
     }
 
-    .descarga-admin input[type=date]{
+    .descarga-admin input{
       flex:1;
-      min-width:150px;
-      padding:10px 12px;
-      border-radius:8px;
+      min-width:140px;
+      padding:10px;
       border:1px solid var(--linea);
-      background:var(--papel);
-      color:var(--tinta);
-      font-family:'Inter',sans-serif;
-      font-size:.85rem;
+      border-radius:8px;
+      background:#fff;
     }
 
     .descarga-admin button{
       padding:10px 16px;
+      border:0;
       border-radius:8px;
-      border:none;
       background:var(--cobre);
       color:#fff;
       font-weight:700;
-      font-size:.85rem;
       cursor:pointer;
-      font-family:'Inter',sans-serif;
-      white-space:nowrap;
-    }
-
-    .descarga-admin button:disabled{
-      opacity:.5;
-      cursor:not-allowed;
     }
 
     .buscador{
@@ -282,35 +290,48 @@
       margin-bottom:18px;
     }
 
-    .buscador input[type=text]{
+    .buscador input{
       flex:1;
-      min-width:150px;
-      padding:10px 12px;
-      border-radius:8px;
+      min-width:160px;
+      padding:11px 12px;
       border:1px solid var(--linea);
-      background:var(--papel);
-      color:var(--tinta);
-      font-family:'Inter',sans-serif;
-      font-size:.85rem;
+      border-radius:8px;
+      background:#fff;
+      outline:none;
     }
 
     .buscador button{
       padding:10px 16px;
+      border:0;
       border-radius:8px;
-      border:none;
       background:var(--musgo);
       color:#fff;
       font-weight:700;
-      font-size:.85rem;
       cursor:pointer;
-      font-family:'Inter',sans-serif;
-      white-space:nowrap;
     }
 
     #btnLimpiarBusqueda{
       background:var(--lino);
       color:var(--musgo);
       border:1px solid var(--linea);
+    }
+
+    .btn-notificaciones{
+      width:100%;
+      margin-bottom:18px;
+      padding:13px;
+      border-radius:12px;
+      border:2px solid var(--musgo);
+      background:#fff;
+      color:var(--musgo);
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .btn-notificaciones.activo{
+      background:var(--musgo);
+      color:#fff;
+      cursor:default;
     }
 
     .lista{
@@ -322,14 +343,14 @@
 
     .fila{
       width:100%;
-      background:var(--papel);
+      background:#fff;
       border:1px solid var(--linea);
       border-radius:14px;
       padding:16px 18px;
       display:flex;
-      align-items:center;
+      align-items:flex-start;
       justify-content:space-between;
-      gap:12px;
+      gap:14px;
     }
 
     .fila.nueva{
@@ -337,17 +358,14 @@
     }
 
     @keyframes resaltar{
-
       0%{
         background:#fdf0e4;
         border-color:var(--cobre);
       }
-
       100%{
-        background:var(--papel);
+        background:#fff;
         border-color:var(--linea);
       }
-
     }
 
     .info-cliente{
@@ -355,675 +373,706 @@
       flex:1;
     }
 
-    .info-cliente .nombre{
+    .nombre{
       font-weight:700;
-      font-size:1.05rem;
+      font-size:1.03rem;
       overflow-wrap:anywhere;
     }
 
-    .info-cliente .dni{
+    .dato{
       color:#5c6b63;
-      font-size:.85rem;
-      margin-top:2px;
+      font-size:.84rem;
+      margin-top:3px;
       overflow-wrap:anywhere;
     }
 
-    .info-cliente .area{
+    .area{
       color:var(--musgo);
-      font-size:.85rem;
+      font-size:.84rem;
       font-weight:600;
-      margin-top:2px;
+      margin-top:3px;
       overflow-wrap:anywhere;
     }
 
-    .info-cliente .hora{
+    .hora{
       color:#5c6b63;
-      font-size:.82rem;
-      margin-top:2px;
+      font-size:.81rem;
+      margin-top:4px;
     }
 
-    .info-cliente .motivo-atendido{
-      color:var(--tinta);
-      font-size:.82rem;
-      margin-top:6px;
-      padding-top:6px;
+    .motivo-atendido{
+      margin-top:7px;
+      padding-top:7px;
       border-top:1px dashed var(--linea);
+      font-size:.82rem;
       overflow-wrap:anywhere;
     }
 
-    .acciones-registro{
+    .acciones-registro,
+    .acciones-cita{
       display:flex;
-      align-items:center;
-      gap:8px;
+      flex-direction:column;
+      gap:7px;
       flex-shrink:0;
+      min-width:130px;
     }
 
-    .estado-btn{
-      border:none;
-      padding:9px 16px;
+    .btn{
+      border:0;
+      padding:9px 12px;
       border-radius:8px;
-      font-weight:600;
-      font-size:.85rem;
+      font-weight:700;
+      font-size:.8rem;
       cursor:pointer;
       white-space:nowrap;
-      flex-shrink:0;
     }
 
-    .estado-btn.pendiente{
-      background:#fde8da;
-      color:var(--cobre);
-    }
-
-    .estado-btn.atendido{
+    .btn-atendido{
       background:#e2ede6;
       color:var(--verde);
     }
 
-    .motivo-btn{
-      border:none;
-      padding:9px 16px;
-      border-radius:8px;
-      font-weight:600;
-      font-size:.85rem;
-      cursor:pointer;
-      white-space:nowrap;
-      flex-shrink:0;
+    .btn-pendiente{
+      background:#fde8da;
+      color:var(--cobre);
+    }
+
+    .btn-motivo,
+    .btn-editar{
       background:#eef0e4;
       color:var(--musgo);
     }
 
-    .motivo-btn.con-motivo{
-      background:var(--musgo);
-      color:var(--papel);
+    .btn-editar{
+      border:0;
     }
 
-    .eliminar-btn{
-      border:none;
-      padding:9px 14px;
-      border-radius:8px;
+    .btn-eliminar{
       background:#f5dfdc;
-      color:#a13a2a;
+      color:var(--rojo);
+    }
+
+    .btn-llegada{
+      background:var(--musgo);
+      color:#fff;
+    }
+
+    .btn-cita-atendida{
+      background:#e2ede6;
+      color:var(--verde);
+    }
+
+    .btn-cita-cancelar{
+      background:#f5dfdc;
+      color:var(--rojo);
+    }
+
+    .btn-cita-no{
+      background:#eee;
+      color:#555;
+    }
+
+    .estado-cita{
+      display:inline-block;
+      margin-top:7px;
+      padding:5px 9px;
+      border-radius:7px;
+      font-size:.76rem;
       font-weight:700;
-      font-size:.85rem;
-      cursor:pointer;
-      white-space:nowrap;
+      background:#eee;
     }
 
-    .eliminar-btn:hover{
-      background:#efd0cc;
+    .estado-Pendiente{
+      background:#fde8da;
+      color:var(--cobre);
     }
 
-    .eliminar-btn:disabled{
-      opacity:.6;
-      cursor:not-allowed;
+    .estado-Llegó,
+    .estado-Atendida{
+      background:#e2ede6;
+      color:var(--verde);
+    }
+
+    .estado-Cancelada{
+      background:#f5dfdc;
+      color:var(--rojo);
+    }
+
+    .estado-No{
+      background:#eee;
+      color:#555;
     }
 
     .vacio{
       text-align:center;
-      padding:60px 20px;
+      padding:55px 20px;
       color:#5c6b63;
     }
 
-    .btn-notificaciones{
+    .overlay-modal{
+      position:fixed;
+      inset:0;
+      background:rgba(13,31,20,.55);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:100;
+      padding:20px;
+    }
+
+    .caja-modal{
       width:100%;
-      margin-bottom:18px;
-      padding:13px;
-      border-radius:12px;
-      border:2px solid var(--musgo);
-      background:var(--papel);
-      color:var(--musgo);
+      max-width:430px;
+      max-height:90vh;
+      overflow-y:auto;
+      background:#fff;
+      border-radius:16px;
+      padding:28px 26px;
+      box-shadow:0 20px 50px rgba(13,31,20,.25);
+    }
+
+    .caja-modal h2{
+      font-family:'Fraunces',serif;
+      font-size:1.3rem;
+      margin:0 0 18px;
+    }
+
+    .caja-modal textarea{
+      resize:vertical;
+    }
+
+    .error-modal{
+      color:var(--rojo);
+      font-size:.85rem;
+      min-height:18px;
+      margin-top:8px;
+    }
+
+    .botones-modal{
+      display:flex;
+      gap:10px;
+      margin-top:16px;
+    }
+
+    .btn-cancelar-modal,
+    .btn-guardar-modal{
+      flex:1;
+      padding:12px;
+      border-radius:10px;
+      border:0;
       font-weight:700;
-      font-size:.95rem;
       cursor:pointer;
-      font-family:'Inter',sans-serif;
     }
 
-    .btn-notificaciones.activo{
+    .btn-cancelar-modal{
+      background:var(--lino);
+      color:var(--musgo);
+      border:1px solid var(--linea);
+    }
+
+    .btn-guardar-modal{
       background:var(--musgo);
-      color:var(--papel);
-      cursor:default;
-    }
-
-    .etiqueta-admin{
-      display:inline-block;
-      margin-top:5px;
-      padding:4px 8px;
-      border-radius:6px;
-      background:#f3ead0;
-      color:var(--cobre);
-      font-size:.72rem;
-      font-weight:700;
+      color:#fff;
     }
 
     @media(max-width:600px){
-
-      html,
-      body{
-        height:auto;
-        min-height:100%;
-        overflow-x:hidden;
-        overflow-y:auto;
-        -webkit-overflow-scrolling:touch;
-      }
-
-      #vistaLogin{
-        min-height:100vh;
-        height:auto;
-        padding:18px 14px 40px 14px;
-        align-items:flex-start;
-      }
-
-      .caja-login{
-        margin-top:20px;
-        padding:30px 22px;
-      }
-
       #vistaPanel{
-        width:100%;
-        min-height:100vh;
-        height:auto;
-        padding:24px 14px 80px 14px;
-        overflow:visible;
+        padding:24px 14px 80px;
       }
 
       .cabecera{
         align-items:flex-start;
-        margin-bottom:22px;
-      }
-
-      .cabecera-institucional{
-        width:100%;
       }
 
       .cabecera h1{
-        font-size:1.6rem;
-      }
-
-      .cabecera .sub{
-        line-height:1.4;
-        margin-top:3px;
+        font-size:1.55rem;
       }
 
       .salir{
         width:100%;
-        padding:11px;
-      }
-
-      .filtro-admin{
-        flex-wrap:nowrap;
-        overflow-x:auto;
-        overflow-y:hidden;
-        padding-bottom:8px;
-        margin-bottom:18px;
-        -webkit-overflow-scrolling:touch;
-        scrollbar-width:thin;
-      }
-
-      .filtro-area{
-        white-space:nowrap;
-        flex-shrink:0;
-      }
-
-      .btn-notificaciones{
-        margin-bottom:18px;
-        line-height:1.4;
       }
 
       .fila{
-        align-items:flex-start;
         padding:14px;
-        gap:10px;
       }
 
-      .acciones-registro{
-        flex-direction:column;
-        align-items:stretch;
+      .acciones-registro,
+      .acciones-cita{
+        min-width:120px;
       }
 
-      .estado-btn,
-      .motivo-btn,
-      .eliminar-btn{
-        padding:8px 10px;
-        font-size:.78rem;
+      .btn{
+        padding:8px 9px;
+        font-size:.75rem;
       }
-
-      .info-cliente .nombre{
-        font-size:.98rem;
-      }
-
-      .info-cliente .dni,
-      .info-cliente .area,
-      .info-cliente .hora{
-        font-size:.8rem;
-      }
-
     }
 
-    @media(max-width:380px){
-
-      #vistaPanel{
-        padding-left:10px;
-        padding-right:10px;
-        padding-bottom:80px;
-      }
-
+    @media(max-width:430px){
       .fila{
         flex-direction:column;
-        align-items:stretch;
       }
 
-      .acciones-registro{
+      .acciones-registro,
+      .acciones-cita{
         width:100%;
-        flex-direction:column;
+        min-width:0;
       }
 
-      .estado-btn,
-      .motivo-btn,
-      .eliminar-btn{
+      .btn{
         width:100%;
-        padding:10px;
       }
 
-      .logo-institucional{
-        width:48px;
-        height:48px;
+      .pestanas{
+        position:sticky;
+        top:0;
+        z-index:5;
+        background:var(--lino);
+        padding:5px 0;
       }
-
-      .cabecera h1{
-        font-size:1.45rem;
-      }
-
     }
-
-  .overlay-modal{
-    position:fixed;
-    top:0; left:0; right:0; bottom:0;
-    background:rgba(13,31,20,0.55);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    z-index:100;
-    padding:20px;
-  }
-
-  .caja-modal{
-    width:100%;
-    max-width:420px;
-    background:var(--papel);
-    border-radius:16px;
-    padding:28px 26px;
-    box-shadow:0 20px 50px rgba(13,31,20,0.25);
-  }
-
-  .caja-modal h2{
-    font-family:'Fraunces',serif;
-    font-size:1.3rem;
-    margin:0 0 18px 0;
-    color:var(--tinta);
-  }
-
-  .caja-modal label{
-    display:block;
-    font-weight:600;
-    font-size:0.85rem;
-    margin:14px 0 6px 0;
-    color:var(--musgo);
-  }
-
-  .caja-modal input[type=text],
-  .caja-modal textarea{
-    width:100%;
-    padding:11px 12px;
-    border-radius:10px;
-    border:2px solid var(--linea);
-    background:var(--lino);
-    font-family:'Inter',sans-serif;
-    font-size:0.92rem;
-    color:var(--tinta);
-    resize:vertical;
-  }
-
-  .caja-modal input[type=text]:focus,
-  .caja-modal textarea:focus{
-    outline:none;
-    border-color:var(--musgo);
-  }
-
-  .error-modal{
-    color:#a13a2a;
-    font-size:0.85rem;
-    min-height:18px;
-    margin-top:8px;
-  }
-
-  .botones-modal{
-    display:flex;
-    gap:10px;
-    margin-top:16px;
-  }
-
-  .btn-cancelar-modal, .btn-guardar-modal{
-    flex:1;
-    padding:12px;
-    border-radius:10px;
-    border:none;
-    font-weight:700;
-    font-size:0.9rem;
-    cursor:pointer;
-    font-family:'Inter',sans-serif;
-  }
-
-  .btn-cancelar-modal{
-    background:var(--lino);
-    color:var(--musgo);
-    border:1px solid var(--linea);
-  }
-
-  .btn-guardar-modal{
-    background:var(--musgo);
-    color:var(--papel);
-  }
-
-  .btn-guardar-modal:disabled{
-    opacity:0.6;
-    cursor:not-allowed;
-  }
-
   </style>
 
   <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#1f3d31">
-
 </head>
 
 <body>
 
-<div id="vistaLogin">
+  <!-- LOGIN -->
 
-  <div class="caja-login">
+  <div id="vistaLogin">
 
-    <div class="cabecera-institucional-login">
+    <div class="caja-login">
 
-      <img
-        src="./logo.png"
-        alt="Comisaría Salaverry"
-        class="logo-institucional"
-      >
+      <div class="cabecera-institucional-login">
 
-      <div class="texto-institucional">
+        <img
+          src="./logo.png"
+          alt="Comisaría Salaverry"
+          class="logo-institucional"
+        >
 
-        <div class="linea1">
-          Comisaría Salaverry
-        </div>
+        <div class="texto-institucional">
 
-        <div class="linea2">
-          Panel de área
+          <div class="linea1">
+            Comisaría Salaverry
+          </div>
+
+          <div class="linea2">
+            Panel de área
+          </div>
+
         </div>
 
       </div>
 
+      <p>
+        Ingrese con la cuenta de su área para ver los registros.
+      </p>
+
+      <label for="correo">
+        Correo
+      </label>
+
+      <input
+        type="email"
+        id="correo"
+        autocomplete="username"
+        placeholder="correo@pnp.pe"
+      >
+
+      <label for="clave">
+        Contraseña
+      </label>
+
+      <input
+        type="password"
+        id="clave"
+        autocomplete="current-password"
+      >
+
+      <button id="btnEntrar">
+        Ingresar
+      </button>
+
+      <div
+        class="error-login"
+        id="errorLogin"
+      ></div>
+
     </div>
 
-    <p>
-      Ingrese con la cuenta de su área para ver los registros.
-    </p>
+  </div>
 
-    <label for="correo">
-      Correo
-    </label>
 
-    <input
-      type="email"
-      id="correo"
-      autocomplete="username"
-      placeholder="correo@pnp.pe"
-    >
+  <!-- PANEL -->
 
-    <label for="clave">
-      Contraseña
-    </label>
+  <div id="vistaPanel">
 
-    <input
-      type="password"
-      id="clave"
-      autocomplete="current-password"
-    >
+    <div class="cabecera">
 
-    <button id="btnEntrar">
-      Ingresar
-    </button>
+      <div class="cabecera-institucional">
+
+        <img
+          src="./logo.png"
+          alt="Comisaría Salaverry"
+          class="logo-institucional"
+        >
+
+        <div>
+
+          <h1 id="nombreArea">
+            Registros
+          </h1>
+
+          <div
+            class="sub"
+            id="subtituloPanel"
+          >
+            Se actualiza automáticamente.
+          </div>
+
+        </div>
+
+      </div>
+
+      <button
+        class="salir"
+        id="btnSalir"
+      >
+        Cerrar sesión
+      </button>
+
+    </div>
+
+
+    <!-- FILTRO ADMIN -->
 
     <div
-      class="error-login"
-      id="errorLogin"
-    ></div>
+      id="filtroAdmin"
+      class="filtro-admin"
+      style="display:none;"
+    >
+
+      <button
+        class="filtro-area activo"
+        data-area="TODAS"
+      >
+        Todas
+      </button>
+
+      <button
+        class="filtro-area"
+        data-area="Sección de Delitos, Faltas y Tránsito"
+      >
+        Sección de Delitos, Faltas y Tránsito
+      </button>
+
+      <button
+        class="filtro-area"
+        data-area="Familia"
+      >
+        Familia
+      </button>
+
+      <button
+        class="filtro-area"
+        data-area="Policía comunitaria"
+      >
+        Policía comunitaria
+      </button>
+
+      <button
+        class="filtro-area"
+        data-area="Secretaría"
+      >
+        Secretaría
+      </button>
+
+      <button
+        class="filtro-area"
+        data-area="Comisario"
+      >
+        Comisario
+      </button>
+
+      <button
+        class="filtro-area"
+        data-area="Copias certificadas y medidas de protección"
+      >
+        Copias certificadas y medidas de protección
+      </button>
+
+    </div>
+
+
+    <!-- PESTAÑAS -->
+
+    <div class="pestanas">
+
+      <button
+        id="btnTabRegistros"
+        class="pestana activa"
+      >
+        REGISTROS
+      </button>
+
+      <button
+        id="btnTabCitas"
+        class="pestana"
+      >
+        CITAS
+      </button>
+
+    </div>
+
+
+    <!-- REGISTROS -->
+
+    <div id="seccionRegistros">
+
+      <div
+        id="descargaAdmin"
+        class="descarga-admin"
+        style="display:none;"
+      >
+
+        <input
+          type="date"
+          id="fechaDesde"
+        >
+
+        <input
+          type="date"
+          id="fechaHasta"
+        >
+
+        <button id="btnDescargar">
+          ⬇ Descargar CSV
+        </button>
+
+      </div>
+
+
+      <div class="buscador">
+
+        <input
+          type="text"
+          id="inputBuscar"
+          placeholder="Buscar por DNI o nombre"
+        >
+
+        <button id="btnBuscar">
+          Buscar
+        </button>
+
+        <button
+          id="btnLimpiarBusqueda"
+          style="display:none;"
+        >
+          Limpiar
+        </button>
+
+      </div>
+
+
+      <button
+        id="btnNotificaciones"
+        class="btn-notificaciones"
+      >
+        🔔 Activar notificaciones en este dispositivo
+      </button>
+
+
+      <div
+        class="lista"
+        id="listaRegistros"
+      ></div>
+
+    </div>
+
+
+    <!-- CITAS -->
+
+    <div
+      id="seccionCitas"
+      style="display:none;"
+    >
+
+      <div
+        class="lista"
+        id="listaCitas"
+      ></div>
+
+    </div>
 
   </div>
 
-</div>
 
-<div id="vistaPanel">
+  <!-- MODAL ATENDIDO -->
 
-  <div class="cabecera">
+  <div
+    id="overlayAtendido"
+    class="overlay-modal"
+    style="display:none;"
+  >
 
-    <div class="cabecera-institucional">
+    <div class="caja-modal">
 
-      <img
-        src="./logo.png"
-        alt="Comisaría Salaverry"
-        class="logo-institucional"
+      <h2>
+        Información de atención
+      </h2>
+
+      <label for="motivoAtendido">
+        Motivo de la visita
+      </label>
+
+      <input
+        type="text"
+        id="motivoAtendido"
+        maxlength="150"
+        placeholder="Consulta, denuncia, trámite..."
       >
 
-      <div>
+      <label for="detalleAtendido">
+        Especificar
+      </label>
 
-        <h1 id="nombreArea">
-          Registros
-        </h1>
+      <textarea
+        id="detalleAtendido"
+        rows="4"
+        maxlength="500"
+        placeholder="Detalle adicional"
+      ></textarea>
 
-        <div
-          class="sub"
-          id="subtituloPanel"
+      <div
+        class="error-modal"
+        id="errorModal"
+      ></div>
+
+      <div class="botones-modal">
+
+        <button
+          id="btnCancelarAtendido"
+          class="btn-cancelar-modal"
         >
-          Se actualiza automáticamente al llegar un nuevo registro
-        </div>
+          Cancelar
+        </button>
+
+        <button
+          id="btnGuardarAtendido"
+          class="btn-guardar-modal"
+        >
+          Guardar
+        </button>
 
       </div>
 
     </div>
 
-    <button
-      class="salir"
-      id="btnSalir"
-    >
-      Cerrar sesión
-    </button>
-
   </div>
 
+
+  <!-- MODAL EDITAR -->
+
   <div
-    id="filtroAdmin"
-    class="filtro-admin"
+    id="overlayEditar"
+    class="overlay-modal"
     style="display:none;"
   >
 
-    <button
-      class="filtro-area activo"
-      data-area="TODAS"
-    >
-      Todas
-    </button>
+    <div class="caja-modal">
 
-  <button
-  class="filtro-area"
-  data-area="Sección de Delitos, Faltas y Tránsito"
-  >
-  Sección de Delitos, Faltas y Tránsito
-  </button>
+      <h2>
+        Editar registro
+      </h2>
 
-    <button
-      class="filtro-area"
-      data-area="Familia"
-    >
-      Familia
-    </button>
+      <label for="editarDni">
+        DNI
+      </label>
 
-    <button
-      class="filtro-area"
-      data-area="Policía comunitaria"
-    >
-      Policía comunitaria
-    </button>
+      <input
+        type="text"
+        id="editarDni"
+        maxlength="20"
+      >
 
-    <button
-      class="filtro-area"
-      data-area="Secretaría"
-    >
-      Secretaría
-    </button>
+      <label for="editarNombre">
+        Nombre completo
+      </label>
 
-    <button
-      class="filtro-area"
-      data-area="Comisario"
-    >
-      Comisario
-    </button>
-<button
-  class="filtro-area"
-  data-area="Copias certificadas y medidas de protección"
->
-  Copias certificadas y medidas de protección
-</button>
-  </div>
+      <input
+        type="text"
+        id="editarNombre"
+        maxlength="150"
+      >
 
-  <div
-    id="descargaAdmin"
-    class="descarga-admin"
-    style="display:none;"
-  >
+      <label for="editarCelular">
+        Celular
+      </label>
 
-    <input
-      type="date"
-      id="fechaDesde"
-    >
+      <input
+        type="text"
+        id="editarCelular"
+        maxlength="30"
+      >
 
-    <input
-      type="date"
-      id="fechaHasta"
-    >
+      <div
+        class="error-modal"
+        id="errorEditar"
+      ></div>
 
-    <button id="btnDescargar">
-      ⬇ Descargar CSV
-    </button>
+      <div class="botones-modal">
 
-  </div>
+        <button
+          id="btnCancelarEditar"
+          class="btn-cancelar-modal"
+        >
+          Cancelar
+        </button>
 
-  <div class="buscador">
+        <button
+          id="btnGuardarEditar"
+          class="btn-guardar-modal"
+        >
+          Guardar cambios
+        </button>
 
-    <input
-      type="text"
-      id="inputBuscar"
-      placeholder="Buscar por DNI o nombre"
-    >
-
-    <button id="btnBuscar">
-      Buscar
-    </button>
-
-    <button id="btnLimpiarBusqueda" style="display:none;">
-      Limpiar
-    </button>
-
-  </div>
-
-  <button
-    id="btnNotificaciones"
-    class="btn-notificaciones"
-  >
-    🔔 Activar notificaciones en este dispositivo
-  </button>
-
-  <div
-    class="lista"
-    id="lista"
-  ></div>
-
-</div>
-
-<div
-  id="overlayAtendido"
-  class="overlay-modal"
-  style="display:none;"
->
-
-  <div class="caja-modal">
-
-    <h2>Marcar como atendido</h2>
-
-    <label for="motivoAtendido">
-      Motivo de la visita
-    </label>
-
-    <input
-      type="text"
-      id="motivoAtendido"
-      maxlength="150"
-      placeholder="Consulta, denuncia, trámite documentario..."
-    >
-
-    <label for="detalleAtendido">
-      Especificar
-    </label>
-
-    <textarea
-      id="detalleAtendido"
-      rows="4"
-      maxlength="500"
-      placeholder="Detalle adicional sobre la atención brindada"
-    ></textarea>
-
-    <div class="error-modal" id="errorModal"></div>
-
-    <div class="botones-modal">
-
-      <button id="btnCancelarAtendido" class="btn-cancelar-modal">
-        Cancelar
-      </button>
-
-      <button id="btnGuardarAtendido" class="btn-guardar-modal">
-        Guardar
-      </button>
+      </div>
 
     </div>
 
   </div>
 
-</div>
 
 <script>
 
   const SUPABASE_URL =
     "https://cthpbxqwsjcgpdfqkdwr.supabase.co";
 
-const SUPABASE_ANON_KEY =
-  "sb_publishable_qTNkWQAQLrzS2-81BpeDeA_DFDCrVol";
+  const SUPABASE_ANON_KEY =
+    "sb_publishable_qTNkWQAQLrzS2-81BpeDeA_DFDCrVol";
 
   const VAPID_PUBLIC_KEY =
     "BHG6sCGAQQmYuGMRmrJ4EYKd55Bzngbc7WQdJuFpjHgFzs-zbQYQeof-yerGrD_yjIqQijnzdvqySvrehpeZgUA";
 
- const AREAS = [
-  "Sección de Delitos, Faltas y Tránsito",
-  "Familia",
-  "Policía comunitaria",
-  "Secretaría",
-  "Comisario",
-  "Copias certificadas y medidas de protección"
-];
+
+  const AREAS = [
+    "Sección de Delitos, Faltas y Tránsito",
+    "Familia",
+    "Policía comunitaria",
+    "Secretaría",
+    "Comisario",
+    "Copias certificadas y medidas de protección"
+  ];
+
 
   const supabaseClient =
     window.supabase.createClient(
       SUPABASE_URL,
       SUPABASE_ANON_KEY
     );
+
 
   const vistaLogin =
     document.getElementById("vistaLogin");
@@ -1037,20 +1086,8 @@ const SUPABASE_ANON_KEY =
   const btnSalir =
     document.getElementById("btnSalir");
 
-  const btnNotificaciones =
-    document.getElementById("btnNotificaciones");
-
   const errorLogin =
     document.getElementById("errorLogin");
-
-  const nombreAreaEl =
-    document.getElementById("nombreArea");
-
-  const subtituloPanel =
-    document.getElementById("subtituloPanel");
-
-  const lista =
-    document.getElementById("lista");
 
   const correoInput =
     document.getElementById("correo");
@@ -1058,19 +1095,108 @@ const SUPABASE_ANON_KEY =
   const claveInput =
     document.getElementById("clave");
 
+  const nombreAreaEl =
+    document.getElementById("nombreArea");
+
+  const subtituloPanel =
+    document.getElementById("subtituloPanel");
+
   const filtroAdmin =
     document.getElementById("filtroAdmin");
 
   const descargaAdmin =
     document.getElementById("descargaAdmin");
 
+  const listaRegistros =
+    document.getElementById("listaRegistros");
+
+  const listaCitas =
+    document.getElementById("listaCitas");
+
+  const seccionRegistros =
+    document.getElementById("seccionRegistros");
+
+  const seccionCitas =
+    document.getElementById("seccionCitas");
+
+  const btnTabRegistros =
+    document.getElementById("btnTabRegistros");
+
+  const btnTabCitas =
+    document.getElementById("btnTabCitas");
+
+  const btnNotificaciones =
+    document.getElementById("btnNotificaciones");
+
+
   let miArea = null;
-
   let miRol = "usuario";
-
   let areaFiltroAdmin = "TODAS";
 
   let canalRegistros = null;
+
+  let registroPendienteId = null;
+  let filaPendiente = null;
+
+  let registroEditarId = null;
+
+
+  function escaparHTML(texto){
+
+    const div =
+      document.createElement("div");
+
+    div.textContent =
+      texto ?? "";
+
+    return div.innerHTML;
+  }
+
+
+  function formatoHora(fechaISO){
+
+    if(!fechaISO){
+      return "";
+    }
+
+    return new Date(fechaISO).toLocaleString(
+      "es-PE",
+      {
+        day:"2-digit",
+        month:"short",
+        hour:"2-digit",
+        minute:"2-digit"
+      }
+    );
+  }
+
+
+  function formatoFechaCita(fecha){
+
+    if(!fecha){
+      return "";
+    }
+
+    const partes =
+      fecha.split("-");
+
+    if(partes.length !== 3){
+      return fecha;
+    }
+
+    return `${partes[2]}/${partes[1]}/${partes[0]}`;
+  }
+
+
+  function formatoHoraCita(hora){
+
+    if(!hora){
+      return "";
+    }
+
+    return hora.substring(0,5);
+  }
+
 
   function reproducirAviso(){
 
@@ -1102,27 +1228,26 @@ const SUPABASE_ANON_KEY =
 
       osc.frequency.setValueAtTime(
         660,
-        ctx.currentTime + 0.12
+        ctx.currentTime + .12
       );
 
       gain.gain.setValueAtTime(
-        0.15,
+        .15,
         ctx.currentTime
       );
 
       gain.gain.exponentialRampToValueAtTime(
-        0.001,
-        ctx.currentTime + 0.4
+        .001,
+        ctx.currentTime + .4
       );
 
       osc.connect(gain);
-
       gain.connect(ctx.destination);
 
       osc.start();
 
       osc.stop(
-        ctx.currentTime + 0.4
+        ctx.currentTime + .4
       );
 
     }catch(error){
@@ -1136,56 +1261,55 @@ const SUPABASE_ANON_KEY =
 
   }
 
-  if(
-    "serviceWorker" in navigator
-  ){
+
+  if("serviceWorker" in navigator){
 
     navigator.serviceWorker
       .register("./sw.js")
       .then(() => {
-
         console.log(
           "Service Worker registrado."
         );
-
       })
       .catch(error => {
-
         console.error(
           "Error registrando Service Worker:",
           error
         );
-
       });
 
   }
+
 
   btnEntrar.addEventListener(
     "click",
     iniciarSesion
   );
 
+
   correoInput.addEventListener(
     "keydown",
-    event => {
+    evento => {
 
-      if(event.key === "Enter"){
+      if(evento.key === "Enter"){
         iniciarSesion();
       }
 
     }
   );
+
 
   claveInput.addEventListener(
     "keydown",
-    event => {
+    evento => {
 
-      if(event.key === "Enter"){
+      if(evento.key === "Enter"){
         iniciarSesion();
       }
 
     }
   );
+
 
   async function iniciarSesion(){
 
@@ -1197,6 +1321,7 @@ const SUPABASE_ANON_KEY =
 
     errorLogin.textContent = "";
 
+
     if(!correo){
 
       errorLogin.textContent =
@@ -1205,8 +1330,8 @@ const SUPABASE_ANON_KEY =
       correoInput.focus();
 
       return;
-
     }
+
 
     if(!clave){
 
@@ -1216,31 +1341,26 @@ const SUPABASE_ANON_KEY =
       claveInput.focus();
 
       return;
-
     }
+
 
     btnEntrar.disabled = true;
 
     btnEntrar.textContent =
       "Ingresando...";
 
-    try{
 
-      console.log(
-        "Intentando iniciar sesión..."
-      );
+    try{
 
       const {
         data,
         error
       } =
         await supabaseClient.auth.signInWithPassword({
-
           email:correo,
-
           password:clave
-
         });
+
 
       if(error){
 
@@ -1253,15 +1373,20 @@ const SUPABASE_ANON_KEY =
           "Correo o contraseña incorrectos.";
 
         return;
-
       }
 
-      console.log(
-        "Login correcto:",
-        data.user.email
-      );
+
+      if(!data.user){
+
+        errorLogin.textContent =
+          "No se pudo obtener el usuario.";
+
+        return;
+      }
+
 
       await entrarAlPanel();
+
 
     }catch(error){
 
@@ -1284,6 +1409,7 @@ const SUPABASE_ANON_KEY =
 
   }
 
+
   async function iniciar(){
 
     try{
@@ -1294,6 +1420,7 @@ const SUPABASE_ANON_KEY =
       } =
         await supabaseClient.auth.getSession();
 
+
       if(error){
 
         console.error(
@@ -1302,17 +1429,10 @@ const SUPABASE_ANON_KEY =
         );
 
         return;
-
       }
 
-      const session =
-        data.session;
 
-      if(session){
-
-        console.log(
-          "Sesión existente encontrada."
-        );
+      if(data.session){
 
         await entrarAlPanel();
 
@@ -1321,13 +1441,14 @@ const SUPABASE_ANON_KEY =
     }catch(error){
 
       console.error(
-        "Error al comprobar sesión:",
+        "Error comprobando sesión:",
         error
       );
 
     }
 
   }
+
 
   async function entrarAlPanel(){
 
@@ -1339,35 +1460,19 @@ const SUPABASE_ANON_KEY =
       } =
         await supabaseClient.auth.getUser();
 
+
       const user =
         data.user;
 
-      if(
-        userError ||
-        !user
-      ){
 
-        console.error(
-          "No se pudo obtener usuario:",
-          userError
-        );
+      if(userError || !user){
 
         errorLogin.textContent =
           "No se pudo obtener el usuario.";
 
         return;
-
       }
 
-      console.log(
-        "UID del usuario:",
-        user.id
-      );
-
-      console.log(
-        "Correo:",
-        user.email
-      );
 
       const {
         data:perfil,
@@ -1378,13 +1483,11 @@ const SUPABASE_ANON_KEY =
           .select(
             "area, nombre_area_visible, rol"
           )
-          .eq(
-            "id",
-            user.id
-          )
+          .eq("id",user.id)
           .single();
 
-      if(error){
+
+      if(error || !perfil){
 
         console.error(
           "Error obteniendo perfil:",
@@ -1395,17 +1498,8 @@ const SUPABASE_ANON_KEY =
           "No se pudo obtener el área de esta cuenta.";
 
         return;
-
       }
 
-      if(!perfil){
-
-        errorLogin.textContent =
-          "Esta cuenta no tiene un área asignada.";
-
-        return;
-
-      }
 
       miArea =
         perfil.area;
@@ -1416,15 +1510,6 @@ const SUPABASE_ANON_KEY =
       areaFiltroAdmin =
         "TODAS";
 
-      console.log(
-        "Área del usuario:",
-        miArea
-      );
-
-      console.log(
-        "Rol del usuario:",
-        miRol
-      );
 
       if(miRol === "admin"){
 
@@ -1433,7 +1518,7 @@ const SUPABASE_ANON_KEY =
           "Administrador";
 
         subtituloPanel.textContent =
-          "Vista administrativa: selecciona un área para filtrar los registros.";
+          "Vista administrativa: selecciona un área para filtrar.";
 
         filtroAdmin.style.display =
           "flex";
@@ -1453,7 +1538,7 @@ const SUPABASE_ANON_KEY =
           "Registros";
 
         subtituloPanel.textContent =
-          "Se actualiza automáticamente al llegar un nuevo registro";
+          "Se actualiza automáticamente al llegar un nuevo registro.";
 
         filtroAdmin.style.display =
           "none";
@@ -1463,15 +1548,20 @@ const SUPABASE_ANON_KEY =
 
       }
 
+
       vistaLogin.style.display =
         "none";
 
       vistaPanel.style.display =
         "block";
 
+
       await cargarRegistros();
 
-      escucharNuevos();
+      await cargarCitas();
+
+      escucharRegistros();
+
 
     }catch(error){
 
@@ -1487,30 +1577,6 @@ const SUPABASE_ANON_KEY =
 
   }
 
-  document
-    .querySelectorAll(".filtro-area")
-    .forEach(boton => {
-
-      boton.addEventListener(
-        "click",
-        async () => {
-
-          const area =
-            boton.dataset.area;
-
-          areaFiltroAdmin =
-            area;
-
-          activarBotonFiltro(
-            area
-          );
-
-          await cargarRegistros();
-
-        }
-      );
-
-    });
 
   function activarBotonFiltro(area){
 
@@ -1526,6 +1592,70 @@ const SUPABASE_ANON_KEY =
       });
 
   }
+
+
+  document
+    .querySelectorAll(".filtro-area")
+    .forEach(boton => {
+
+      boton.addEventListener(
+        "click",
+        async () => {
+
+          areaFiltroAdmin =
+            boton.dataset.area;
+
+          activarBotonFiltro(
+            areaFiltroAdmin
+          );
+
+          await cargarRegistros();
+
+          await cargarCitas();
+
+        }
+      );
+
+    });
+
+
+  btnTabRegistros.addEventListener(
+    "click",
+    async () => {
+
+      btnTabRegistros.classList.add("activa");
+      btnTabCitas.classList.remove("activa");
+
+      seccionRegistros.style.display =
+        "block";
+
+      seccionCitas.style.display =
+        "none";
+
+      await cargarRegistros();
+
+    }
+  );
+
+
+  btnTabCitas.addEventListener(
+    "click",
+    async () => {
+
+      btnTabCitas.classList.add("activa");
+      btnTabRegistros.classList.remove("activa");
+
+      seccionRegistros.style.display =
+        "none";
+
+      seccionCitas.style.display =
+        "block";
+
+      await cargarCitas();
+
+    }
+  );
+
 
   btnSalir.addEventListener(
     "click",
@@ -1544,9 +1674,11 @@ const SUPABASE_ANON_KEY =
 
         }
 
+
         await supabaseClient.auth.signOut();
 
         location.reload();
+
 
       }catch(error){
 
@@ -1560,40 +1692,8 @@ const SUPABASE_ANON_KEY =
     }
   );
 
-  function formatoHora(fechaISO){
 
-    if(!fechaISO){
-      return "";
-    }
-
-    const fecha =
-      new Date(fechaISO);
-
-    return fecha.toLocaleString(
-      "es-PE",
-      {
-        day:"2-digit",
-        month:"short",
-        hour:"2-digit",
-        minute:"2-digit"
-      }
-    );
-
-  }
-
-  function escaparHTML(texto){
-
-    const div =
-      document.createElement("div");
-
-    div.textContent =
-      texto ?? "";
-
-    return div.innerHTML;
-
-  }
-
-  function pintarFila(
+  function pintarFilaRegistro(
     registro,
     esNueva
   ){
@@ -1603,15 +1703,11 @@ const SUPABASE_ANON_KEY =
 
     fila.className =
       "fila" +
-      (
-        esNueva
-          ? " nueva"
-          : ""
-      );
+      (esNueva ? " nueva" : "");
 
     fila.id =
-      "reg-" +
-      registro.id;
+      "reg-" + registro.id;
+
 
     const nombre =
       registro.nombre ||
@@ -1623,11 +1719,12 @@ const SUPABASE_ANON_KEY =
 
     const celular =
       registro.celular ||
-      null;
+      "";
 
     const area =
       registro.area ||
       "Sin área";
+
 
     fila.innerHTML = `
 
@@ -1637,14 +1734,14 @@ const SUPABASE_ANON_KEY =
           ${escaparHTML(nombre)}
         </div>
 
-        <div class="dni">
+        <div class="dato">
           DNI ${escaparHTML(dni)}
         </div>
 
         ${
           celular
             ? `
-              <div class="dni">
+              <div class="dato">
                 Cel. ${escaparHTML(celular)}
               </div>
             `
@@ -1669,12 +1766,19 @@ const SUPABASE_ANON_KEY =
           registro.atendido && registro.motivo
             ? `
               <div class="motivo-atendido">
-                <strong>Motivo:</strong> ${escaparHTML(registro.motivo)}
+                <strong>Motivo:</strong>
+                ${escaparHTML(registro.motivo)}
+
                 ${
                   registro.detalle
-                    ? `<br><strong>Detalle:</strong> ${escaparHTML(registro.detalle)}`
+                    ? `
+                      <br>
+                      <strong>Detalle:</strong>
+                      ${escaparHTML(registro.detalle)}
+                    `
                     : ""
                 }
+
               </div>
             `
             : ""
@@ -1682,43 +1786,51 @@ const SUPABASE_ANON_KEY =
 
       </div>
 
+
       <div class="acciones-registro">
 
         <button
-          class="estado-btn ${
+          class="btn ${
             registro.atendido
-              ? "atendido"
-              : "pendiente"
+              ? "btn-atendido"
+              : "btn-pendiente"
           }"
+          data-accion="atendido"
         >
-
           ${
             registro.atendido
               ? "Atendido"
               : "Marcar atendido"
           }
-
         </button>
 
-        <button
-          class="motivo-btn ${
-            registro.motivo ? "con-motivo" : ""
-          }"
-        >
 
+        <button
+          class="btn btn-motivo"
+          data-accion="motivo"
+        >
           ${
             registro.motivo
               ? "Editar motivo"
               : "Motivo"
           }
-
         </button>
+
+
+        <button
+          class="btn btn-editar"
+          data-accion="editar"
+        >
+          Editar
+        </button>
+
 
         ${
           miRol === "admin"
             ? `
               <button
-                class="eliminar-btn"
+                class="btn btn-eliminar"
+                data-accion="eliminar"
               >
                 Eliminar
               </button>
@@ -1727,336 +1839,98 @@ const SUPABASE_ANON_KEY =
         }
 
       </div>
-
     `;
 
-    const botonEstado =
-      fila.querySelector(".estado-btn");
 
-    botonEstado.addEventListener(
-      "click",
-      () => {
+    fila
+      .querySelector(
+        '[data-accion="atendido"]'
+      )
+      .addEventListener(
+        "click",
+        () => {
 
-        marcarAtendido(
-          registro.id,
-          fila
-        );
+          if(!registro.atendido){
 
-      }
-    );
-
-    const botonMotivo =
-      fila.querySelector(".motivo-btn");
-
-    botonMotivo.addEventListener(
-      "click",
-      () => {
-
-        abrirModalAtendido(
-          registro.id,
-          fila,
-          registro.motivo,
-          registro.detalle
-        );
-
-      }
-    );
-
-    if(miRol === "admin"){
-
-      const botonEliminar =
-        fila.querySelector(".eliminar-btn");
-
-      if(botonEliminar){
-
-        botonEliminar.addEventListener(
-          "click",
-          () => {
-
-            eliminarRegistro(
+            marcarAtendido(
               registro.id,
               fila
             );
 
           }
-        );
 
-      }
+        }
+      );
+
+
+    fila
+      .querySelector(
+        '[data-accion="motivo"]'
+      )
+      .addEventListener(
+        "click",
+        () => {
+
+          abrirModalAtendido(
+            registro.id,
+            fila,
+            registro.motivo,
+            registro.detalle
+          );
+
+        }
+      );
+
+
+    fila
+      .querySelector(
+        '[data-accion="editar"]'
+      )
+      .addEventListener(
+        "click",
+        () => {
+
+          abrirModalEditar(
+            registro
+          );
+
+        }
+      );
+
+
+    const botonEliminar =
+      fila.querySelector(
+        '[data-accion="eliminar"]'
+      );
+
+
+    if(botonEliminar){
+
+      botonEliminar.addEventListener(
+        "click",
+        () => {
+
+          eliminarRegistro(
+            registro.id,
+            fila
+          );
+
+        }
+      );
 
     }
+
 
     return fila;
 
   }
 
-  const overlayAtendido =
-    document.getElementById("overlayAtendido");
-
-  const inputMotivoAtendido =
-    document.getElementById("motivoAtendido");
-
-  const inputDetalleAtendido =
-    document.getElementById("detalleAtendido");
-
-  const errorModal =
-    document.getElementById("errorModal");
-
-  const btnCancelarAtendido =
-    document.getElementById("btnCancelarAtendido");
-
-  const btnGuardarAtendido =
-    document.getElementById("btnGuardarAtendido");
-
-  let registroPendienteId = null;
-  let filaPendiente = null;
-
-  function abrirModalAtendido(id, fila, motivoActual, detalleActual){
-
-    registroPendienteId = id;
-    filaPendiente = fila;
-
-    inputMotivoAtendido.value = motivoActual || "";
-    inputDetalleAtendido.value = detalleActual || "";
-    errorModal.textContent = "";
-
-    overlayAtendido.style.display = "flex";
-
-    inputMotivoAtendido.focus();
-
-  }
-
-  function cerrarModalAtendido(){
-
-    overlayAtendido.style.display = "none";
-
-    registroPendienteId = null;
-    filaPendiente = null;
-
-  }
-
-  btnCancelarAtendido.addEventListener("click", cerrarModalAtendido);
-
-  overlayAtendido.addEventListener("click", (evento) => {
-
-    if(evento.target === overlayAtendido){
-      cerrarModalAtendido();
-    }
-
-  });
-
-  btnGuardarAtendido.addEventListener("click", async () => {
-
-    const motivo = inputMotivoAtendido.value.trim();
-    const detalle = inputDetalleAtendido.value.trim();
-
-    if(!motivo){
-
-      errorModal.textContent =
-        "Ingresa el motivo de la visita.";
-
-      return;
-
-    }
-
-    btnGuardarAtendido.disabled = true;
-    btnGuardarAtendido.textContent = "Guardando...";
-
-    try{
-
-      const { error } =
-        await supabaseClient
-          .from("registros")
-          .update({
-            motivo: motivo,
-            detalle: detalle || null
-          })
-          .eq("id", registroPendienteId);
-
-      if(error){
-
-        console.error("Error guardando motivo:", error);
-
-        errorModal.textContent =
-          "No se pudo guardar. Intenta de nuevo.";
-
-        return;
-
-      }
-
-      const botonMotivo =
-        filaPendiente.querySelector(".motivo-btn");
-
-      botonMotivo.textContent = "Editar motivo";
-      botonMotivo.classList.add("con-motivo");
-
-      cerrarModalAtendido();
-
-    }catch(error){
-
-      console.error("Error:", error);
-
-      errorModal.textContent =
-        "No se pudo guardar. Intenta de nuevo.";
-
-    }finally{
-
-      btnGuardarAtendido.disabled = false;
-      btnGuardarAtendido.textContent = "Guardar";
-
-    }
-
-  });
-
-  async function marcarAtendido(id, fila){
-
-    try{
-
-      const { error } =
-        await supabaseClient
-          .from("registros")
-          .update({ atendido: true })
-          .eq("id", id);
-
-      if(error){
-
-        console.error("Error marcando atendido:", error);
-
-        alert("No se pudo actualizar el registro.");
-
-        return;
-
-      }
-
-      const boton =
-        fila.querySelector(".estado-btn");
-
-      boton.textContent = "Atendido";
-      boton.className = "estado-btn atendido";
-
-    }catch(error){
-
-      console.error("Error:", error);
-
-    }
-
-  }
-
-  async function eliminarRegistro(
-    id,
-    fila
-  ){
-
-    if(miRol !== "admin"){
-
-      alert(
-        "No tienes permisos para eliminar registros."
-      );
-
-      return;
-
-    }
-
-    const confirmar =
-      confirm(
-        "¿Seguro que deseas eliminar este registro?\n\nEsta acción no se puede deshacer."
-      );
-
-    if(!confirmar){
-
-      return;
-
-    }
-
-    const botonEliminar =
-      fila.querySelector(".eliminar-btn");
-
-    if(botonEliminar){
-
-      botonEliminar.disabled =
-        true;
-
-      botonEliminar.textContent =
-        "Eliminando...";
-
-    }
-
-    try{
-
-      const {
-        error
-      } =
-        await supabaseClient
-          .from("registros")
-          .delete()
-          .eq(
-            "id",
-            id
-          );
-
-      if(error){
-
-        console.error(
-          "Error eliminando registro:",
-          error
-        );
-
-        if(botonEliminar){
-
-          botonEliminar.disabled =
-            false;
-
-          botonEliminar.textContent =
-            "Eliminar";
-
-        }
-
-        alert(
-          "No se pudo eliminar el registro."
-        );
-
-        return;
-
-      }
-
-      fila.remove();
-
-      if(
-        !lista.querySelector(".fila")
-      ){
-
-        await cargarRegistros();
-
-      }
-
-    }catch(error){
-
-      console.error(
-        "Error eliminando:",
-        error
-      );
-
-      if(botonEliminar){
-
-        botonEliminar.disabled =
-          false;
-
-        botonEliminar.textContent =
-          "Eliminar";
-
-      }
-
-      alert(
-        "Ocurrió un error al eliminar el registro."
-      );
-
-    }
-
-  }
 
   async function cargarRegistros(){
 
-    lista.innerHTML =
+    listaRegistros.innerHTML =
       '<div class="vacio">Cargando registros...</div>';
+
 
     try{
 
@@ -2071,6 +1945,7 @@ const SUPABASE_ANON_KEY =
             }
           )
           .limit(50);
+
 
       if(miRol === "admin"){
 
@@ -2094,11 +1969,13 @@ const SUPABASE_ANON_KEY =
 
       }
 
+
       const {
         data,
         error
       } =
         await consulta;
+
 
       if(error){
 
@@ -2107,43 +1984,36 @@ const SUPABASE_ANON_KEY =
           error
         );
 
-        lista.innerHTML =
+        listaRegistros.innerHTML =
           '<div class="vacio">No se pudieron cargar los registros.</div>';
 
         return;
-
       }
 
-      lista.innerHTML = "";
 
-      if(
-        !data ||
-        data.length === 0
-      ){
+      listaRegistros.innerHTML = "";
 
-        if(miRol === "admin"){
 
-          lista.innerHTML =
-            areaFiltroAdmin === "TODAS"
-              ? '<div class="vacio">Todavía no hay registros.</div>'
-              : `<div class="vacio">Todavía no hay registros para ${escaparHTML(areaFiltroAdmin)}.</div>`;
+      if(!data || data.length === 0){
 
-        }else{
-
-          lista.innerHTML =
-            '<div class="vacio">Todavía no hay registros para tu área.</div>';
-
-        }
+        listaRegistros.innerHTML =
+          miRol === "admin"
+            ? (
+              areaFiltroAdmin === "TODAS"
+                ? '<div class="vacio">Todavía no hay registros.</div>'
+                : `<div class="vacio">Todavía no hay registros para ${escaparHTML(areaFiltroAdmin)}.</div>`
+            )
+            : '<div class="vacio">Todavía no hay registros para tu área.</div>';
 
         return;
-
       }
+
 
       data.forEach(
         registro => {
 
-          lista.appendChild(
-            pintarFila(
+          listaRegistros.appendChild(
+            pintarFilaRegistro(
               registro,
               false
             )
@@ -2152,6 +2022,7 @@ const SUPABASE_ANON_KEY =
         }
       );
 
+
     }catch(error){
 
       console.error(
@@ -2159,14 +2030,15 @@ const SUPABASE_ANON_KEY =
         error
       );
 
-      lista.innerHTML =
+      listaRegistros.innerHTML =
         '<div class="vacio">Ocurrió un error cargando los registros.</div>';
 
     }
 
   }
 
-  function escucharNuevos(){
+
+  function escucharRegistros(){
 
     if(canalRegistros){
 
@@ -2177,127 +2049,109 @@ const SUPABASE_ANON_KEY =
 
     }
 
+
     canalRegistros =
       supabaseClient
-
         .channel(
           "registros-en-vivo"
         )
-
         .on(
-
           "postgres_changes",
-
           {
             event:"INSERT",
             schema:"public",
             table:"registros"
           },
-
           payload => {
-
-            console.log(
-              "Nuevo registro recibido:",
-              payload.new
-            );
 
             if(
               miRol !== "admin" &&
-              payload.new.area &&
-              miArea &&
               payload.new.area !== miArea
             ){
-
               return;
-
             }
+
 
             if(
               miRol === "admin" &&
               areaFiltroAdmin !== "TODAS" &&
               payload.new.area !== areaFiltroAdmin
             ){
-
               return;
-
             }
 
-            const vacio =
-              lista.querySelector(
-                ".vacio"
-              );
 
-            if(vacio){
-
-              vacio.remove();
-
+            if(
+              seccionRegistros.style.display === "none"
+            ){
+              reproducirAviso();
+              return;
             }
+
 
             const existente =
               document.getElementById(
                 "reg-" + payload.new.id
               );
 
+
             if(existente){
-
               return;
-
             }
 
-            lista.prepend(
-              pintarFila(
+
+            const vacio =
+              listaRegistros.querySelector(
+                ".vacio"
+              );
+
+
+            if(vacio){
+              vacio.remove();
+            }
+
+
+            listaRegistros.prepend(
+              pintarFilaRegistro(
                 payload.new,
                 true
               )
             );
 
+
             reproducirAviso();
 
           }
-
         )
-
         .on(
-
           "postgres_changes",
-
           {
             event:"DELETE",
             schema:"public",
             table:"registros"
           },
-
           payload => {
-
-            console.log(
-              "Registro eliminado:",
-              payload.old
-            );
 
             if(
               !payload.old ||
               !payload.old.id
             ){
-
               return;
-
             }
+
 
             const fila =
               document.getElementById(
                 "reg-" + payload.old.id
               );
 
+
             if(fila){
-
               fila.remove();
-
             }
 
           }
-
         )
-
         .subscribe(
           status => {
 
@@ -2311,26 +2165,1305 @@ const SUPABASE_ANON_KEY =
 
   }
 
+
+  /* ==========================
+     CITAS
+  ========================== */
+
+
+  async function cargarCitas(){
+
+    listaCitas.innerHTML =
+      '<div class="vacio">Cargando citas...</div>';
+
+
+    try{
+
+      let consulta =
+        supabaseClient
+          .from("citas")
+          .select("*")
+          .order(
+            "fecha",
+            {ascending:true}
+          )
+          .order(
+            "hora",
+            {ascending:true}
+          )
+          .limit(100);
+
+
+      if(miRol === "admin"){
+
+        if(areaFiltroAdmin !== "TODAS"){
+
+          consulta =
+            consulta.eq(
+              "area",
+              areaFiltroAdmin
+            );
+
+        }
+
+      }else{
+
+        consulta =
+          consulta.eq(
+            "area",
+            miArea
+          );
+
+      }
+
+
+      const {
+        data,
+        error
+      } =
+        await consulta;
+
+
+      if(error){
+
+        console.error(
+          "Error cargando citas:",
+          error
+        );
+
+        listaCitas.innerHTML =
+          '<div class="vacio">No se pudieron cargar las citas.</div>';
+
+        return;
+      }
+
+
+      listaCitas.innerHTML = "";
+
+
+      if(!data || data.length === 0){
+
+        listaCitas.innerHTML =
+          '<div class="vacio">No hay citas para mostrar.</div>';
+
+        return;
+      }
+
+
+      data.forEach(
+        cita => {
+
+          listaCitas.appendChild(
+            pintarCita(cita)
+          );
+
+        }
+      );
+
+
+    }catch(error){
+
+      console.error(
+        "Error:",
+        error
+      );
+
+      listaCitas.innerHTML =
+        '<div class="vacio">Ocurrió un error cargando las citas.</div>';
+
+    }
+
+  }
+
+
+  function claseEstadoCita(estado){
+
+    if(estado === "Pendiente"){
+      return "estado-Pendiente";
+    }
+
+    if(
+      estado === "Llegó" ||
+      estado === "Atendida"
+    ){
+      return "estado-Llegó";
+    }
+
+    if(estado === "Cancelada"){
+      return "estado-Cancelada";
+    }
+
+    return "estado-No";
+
+  }
+
+
+  function pintarCita(cita){
+
+    const fila =
+      document.createElement("div");
+
+    fila.className =
+      "fila";
+
+    fila.id =
+      "cita-" + cita.id;
+
+
+    const estado =
+      cita.estado || "Pendiente";
+
+
+    fila.innerHTML = `
+
+      <div class="info-cliente">
+
+        <div class="nombre">
+          ${escaparHTML(cita.nombre)}
+        </div>
+
+        <div class="dato">
+          DNI ${escaparHTML(cita.dni)}
+        </div>
+
+        ${
+          cita.celular
+            ? `
+              <div class="dato">
+                Cel. ${escaparHTML(cita.celular)}
+              </div>
+            `
+            : ""
+        }
+
+        ${
+          miRol === "admin"
+            ? `
+              <div class="area">
+                Área: ${escaparHTML(cita.area)}
+              </div>
+            `
+            : ""
+        }
+
+        <div class="dato">
+          Motivo: ${escaparHTML(cita.motivo)}
+        </div>
+
+        <div class="hora">
+          📅 ${formatoFechaCita(cita.fecha)}
+          &nbsp; | &nbsp;
+          🕐 ${formatoHoraCita(cita.hora)}
+        </div>
+
+        <span
+          class="estado-cita ${claseEstadoCita(estado)}"
+        >
+          ${escaparHTML(estado)}
+        </span>
+
+        ${
+          cita.llegada_en
+            ? `
+              <div class="dato">
+                Llegada: ${formatoHora(cita.llegada_en)}
+              </div>
+            `
+            : ""
+        }
+
+      </div>
+
+
+      <div class="acciones-cita">
+
+        ${
+          estado === "Pendiente" &&
+          !cita.registro_id
+            ? `
+              <button
+                class="btn btn-llegada"
+                data-accion="llegada"
+              >
+                Registrar llegada
+              </button>
+            `
+            : ""
+        }
+
+
+        ${
+          estado === "Llegó"
+            ? `
+              <button
+                class="btn btn-cita-atendida"
+                data-accion="atendida"
+              >
+                Atendida
+              </button>
+
+              <button
+                class="btn btn-cita-cancelar"
+                data-accion="cancelada"
+              >
+                Cancelada
+              </button>
+
+              <button
+                class="btn btn-cita-no"
+                data-accion="no-asistio"
+              >
+                No asistió
+              </button>
+            `
+            : ""
+        }
+
+
+        ${
+          estado === "Pendiente"
+            ? `
+              <button
+                class="btn btn-cita-cancelar"
+                data-accion="cancelada"
+              >
+                Cancelada
+              </button>
+
+              <button
+                class="btn btn-cita-no"
+                data-accion="no-asistio"
+              >
+                No asistió
+              </button>
+            `
+            : ""
+        }
+
+      </div>
+
+    `;
+
+
+    const botonLlegada =
+      fila.querySelector(
+        '[data-accion="llegada"]'
+      );
+
+
+    if(botonLlegada){
+
+      botonLlegada.addEventListener(
+        "click",
+        () => {
+
+          registrarLlegada(
+            cita.id,
+            fila,
+            botonLlegada
+          );
+
+        }
+      );
+
+    }
+
+
+    const botonAtendida =
+      fila.querySelector(
+        '[data-accion="atendida"]'
+      );
+
+
+    if(botonAtendida){
+
+      botonAtendida.addEventListener(
+        "click",
+        () => {
+
+          cambiarEstadoCita(
+            cita.id,
+            "Atendida"
+          );
+
+        }
+      );
+
+    }
+
+
+    const botonCancelada =
+      fila.querySelector(
+        '[data-accion="cancelada"]'
+      );
+
+
+    if(botonCancelada){
+
+      botonCancelada.addEventListener(
+        "click",
+        () => {
+
+          cambiarEstadoCita(
+            cita.id,
+            "Cancelada"
+          );
+
+        }
+      );
+
+    }
+
+
+    const botonNoAsistio =
+      fila.querySelector(
+        '[data-accion="no-asistio"]'
+      );
+
+
+    if(botonNoAsistio){
+
+      botonNoAsistio.addEventListener(
+        "click",
+        () => {
+
+          cambiarEstadoCita(
+            cita.id,
+            "No asistió"
+          );
+
+        }
+      );
+
+    }
+
+
+    return fila;
+
+  }
+
+
+  async function registrarLlegada(
+    citaId,
+    fila,
+    boton
+  ){
+
+    if(!confirm(
+      "¿Registrar la llegada de esta persona?\n\nSe creará automáticamente un registro en REGISTROS."
+    )){
+      return;
+    }
+
+
+    boton.disabled = true;
+
+    boton.textContent =
+      "Registrando...";
+
+
+    try{
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .rpc(
+            "registrar_llegada_cita",
+            {
+              p_cita_id:citaId
+            }
+          );
+
+
+      if(error){
+
+        console.error(
+          "Error registrando llegada:",
+          error
+        );
+
+        alert(
+          error.message ||
+          "No se pudo registrar la llegada."
+        );
+
+        boton.disabled = false;
+
+        boton.textContent =
+          "Registrar llegada";
+
+        return;
+      }
+
+
+      console.log(
+        "Registro creado:",
+        data
+      );
+
+
+      await cargarCitas();
+
+      await cargarRegistros();
+
+
+      alert(
+        "Llegada registrada correctamente.\n\nLa persona ya apareció en REGISTROS."
+      );
+
+
+    }catch(error){
+
+      console.error(
+        "Error:",
+        error
+      );
+
+      alert(
+        "Ocurrió un error al registrar la llegada."
+      );
+
+      boton.disabled = false;
+
+      boton.textContent =
+        "Registrar llegada";
+
+    }
+
+  }
+
+
+  async function cambiarEstadoCita(
+    id,
+    nuevoEstado
+  ){
+
+    let textoConfirmacion =
+      `¿Cambiar el estado de la cita a "${nuevoEstado}"?`;
+
+
+    if(!confirm(textoConfirmacion)){
+      return;
+    }
+
+
+    try{
+
+      const {
+        error
+      } =
+        await supabaseClient
+          .from("citas")
+          .update({
+            estado:nuevoEstado
+          })
+          .eq("id",id);
+
+
+      if(error){
+
+        console.error(
+          "Error cambiando estado:",
+          error
+        );
+
+        alert(
+          "No se pudo cambiar el estado de la cita."
+        );
+
+        return;
+      }
+
+
+      await cargarCitas();
+
+
+    }catch(error){
+
+      console.error(
+        "Error:",
+        error
+      );
+
+      alert(
+        "Ocurrió un error."
+      );
+
+    }
+
+  }
+
+
+  /* ==========================
+     MODAL MOTIVO
+  ========================== */
+
+
+  const overlayAtendido =
+    document.getElementById(
+      "overlayAtendido"
+    );
+
+  const inputMotivoAtendido =
+    document.getElementById(
+      "motivoAtendido"
+    );
+
+  const inputDetalleAtendido =
+    document.getElementById(
+      "detalleAtendido"
+    );
+
+  const errorModal =
+    document.getElementById(
+      "errorModal"
+    );
+
+  const btnCancelarAtendido =
+    document.getElementById(
+      "btnCancelarAtendido"
+    );
+
+  const btnGuardarAtendido =
+    document.getElementById(
+      "btnGuardarAtendido"
+    );
+
+
+  function abrirModalAtendido(
+    id,
+    fila,
+    motivo,
+    detalle
+  ){
+
+    registroPendienteId =
+      id;
+
+    filaPendiente =
+      fila;
+
+    inputMotivoAtendido.value =
+      motivo || "";
+
+    inputDetalleAtendido.value =
+      detalle || "";
+
+    errorModal.textContent =
+      "";
+
+    overlayAtendido.style.display =
+      "flex";
+
+    inputMotivoAtendido.focus();
+
+  }
+
+
+  function cerrarModalAtendido(){
+
+    overlayAtendido.style.display =
+      "none";
+
+    registroPendienteId =
+      null;
+
+    filaPendiente =
+      null;
+
+  }
+
+
+  btnCancelarAtendido.addEventListener(
+    "click",
+    cerrarModalAtendido
+  );
+
+
+  overlayAtendido.addEventListener(
+    "click",
+    evento => {
+
+      if(
+        evento.target ===
+        overlayAtendido
+      ){
+
+        cerrarModalAtendido();
+
+      }
+
+    }
+  );
+
+
+  btnGuardarAtendido.addEventListener(
+    "click",
+    async () => {
+
+      const motivo =
+        inputMotivoAtendido.value.trim();
+
+      const detalle =
+        inputDetalleAtendido.value.trim();
+
+
+      if(!motivo){
+
+        errorModal.textContent =
+          "Ingresa el motivo de la visita.";
+
+        return;
+      }
+
+
+      btnGuardarAtendido.disabled =
+        true;
+
+      btnGuardarAtendido.textContent =
+        "Guardando...";
+
+
+      try{
+
+        const {
+          error
+        } =
+          await supabaseClient
+            .from("registros")
+            .update({
+              motivo:motivo,
+              detalle:detalle || null
+            })
+            .eq(
+              "id",
+              registroPendienteId
+            );
+
+
+        if(error){
+
+          console.error(
+            "Error guardando motivo:",
+            error
+          );
+
+          errorModal.textContent =
+            "No se pudo guardar.";
+
+          return;
+        }
+
+
+        cerrarModalAtendido();
+
+        await cargarRegistros();
+
+
+      }catch(error){
+
+        console.error(
+          "Error:",
+          error
+        );
+
+        errorModal.textContent =
+          "No se pudo guardar.";
+
+      }finally{
+
+        btnGuardarAtendido.disabled =
+          false;
+
+        btnGuardarAtendido.textContent =
+          "Guardar";
+
+      }
+
+    }
+  );
+
+
+  async function marcarAtendido(
+    id,
+    fila
+  ){
+
+    try{
+
+      const {
+        error
+      } =
+        await supabaseClient
+          .from("registros")
+          .update({
+            atendido:true
+          })
+          .eq(
+            "id",
+            id
+          );
+
+
+      if(error){
+
+        console.error(
+          "Error marcando atendido:",
+          error
+        );
+
+        alert(
+          "No se pudo actualizar el registro."
+        );
+
+        return;
+      }
+
+
+      await cargarRegistros();
+
+
+    }catch(error){
+
+      console.error(
+        "Error:",
+        error
+      );
+
+    }
+
+  }
+
+
+  /* ==========================
+     EDITAR REGISTRO
+  ========================== */
+
+
+  const overlayEditar =
+    document.getElementById(
+      "overlayEditar"
+    );
+
+  const editarDni =
+    document.getElementById(
+      "editarDni"
+    );
+
+  const editarNombre =
+    document.getElementById(
+      "editarNombre"
+    );
+
+  const editarCelular =
+    document.getElementById(
+      "editarCelular"
+    );
+
+  const errorEditar =
+    document.getElementById(
+      "errorEditar"
+    );
+
+  const btnCancelarEditar =
+    document.getElementById(
+      "btnCancelarEditar"
+    );
+
+  const btnGuardarEditar =
+    document.getElementById(
+      "btnGuardarEditar"
+    );
+
+
+  function abrirModalEditar(
+    registro
+  ){
+
+    registroEditarId =
+      registro.id;
+
+    editarDni.value =
+      registro.dni || "";
+
+    editarNombre.value =
+      registro.nombre || "";
+
+    editarCelular.value =
+      registro.celular || "";
+
+    errorEditar.textContent =
+      "";
+
+    overlayEditar.style.display =
+      "flex";
+
+    editarDni.focus();
+
+  }
+
+
+  function cerrarModalEditar(){
+
+    overlayEditar.style.display =
+      "none";
+
+    registroEditarId =
+      null;
+
+  }
+
+
+  btnCancelarEditar.addEventListener(
+    "click",
+    cerrarModalEditar
+  );
+
+
+  overlayEditar.addEventListener(
+    "click",
+    evento => {
+
+      if(
+        evento.target ===
+        overlayEditar
+      ){
+
+        cerrarModalEditar();
+
+      }
+
+    }
+  );
+
+
+  btnGuardarEditar.addEventListener(
+    "click",
+    async () => {
+
+      const dni =
+        editarDni.value.trim();
+
+      const nombre =
+        editarNombre.value.trim();
+
+      const celular =
+        editarCelular.value.trim();
+
+
+      if(!dni){
+
+        errorEditar.textContent =
+          "Ingresa el DNI.";
+
+        return;
+      }
+
+
+      if(!nombre){
+
+        errorEditar.textContent =
+          "Ingresa el nombre.";
+
+        return;
+      }
+
+
+      btnGuardarEditar.disabled =
+        true;
+
+      btnGuardarEditar.textContent =
+        "Guardando...";
+
+
+      try{
+
+        const {
+          error
+        } =
+          await supabaseClient
+            .from("registros")
+            .update({
+              dni:dni,
+              nombre:nombre,
+              celular:celular || null
+            })
+            .eq(
+              "id",
+              registroEditarId
+            );
+
+
+        if(error){
+
+          console.error(
+            "Error editando registro:",
+            error
+          );
+
+          errorEditar.textContent =
+            "No se pudieron guardar los cambios.";
+
+          return;
+        }
+
+
+        cerrarModalEditar();
+
+        await cargarRegistros();
+
+
+      }catch(error){
+
+        console.error(
+          "Error:",
+          error
+        );
+
+        errorEditar.textContent =
+          "Ocurrió un error.";
+
+      }finally{
+
+        btnGuardarEditar.disabled =
+          false;
+
+        btnGuardarEditar.textContent =
+          "Guardar cambios";
+
+      }
+
+    }
+  );
+
+
+  /* ==========================
+     ELIMINAR
+  ========================== */
+
+
+  async function eliminarRegistro(
+    id,
+    fila
+  ){
+
+    if(miRol !== "admin"){
+
+      alert(
+        "No tienes permisos para eliminar registros."
+      );
+
+      return;
+    }
+
+
+    if(!confirm(
+      "¿Seguro que deseas eliminar este registro?\n\nEsta acción no se puede deshacer."
+    )){
+      return;
+    }
+
+
+    const boton =
+      fila.querySelector(
+        ".btn-eliminar"
+      );
+
+
+    if(boton){
+
+      boton.disabled =
+        true;
+
+      boton.textContent =
+        "Eliminando...";
+
+    }
+
+
+    try{
+
+      const {
+        error
+      } =
+        await supabaseClient
+          .from("registros")
+          .delete()
+          .eq(
+            "id",
+            id
+          );
+
+
+      if(error){
+
+        console.error(
+          "Error eliminando:",
+          error
+        );
+
+        alert(
+          "No se pudo eliminar el registro."
+        );
+
+        if(boton){
+
+          boton.disabled =
+            false;
+
+          boton.textContent =
+            "Eliminar";
+
+        }
+
+        return;
+      }
+
+
+      fila.remove();
+
+
+    }catch(error){
+
+      console.error(
+        "Error:",
+        error
+      );
+
+      alert(
+        "Ocurrió un error al eliminar."
+      );
+
+    }
+
+  }
+
+
+  /* ==========================
+     BÚSQUEDA
+  ========================== */
+
+
+  const inputBuscar =
+    document.getElementById(
+      "inputBuscar"
+    );
+
+  const btnBuscar =
+    document.getElementById(
+      "btnBuscar"
+    );
+
+  const btnLimpiarBusqueda =
+    document.getElementById(
+      "btnLimpiarBusqueda"
+    );
+
+
+  async function buscarRegistros(){
+
+    const termino =
+      inputBuscar.value.trim();
+
+
+    if(!termino){
+
+      alert(
+        "Escribe un DNI o nombre para buscar."
+      );
+
+      return;
+    }
+
+
+    btnBuscar.disabled =
+      true;
+
+    btnBuscar.textContent =
+      "Buscando...";
+
+
+    listaRegistros.innerHTML =
+      '<div class="vacio">Buscando...</div>';
+
+
+    try{
+
+      let consulta =
+        supabaseClient
+          .from("registros")
+          .select("*")
+          .or(
+            `dni.ilike.%${termino}%,nombre.ilike.%${termino}%`
+          )
+          .order(
+            "creado_en",
+            {ascending:false}
+          )
+          .limit(50);
+
+
+      if(miRol === "admin"){
+
+        if(
+          areaFiltroAdmin !==
+          "TODAS"
+        ){
+
+          consulta =
+            consulta.eq(
+              "area",
+              areaFiltroAdmin
+            );
+
+        }
+
+      }else{
+
+        consulta =
+          consulta.eq(
+            "area",
+            miArea
+          );
+
+      }
+
+
+      const {
+        data,
+        error
+      } =
+        await consulta;
+
+
+      if(error){
+
+        console.error(
+          "Error buscando:",
+          error
+        );
+
+        listaRegistros.innerHTML =
+          '<div class="vacio">No se pudo realizar la búsqueda.</div>';
+
+        return;
+      }
+
+
+      listaRegistros.innerHTML =
+        "";
+
+
+      if(!data || data.length === 0){
+
+        listaRegistros.innerHTML =
+          '<div class="vacio">No se encontraron registros.</div>';
+
+        return;
+      }
+
+
+      data.forEach(
+        registro => {
+
+          listaRegistros.appendChild(
+            pintarFilaRegistro(
+              registro,
+              false
+            )
+          );
+
+        }
+      );
+
+
+      btnLimpiarBusqueda.style.display =
+        "inline-block";
+
+
+    }catch(error){
+
+      console.error(
+        "Error:",
+        error
+      );
+
+      listaRegistros.innerHTML =
+        '<div class="vacio">No se pudo realizar la búsqueda.</div>';
+
+    }finally{
+
+      btnBuscar.disabled =
+        false;
+
+      btnBuscar.textContent =
+        "Buscar";
+
+    }
+
+  }
+
+
+  btnBuscar.addEventListener(
+    "click",
+    buscarRegistros
+  );
+
+
+  inputBuscar.addEventListener(
+    "keydown",
+    evento => {
+
+      if(evento.key === "Enter"){
+        buscarRegistros();
+      }
+
+    }
+  );
+
+
+  btnLimpiarBusqueda.addEventListener(
+    "click",
+    async () => {
+
+      inputBuscar.value =
+        "";
+
+      btnLimpiarBusqueda.style.display =
+        "none";
+
+      await cargarRegistros();
+
+    }
+  );
+
+
+  /* ==========================
+     NOTIFICACIONES
+  ========================== */
+
+
   btnNotificaciones.addEventListener(
     "click",
     activarNotificaciones
   );
 
+
   async function activarNotificaciones(){
 
     try{
 
-      if(
-        !("Notification" in window)
-      ){
+      if(!("Notification" in window)){
 
         alert(
           "Este navegador no soporta notificaciones."
         );
 
         return;
-
       }
+
 
       if(
         !("serviceWorker" in navigator) ||
@@ -2342,8 +3475,8 @@ const SUPABASE_ANON_KEY =
         );
 
         return;
-
       }
+
 
       if(
         VAPID_PUBLIC_KEY ===
@@ -2351,42 +3484,40 @@ const SUPABASE_ANON_KEY =
       ){
 
         alert(
-          "Las notificaciones push todavía no están configuradas. Primero debemos agregar la clave VAPID."
+          "Las notificaciones push todavía no están configuradas."
         );
 
         return;
-
       }
+
 
       const permiso =
         await Notification.requestPermission();
 
-      if(
-        permiso !== "granted"
-      ){
+
+      if(permiso !== "granted"){
 
         alert(
           "No se activaron las notificaciones."
         );
 
         return;
-
       }
+
 
       const registro =
         await navigator.serviceWorker.ready;
 
+
       const suscripcion =
         await registro.pushManager.subscribe({
-
           userVisibleOnly:true,
-
           applicationServerKey:
             urlBase64AUint8Array(
               VAPID_PUBLIC_KEY
             )
-
         });
+
 
       const {
         data,
@@ -2394,26 +3525,26 @@ const SUPABASE_ANON_KEY =
       } =
         await supabaseClient.auth.getUser();
 
+
       const user =
         data.user;
 
-      if(
-        userError ||
-        !user
-      ){
+
+      if(userError || !user){
 
         alert(
           "No se pudo identificar al usuario."
         );
 
         return;
-
       }
+
 
       const areaSuscripcion =
         miRol === "admin"
           ? "TODAS"
           : miArea;
+
 
       const {
         error
@@ -2421,15 +3552,12 @@ const SUPABASE_ANON_KEY =
         await supabaseClient
           .from("push_suscripciones")
           .insert({
-
             usuario_id:user.id,
-
             area:areaSuscripcion,
-
             suscripcion:
               suscripcion.toJSON()
-
           });
+
 
       if(error){
 
@@ -2443,8 +3571,8 @@ const SUPABASE_ANON_KEY =
         );
 
         return;
-
       }
+
 
       btnNotificaciones.textContent =
         "🔔 Notificaciones activadas en este dispositivo";
@@ -2455,6 +3583,7 @@ const SUPABASE_ANON_KEY =
 
       btnNotificaciones.disabled =
         true;
+
 
     }catch(error){
 
@@ -2471,6 +3600,7 @@ const SUPABASE_ANON_KEY =
 
   }
 
+
   function urlBase64AUint8Array(
     base64String
   ){
@@ -2481,6 +3611,7 @@ const SUPABASE_ANON_KEY =
           base64String.length % 4
         )) % 4
       );
+
 
     const base64 =
       (
@@ -2495,8 +3626,10 @@ const SUPABASE_ANON_KEY =
         "/"
       );
 
+
     const rawData =
       atob(base64);
+
 
     return Uint8Array.from(
       [...rawData].map(
@@ -2507,88 +3640,126 @@ const SUPABASE_ANON_KEY =
 
   }
 
+
+  /* ==========================
+     CSV
+  ========================== */
+
+
   const inputFechaDesde =
-    document.getElementById("fechaDesde");
+    document.getElementById(
+      "fechaDesde"
+    );
 
   const inputFechaHasta =
-    document.getElementById("fechaHasta");
+    document.getElementById(
+      "fechaHasta"
+    );
 
   const btnDescargar =
-    document.getElementById("btnDescargar");
+    document.getElementById(
+      "btnDescargar"
+    );
 
-  if(inputFechaDesde && inputFechaHasta){
 
-    const hoy =
-      new Date().toISOString().slice(0, 10);
+  const hoy =
+    new Date()
+      .toISOString()
+      .slice(0,10);
 
-    inputFechaDesde.value = hoy;
-    inputFechaHasta.value = hoy;
 
-  }
+  inputFechaDesde.value =
+    hoy;
 
-  if(btnDescargar){
+  inputFechaHasta.value =
+    hoy;
 
-    btnDescargar.addEventListener(
-      "click",
-      async () => {
 
-        if(miRol !== "admin"){
+  btnDescargar.addEventListener(
+    "click",
+    async () => {
 
-          alert(
-            "Solo el administrador puede descargar registros."
-          );
+      if(miRol !== "admin"){
 
-          return;
+        alert(
+          "Solo el administrador puede descargar registros."
+        );
 
-        }
+        return;
+      }
 
-        const desde =
-          inputFechaDesde.value;
 
-        const hasta =
-          inputFechaHasta.value;
+      const desde =
+        inputFechaDesde.value;
 
-        if(!desde || !hasta){
+      const hasta =
+        inputFechaHasta.value;
 
-          alert(
-            "Selecciona la fecha de inicio y de fin."
-          );
 
-          return;
+      if(!desde || !hasta){
 
-        }
+        alert(
+          "Selecciona las fechas."
+        );
 
-        if(desde > hasta){
+        return;
+      }
 
-          alert(
-            "La fecha 'desde' no puede ser posterior a la fecha 'hasta'."
-          );
 
-          return;
+      if(desde > hasta){
 
-        }
+        alert(
+          "La fecha desde no puede ser posterior a la fecha hasta."
+        );
 
-        btnDescargar.disabled = true;
+        return;
+      }
 
-        btnDescargar.textContent =
-          "Generando...";
 
-        const inicioRango =
+      btnDescargar.disabled =
+        true;
+
+      btnDescargar.textContent =
+        "Generando...";
+
+
+      try{
+
+        const inicio =
           `${desde}T00:00:00-05:00`;
 
-        const finRango =
+        const fin =
           `${hasta}T23:59:59-05:00`;
+
 
         let consulta =
           supabaseClient
             .from("registros")
-            .select("dni, nombre, celular, area, creado_en, atendido, motivo, detalle")
-            .gte("creado_en", inicioRango)
-            .lte("creado_en", finRango)
-            .order("area", { ascending:true })
-            .order("creado_en", { ascending:true });
+            .select(
+              "dni,nombre,celular,area,creado_en,atendido,motivo,detalle"
+            )
+            .gte(
+              "creado_en",
+              inicio
+            )
+            .lte(
+              "creado_en",
+              fin
+            )
+            .order(
+              "area",
+              {ascending:true}
+            )
+            .order(
+              "creado_en",
+              {ascending:true}
+            );
 
-        if(areaFiltroAdmin !== "TODAS"){
+
+        if(
+          areaFiltroAdmin !==
+          "TODAS"
+        ){
 
           consulta =
             consulta.eq(
@@ -2598,233 +3769,145 @@ const SUPABASE_ANON_KEY =
 
         }
 
-        const { data, error } =
+
+        const {
+          data,
+          error
+        } =
           await consulta;
 
-        btnDescargar.disabled = false;
-
-        btnDescargar.textContent =
-          "⬇ Descargar CSV";
 
         if(error){
 
           console.error(
-            "Error generando CSV:",
+            "Error CSV:",
             error
           );
 
           alert(
-            "No se pudo generar el archivo. Intenta de nuevo."
+            "No se pudo generar el archivo."
           );
 
           return;
-
         }
+
 
         if(!data || data.length === 0){
 
           alert(
-            "No hay registros en ese rango de fechas (con el filtro elegido)."
+            "No hay registros en ese rango."
           );
 
           return;
-
         }
 
-        const encabezados =
-          ["DNI", "Nombre completo", "Celular", "Área", "Fecha y hora", "Atendido", "Motivo", "Detalle"];
+
+        const encabezados = [
+          "DNI",
+          "Nombre completo",
+          "Celular",
+          "Área",
+          "Fecha y hora",
+          "Atendido",
+          "Motivo",
+          "Detalle"
+        ];
+
 
         const filas =
-          data.map((r) => [
-            `="${r.dni}"`,
-            r.nombre,
-            r.celular ? `="${r.celular}"` : "",
-            r.area,
-            new Date(r.creado_en).toLocaleString("es-PE"),
-            r.atendido ? "Sí" : "No",
-            r.motivo || "",
-            r.detalle || ""
-          ]);
+          data.map(
+            r => [
+              `="${r.dni || ""}"`,
+              r.nombre || "",
+              r.celular
+                ? `="${r.celular}"`
+                : "",
+              r.area || "",
+              new Date(
+                r.creado_en
+              ).toLocaleString(
+                "es-PE"
+              ),
+              r.atendido
+                ? "Sí"
+                : "No",
+              r.motivo || "",
+              r.detalle || ""
+            ]
+          );
+
 
         const csv =
-          [encabezados, ...filas]
-            .map((fila) =>
-              fila
-                .map((campo) => `"${String(campo).replace(/"/g, '""')}"`)
-                .join(",")
+          [encabezados,...filas]
+            .map(
+              fila =>
+                fila
+                  .map(
+                    campo =>
+                      `"${String(campo).replace(/"/g,'""')}"`
+                  )
+                  .join(",")
             )
             .join("\n");
 
+
         const blob =
-          new Blob(["\uFEFF" + csv], { type:"text/csv;charset=utf-8;" });
+          new Blob(
+            ["\uFEFF" + csv],
+            {
+              type:
+                "text/csv;charset=utf-8;"
+            }
+          );
+
 
         const url =
-          URL.createObjectURL(blob);
+          URL.createObjectURL(
+            blob
+          );
+
 
         const nombreArea =
           areaFiltroAdmin === "TODAS"
             ? "TODAS_LAS_AREAS"
-            : areaFiltroAdmin.replace(/\s+/g, "_");
+            : areaFiltroAdmin.replace(
+                /\s+/g,
+                "_"
+              );
 
-        const rangoArchivo =
-          desde === hasta
-            ? desde
-            : `${desde}_a_${hasta}`;
 
         const enlace =
-          document.createElement("a");
+          document.createElement(
+            "a"
+          );
 
-        enlace.href = url;
+        enlace.href =
+          url;
 
         enlace.download =
-          `registros_${nombreArea}_${rangoArchivo}.csv`;
+          `registros_${nombreArea}_${desde}_a_${hasta}.csv`;
 
         enlace.click();
 
-        URL.revokeObjectURL(url);
 
-      }
-    );
+        URL.revokeObjectURL(
+          url
+        );
 
-  }
 
-  const inputBuscar =
-    document.getElementById("inputBuscar");
+      }finally{
 
-  const btnBuscar =
-    document.getElementById("btnBuscar");
+        btnDescargar.disabled =
+          false;
 
-  const btnLimpiarBusqueda =
-    document.getElementById("btnLimpiarBusqueda");
+        btnDescargar.textContent =
+          "⬇ Descargar CSV";
 
-  async function buscarRegistros(){
-
-    const termino =
-      inputBuscar.value.trim();
-
-    if(!termino){
-
-      alert(
-        "Escribe un DNI o nombre para buscar."
-      );
-
-      return;
-
-    }
-
-    btnBuscar.disabled = true;
-
-    btnBuscar.textContent =
-      "Buscando...";
-
-    lista.innerHTML =
-      '<div class="vacio">Buscando...</div>';
-
-    try{
-
-      let consulta =
-        supabaseClient
-          .from("registros")
-          .select("*")
-          .or(`dni.ilike.%${termino}%,nombre.ilike.%${termino}%`)
-          .order("creado_en", { ascending:false })
-          .limit(50);
-
-      if(miRol === "admin"){
-
-        if(areaFiltroAdmin !== "TODAS"){
-
-          consulta =
-            consulta.eq("area", areaFiltroAdmin);
-
-        }
-
-      }else{
-
-        consulta =
-          consulta.eq("area", miArea);
-
-      }
-
-      const { data, error } =
-        await consulta;
-
-      if(error){
-
-        console.error("Error buscando:", error);
-
-        lista.innerHTML =
-          '<div class="vacio">No se pudo realizar la búsqueda.</div>';
-
-        return;
-
-      }
-
-      lista.innerHTML = "";
-
-      if(!data || data.length === 0){
-
-        lista.innerHTML =
-          '<div class="vacio">No se encontraron registros para esa búsqueda.</div>';
-
-        return;
-
-      }
-
-      data.forEach((r) => {
-        lista.appendChild(pintarFila(r, false));
-      });
-
-      btnLimpiarBusqueda.style.display =
-        "inline-block";
-
-    }catch(error){
-
-      console.error("Error:", error);
-
-      lista.innerHTML =
-        '<div class="vacio">No se pudo realizar la búsqueda.</div>';
-
-    }finally{
-
-      btnBuscar.disabled = false;
-
-      btnBuscar.textContent =
-        "Buscar";
-
-    }
-
-  }
-
-  btnBuscar.addEventListener(
-    "click",
-    buscarRegistros
-  );
-
-  inputBuscar.addEventListener(
-    "keydown",
-    (evento) => {
-
-      if(evento.key === "Enter"){
-        buscarRegistros();
       }
 
     }
   );
 
-  btnLimpiarBusqueda.addEventListener(
-    "click",
-    async () => {
-
-      inputBuscar.value = "";
-
-      btnLimpiarBusqueda.style.display =
-        "none";
-
-      await cargarRegistros();
-
-    }
-  );
 
   iniciar();
 
