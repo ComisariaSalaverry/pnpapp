@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1f3d31">
+
+  <title>Solicitar cita - Comisaría Salaverry</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --musgo: #1f3d31;
+      --musgo-oscuro: #142b22;
+      --dorado: #b89552;
+      --lino: #f7f3ea;
+      --blanco: #ffffff;
+      --tinta: #24302a;
+      --gris: #66736c;
+      --linea: #d9dfda;
+      --rojo: #a33a32;
+      --verde: #286b49;
+      --sombra: 0 12px 30px rgba(31, 61, 49, .10);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--lino);
+      color: var(--tinta);
+      font-family: 'Inter', sans-serif;
+    }
+
+    .contenedor {
+      width: min(760px, calc(100% - 28px));
+      margin: 30px auto 50px;
+    }
+
+    .encabezado {
+      background: var(--musgo);
+      color: white;
+      border-radius: 18px 18px 0 0;
+      padding: 28px 24px;
+      text-align: center;
+    }
+
+    .encabezado h1 {
+      margin: 0;
+      font-family: 'Fraunces', serif;
+      font-size: 2rem;
+      font-weight: 700;
+    }
+
+    .encabezado p {
+      margin: 8px 0 0;
+      color: #e7eee9;
+      font-size: .95rem;
+      line-height: 1.5;
+    }
+
+    .tarjeta {
+      background: var(--blanco);
+      border-radius: 0 0 18px 18px;
+      padding: 25px;
+      box-shadow: var(--sombra);
+    }
+
+    .paso {
+      margin-bottom: 24px;
+    }
+
+    .paso-titulo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .numero {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--musgo);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .paso-titulo h2 {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+
+    .campo {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      font-weight: 700;
+      font-size: .9rem;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 2px solid var(--linea);
+      border-radius: 10px;
+      padding: 12px 13px;
+      background: white;
+      color: var(--tinta);
+      font-family: 'Inter', sans-serif;
+      font-size: .95rem;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--musgo);
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .ayuda {
+      color: var(--gris);
+      font-size: .82rem;
+      margin-top: 6px;
+      line-height: 1.4;
+    }
+
+    .horarios {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+      margin-top: 12px;
+    }
+
+    .horario {
+      border: 2px solid var(--linea);
+      background: white;
+      color: var(--musgo);
+      border-radius: 9px;
+      padding: 11px 6px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      cursor: pointer;
+      transition: .15s;
+    }
+
+    .horario:hover {
+      border-color: var(--musgo);
+      background: #f1f5f2;
+    }
+
+    .horario.seleccionado {
+      background: var(--musgo);
+      border-color: var(--musgo);
+      color: white;
+    }
+
+    .horario.ocupado {
+      background: #eeeeee;
+      color: #999;
+      border-color: #dddddd;
+      cursor: not-allowed;
+      text-decoration: line-through;
+    }
+
+    .horario.pasado {
+      background: #f4f4f4;
+      color: #aaa;
+      border-color: #e4e4e4;
+      cursor: not-allowed;
+    }
+
+    .mensaje-horarios {
+      padding: 13px;
+      background: #f4f6f4;
+      border-radius: 10px;
+      color: var(--gris);
+      font-size: .9rem;
+      text-align: center;
+      margin-top: 12px;
+    }
+
+    .resumen {
+      display: none;
+      background: #eef4ef;
+      border: 1px solid #cbdacd;
+      border-radius: 12px;
+      padding: 15px;
+      margin-top: 15px;
+    }
+
+    .resumen strong {
+      color: var(--musgo);
+    }
+
+    .btn-principal {
+      width: 100%;
+      border: none;
+      border-radius: 11px;
+      padding: 14px;
+      background: var(--musgo);
+      color: white;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .btn-principal:hover {
+      background: var(--musgo-oscuro);
+    }
+
+    .btn-principal:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .error {
+      display: none;
+      background: #fbeceb;
+      color: var(--rojo);
+      border: 1px solid #e7b9b5;
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 16px;
+      font-size: .9rem;
+    }
+
+    .exito {
+      display: none;
+      text-align: center;
+      padding: 25px 10px;
+    }
+
+    .icono-exito {
+      width: 65px;
+      height: 65px;
+      margin: 0 auto 15px;
+      border-radius: 50%;
+      background: #e5f2e9;
+      color: var(--verde);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: 700;
+    }
+
+    .exito h2 {
+      font-family: 'Fraunces', serif;
+      color: var(--musgo);
+      margin: 0 0 10px;
+    }
+
+    .exito p {
+      color: var(--gris);
+      line-height: 1.5;
+      margin: 6px 0;
+    }
+
+    .detalle-cita {
+      background: #f5f7f5;
+      border-radius: 12px;
+      padding: 15px;
+      margin-top: 18px;
+      text-align: left;
+      line-height: 1.7;
+      font-size: .92rem;
+    }
+
+    .btn-nueva {
+      border: none;
+      background: var(--musgo);
+      color: white;
+      padding: 12px 18px;
+      border-radius: 9px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 18px;
+    }
+
+    .pie {
+      text-align: center;
+      color: var(--gris);
+      font-size: .8rem;
+      margin-top: 18px;
+    }
+
+    @media (max-width: 520px) {
+      .contenedor {
+        width: calc(100% - 18px);
+        margin-top: 12px;
+      }
+
+      .encabezado {
+        padding: 23px 17px;
+      }
+
+      .encabezado h1 {
+        font-size: 1.65rem;
+      }
+
+      .tarjeta {
+        padding: 18px;
+      }
+
+      .horarios {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="contenedor">
+
+    <div class="encabezado">
+      <h1>Solicitar una cita</h1>
+      <p>Comisaría Salaverry</p>
+    </div>
+
+    <div class="tarjeta">
+
+      <div id="formulario">
+
+        <div id="mensajeError" class="error"></div>
+
+        <!-- PASO 1 -->
+        <div class="paso">
+
+          <div class="paso-titulo">
+            <div class="numero">1</div>
+            <h2>Datos de la cita</h2>
+          </div>
+
+          <div class="campo">
+            <label for="area">Área</label>
+
+            <select id="area">
+              <option value="">Selecciona un área</option>
+              <option value="Sección de Delitos, Faltas y Tránsito">
+                Sección de Delitos, Faltas y Tránsito
+              </option>
+              <option value="Familia">
+                Familia
+              </option>
+              <option value="Policía comunitaria">
+                Policía comunitaria
+              </option>
+              <option value="Secretaría">
+                Secretaría
+              </option>
+              <option value="Comisario">
+                Comisario
+              </option>
+              <option value="Copias certificadas y medidas de protección">
+                Copias certificadas y medidas de protección
+              </option>
+            </select>
+          </div>
+
+          <div class="campo">
+            <label for="fecha">Fecha</label>
+            <input type="date" id="fecha">
+            <div class="ayuda">
+              Selecciona una fecha para consultar los horarios disponibles.
+            </div>
+          </div>
+
+        </div>
+
+        <!-- PASO 2 -->
+        <div class="paso">
+
+          <div class="paso-titulo">
+            <div class="numero">2</div>
+            <h2>Horario</h2>
+          </div>
+
+          <div id="mensajeHorarios" class="mensaje-horarios">
+            Primero selecciona un área y una fecha.
+          </div>
+
+          <div id="horarios" class="horarios"></div>
+
+          <div id="resumen" class="resumen">
+            <strong>Cita seleccionada</strong>
+            <div id="resumenTexto"></div>
+          </div>
+
+        </div>
+
+        <!-- PASO 3 -->
+        <div class="paso">
+
+          <div class="paso-titulo">
+            <div class="numero">3</div>
+            <h2>Datos personales</h2>
+          </div>
+
+          <div class="campo">
+            <label for="nombre">Nombre completo</label>
+            <input
+              type="text"
+              id="nombre"
+              maxlength="150"
+              placeholder="Escribe tu nombre completo"
+            >
+          </div>
+
+          <div class="campo">
+            <label for="dni">DNI / documento</label>
+            <input
+              type="text"
+              id="dni"
+              maxlength="20"
+              placeholder="Ingresa tu documento"
+            >
+          </div>
+
+          <div class="campo">
+            <label for="celular">Celular</label>
+            <input
+              type="tel"
+              id="celular"
+              maxlength="20"
+              placeholder="Ingresa tu número de celular"
+            >
+          </div>
+
+          <div class="campo">
+            <label for="motivo">Motivo de la cita</label>
+            <textarea
+              id="motivo"
+              maxlength="500"
+              placeholder="Indica brevemente el motivo de tu cita"
+            ></textarea>
+          </div>
+
+        </div>
+
+        <button id="btnAgendar" class="btn-principal">
+          Agendar cita
+        </button>
+
+      </div>
+
+
+      <!-- MENSAJE DE ÉXITO -->
+
+      <div id="exito" class="exito">
+
+        <div class="icono-exito">
+          ✓
+        </div>
+
+        <h2>Cita registrada</h2>
+
+        <p>
+          Tu cita fue registrada correctamente.
+        </p>
+
+        <div id="detalleCita" class="detalle-cita"></div>
+
+        <p style="margin-top:16px;">
+          Recuerda acudir a la Comisaría Salaverry en la fecha y hora seleccionadas.
+        </p>
+
+        <button id="btnNueva" class="btn-nueva">
+          Registrar otra cita
+        </button>
+
+      </div>
+
+    </div>
+
+    <div class="pie">
+      Comisaría Salaverry
+    </div>
+
+  </div>
+
+
+  <script>
+
+    const SUPABASE_URL = "https://cthpbxqwsjcgpdfqkdwr.supabase.co";
+
+    const SUPABASE_ANON_KEY =
+      "sb_publishable_qTNkWQAQLrzS2-81BpeDeA_DFDCrVol";
+
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
+    );
+
+
+    const area = document.getElementById("area");
+    const fecha = document.getElementById("fecha");
+    const horarios = document.getElementById("horarios");
+    const mensajeHorarios = document.getElementById("mensajeHorarios");
+
+    const nombre = document.getElementById("nombre");
+    const dni = document.getElementById("dni");
+    const celular = document.getElementById("celular");
+    const motivo = document.getElementById("motivo");
+
+    const btnAgendar = document.getElementById("btnAgendar");
+
+    const resumen = document.getElementById("resumen");
+    const resumenTexto = document.getElementById("resumenTexto");
+
+    const mensajeError = document.getElementById("mensajeError");
+
+    const formulario = document.getElementById("formulario");
+    const exito = document.getElementById("exito");
+    const detalleCita = document.getElementById("detalleCita");
+    const btnNueva = document.getElementById("btnNueva");
+
+
+    let horaSeleccionada = "";
+
+
+    const HORARIOS = [
+      "08:00",
+      "08:30",
+      "09:00",
+      "09:30",
+      "10:00",
+      "10:30",
+      "11:00",
+      "11:30",
+      "12:00",
+      "12:30",
+      "13:00",
+      "13:30",
+      "14:00",
+      "14:30",
+      "15:00",
+      "15:30",
+      "16:00",
+      "16:30",
+      "17:00"
+    ];
+
+
+    function mostrarError(texto) {
+
+      mensajeError.textContent = texto;
+      mensajeError.style.display = "block";
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+
+
+    function ocultarError() {
+
+      mensajeError.textContent = "";
+      mensajeError.style.display = "none";
+    }
+
+
+    function fechaLocal() {
+
+      const ahora = new Date();
+
+      const year = ahora.getFullYear();
+      const month = String(ahora.getMonth() + 1).padStart(2, "0");
+      const day = String(ahora.getDate()).padStart(2, "0");
+
+      return `${year}-${month}-${day}`;
+    }
+
+
+    fecha.min = fechaLocal();
+
+
+    async function cargarHorarios() {
+
+      ocultarError();
+
+      horarios.innerHTML = "";
+      resumen.style.display = "none";
+      horaSeleccionada = "";
+
+      if (!area.value || !fecha.value) {
+
+        mensajeHorarios.textContent =
+          "Primero selecciona un área y una fecha.";
+
+        return;
+      }
+
+
+      const fechaSeleccionada = new Date(
+        fecha.value + "T00:00:00"
+      );
+
+      const hoy = new Date();
+
+      hoy.setHours(0, 0, 0, 0);
+
+
+      if (fechaSeleccionada < hoy) {
+
+        mensajeHorarios.textContent =
+          "No puedes seleccionar una fecha anterior a hoy.";
+
+        return;
+      }
+
+
+      mensajeHorarios.textContent =
+        "Consultando horarios disponibles...";
+
+
+      const {
+        data,
+        error
+      } = await supabaseClient.rpc(
+        "horarios_ocupados",
+        {
+          p_area: area.value,
+          p_fecha: fecha.value
+        }
+      );
+
+
+      if (error) {
+
+        console.error(error);
+
+        mensajeHorarios.textContent =
+          "No se pudieron consultar los horarios.";
+
+        mostrarError(
+          "No se pudieron cargar los horarios disponibles."
+        );
+
+        return;
+      }
+
+
+      const ocupados = new Set(
+        (data || []).map(item => {
+
+          return String(item.hora).slice(0, 5);
+
+        })
+      );
+
+
+      horarios.innerHTML = "";
+
+
+      let cantidadDisponibles = 0;
+
+
+      HORARIOS.forEach(hora => {
+
+        const boton = document.createElement("button");
+
+        boton.type = "button";
+        boton.className = "horario";
+        boton.textContent = hora;
+
+
+        if (ocupados.has(hora)) {
+
+          boton.classList.add("ocupado");
+          boton.disabled = true;
+          boton.title = "Horario ocupado";
+
+          horarios.appendChild(boton);
+
+          return;
+        }
+
+
+        if (fecha.value === fechaLocal()) {
+
+          const ahora = new Date();
+
+          const partes = hora.split(":");
+
+          const horaCita = new Date();
+
+          horaCita.setHours(
+            Number(partes[0]),
+            Number(partes[1]),
+            0,
+            0
+          );
+
+
+          if (horaCita <= ahora) {
+
+            boton.classList.add("pasado");
+            boton.disabled = true;
+            boton.title = "Horario pasado";
+
+            horarios.appendChild(boton);
+
+            return;
+          }
+        }
+
+
+        cantidadDisponibles++;
+
+
+        boton.addEventListener("click", () => {
+
+          document
+            .querySelectorAll(".horario.seleccionado")
+            .forEach(b => {
+              b.classList.remove("seleccionado");
+            });
+
+
+          boton.classList.add("seleccionado");
+
+          horaSeleccionada = hora;
+
+
+          resumen.style.display = "block";
+
+          resumenTexto.innerHTML =
+            `${area.value}<br>
+             ${formatearFecha(fecha.value)} a las ${hora}:00`;
+
+
+          ocultarError();
+
+        });
+
+
+        horarios.appendChild(boton);
+
+      });
+
+
+      if (cantidadDisponibles === 0) {
+
+        mensajeHorarios.textContent =
+          "No hay horarios disponibles para esta fecha.";
+
+      } else {
+
+        mensajeHorarios.textContent =
+          "Selecciona uno de los horarios disponibles.";
+
+      }
+
+    }
+
+
+    function formatearFecha(fechaTexto) {
+
+      const partes = fechaTexto.split("-");
+
+      if (partes.length !== 3) {
+        return fechaTexto;
+      }
+
+
+      const fechaObj = new Date(
+        Number(partes[0]),
+        Number(partes[1]) - 1,
+        Number(partes[2])
+      );
+
+
+      return fechaObj.toLocaleDateString(
+        "es-PE",
+        {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric"
+        }
+      );
+    }
+
+
+    area.addEventListener(
+      "change",
+      cargarHorarios
+    );
+
+
+    fecha.addEventListener(
+      "change",
+      cargarHorarios
+    );
+
+
+    btnAgendar.addEventListener(
+      "click",
+      async () => {
+
+        ocultarError();
+
+
+        const nombreValor =
+          nombre.value.trim();
+
+        const dniValor =
+          dni.value.trim();
+
+        const celularValor =
+          celular.value.trim();
+
+        const motivoValor =
+          motivo.value.trim();
+
+
+        if (!area.value) {
+
+          mostrarError(
+            "Selecciona un área."
+          );
+
+          area.focus();
+
+          return;
+        }
+
+
+        if (!fecha.value) {
+
+          mostrarError(
+            "Selecciona una fecha."
+          );
+
+          fecha.focus();
+
+          return;
+        }
+
+
+        if (!horaSeleccionada) {
+
+          mostrarError(
+            "Selecciona un horario."
+          );
+
+          return;
+        }
+
+
+        if (nombreValor.length < 2) {
+
+          mostrarError(
+            "Ingresa tu nombre completo."
+          );
+
+          nombre.focus();
+
+          return;
+        }
+
+
+        if (dniValor.length < 8) {
+
+          mostrarError(
+            "Ingresa un DNI o documento válido."
+          );
+
+          dni.focus();
+
+          return;
+        }
+
+
+        if (motivoValor.length < 2) {
+
+          mostrarError(
+            "Ingresa el motivo de la cita."
+          );
+
+          motivo.focus();
+
+          return;
+        }
+
+
+        btnAgendar.disabled = true;
+        btnAgendar.textContent =
+          "Registrando cita...";
+
+
+        try {
+
+          const {
+            error
+          } = await supabaseClient
+            .from("citas")
+            .insert({
+              nombre: nombreValor,
+              dni: dniValor,
+              celular: celularValor || null,
+              area: area.value,
+              motivo: motivoValor,
+              fecha: fecha.value,
+              hora: horaSeleccionada,
+              estado: "Pendiente"
+            });
+
+
+          if (error) {
+
+            console.error(
+              "Error registrando cita:",
+              error
+            );
+
+
+            if (
+              error.code === "23505" ||
+              String(error.message)
+                .toLowerCase()
+                .includes("duplicate")
+            ) {
+
+              mostrarError(
+                "Ese horario acaba de ser ocupado. Selecciona otro horario."
+              );
+
+              await cargarHorarios();
+
+            } else {
+
+              mostrarError(
+                "No se pudo registrar la cita. Inténtalo nuevamente."
+              );
+            }
+
+
+            return;
+          }
+
+
+          detalleCita.innerHTML = `
+            <strong>Área:</strong> ${escapeHtml(area.value)}<br>
+            <strong>Fecha:</strong> ${escapeHtml(formatearFecha(fecha.value))}<br>
+            <strong>Hora:</strong> ${escapeHtml(horaSeleccionada)}<br>
+            <strong>Nombre:</strong> ${escapeHtml(nombreValor)}<br>
+            <strong>DNI:</strong> ${escapeHtml(dniValor)}
+          `;
+
+
+          formulario.style.display = "none";
+          exito.style.display = "block";
+
+
+          window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+          });
+
+
+        } catch (error) {
+
+          console.error(error);
+
+          mostrarError(
+            "Ocurrió un error al registrar la cita."
+          );
+
+        } finally {
+
+          btnAgendar.disabled = false;
+          btnAgendar.textContent =
+            "Agendar cita";
+
+        }
+
+      }
+    );
+
+
+    btnNueva.addEventListener(
+      "click",
+      () => {
+
+        nombre.value = "";
+        dni.value = "";
+        celular.value = "";
+        motivo.value = "";
+
+        area.value = "";
+        fecha.value = "";
+
+        horarios.innerHTML = "";
+
+        mensajeHorarios.textContent =
+          "Primero selecciona un área y una fecha.";
+
+        resumen.style.display = "none";
+
+        horaSeleccionada = "";
+
+        detalleCita.innerHTML = "";
+
+        exito.style.display = "none";
+        formulario.style.display = "block";
+
+        ocultarError();
+
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
+
+      }
+    );
+
+
+    function escapeHtml(texto) {
+
+      return String(texto)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+    }
+
+  </script>
+
+</body>
+</html>
