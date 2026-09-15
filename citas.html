@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -360,30 +361,39 @@
 
             <select id="area">
               <option value="">Selecciona un área</option>
+
               <option value="Sección de Delitos, Faltas y Tránsito">
                 Sección de Delitos, Faltas y Tránsito
               </option>
+
               <option value="Familia">
                 Familia
               </option>
+
               <option value="Policía comunitaria">
                 Policía comunitaria
               </option>
+
               <option value="Secretaría">
                 Secretaría
               </option>
+
               <option value="Comisario">
                 Comisario
               </option>
+
               <option value="Copias certificadas y medidas de protección">
                 Copias certificadas y medidas de protección
               </option>
+
             </select>
           </div>
 
           <div class="campo">
             <label for="fecha">Fecha</label>
+
             <input type="date" id="fecha">
+
             <div class="ayuda">
               Selecciona una fecha para consultar los horarios disponibles.
             </div>
@@ -422,6 +432,7 @@
 
           <div class="campo">
             <label for="nombre">Nombre completo</label>
+
             <input
               type="text"
               id="nombre"
@@ -432,6 +443,7 @@
 
           <div class="campo">
             <label for="dni">DNI / documento</label>
+
             <input
               type="text"
               id="dni"
@@ -442,6 +454,7 @@
 
           <div class="campo">
             <label for="celular">Celular</label>
+
             <input
               type="tel"
               id="celular"
@@ -452,6 +465,7 @@
 
           <div class="campo">
             <label for="motivo">Motivo de la cita</label>
+
             <textarea
               id="motivo"
               maxlength="500"
@@ -466,7 +480,6 @@
         </button>
 
       </div>
-
 
       <!-- MENSAJE DE ÉXITO -->
 
@@ -502,47 +515,80 @@
 
   </div>
 
-
   <script>
 
-    const SUPABASE_URL = "https://cthpbxqwsjcgpdfqkdwr.supabase.co";
+    const SUPABASE_URL =
+      "https://cthpbxqwsjcgpdfqkdwr.supabase.co";
 
     const SUPABASE_ANON_KEY =
       "sb_publishable_qTNkWQAQLrzS2-81BpeDeA_DFDCrVol";
 
-    const supabaseClient = window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
-    );
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+      );
 
 
-    const area = document.getElementById("area");
-    const fecha = document.getElementById("fecha");
-    const horarios = document.getElementById("horarios");
-    const mensajeHorarios = document.getElementById("mensajeHorarios");
+    const area =
+      document.getElementById("area");
 
-    const nombre = document.getElementById("nombre");
-    const dni = document.getElementById("dni");
-    const celular = document.getElementById("celular");
-    const motivo = document.getElementById("motivo");
+    const fecha =
+      document.getElementById("fecha");
 
-    const btnAgendar = document.getElementById("btnAgendar");
+    const horarios =
+      document.getElementById("horarios");
 
-    const resumen = document.getElementById("resumen");
-    const resumenTexto = document.getElementById("resumenTexto");
+    const mensajeHorarios =
+      document.getElementById("mensajeHorarios");
 
-    const mensajeError = document.getElementById("mensajeError");
 
-    const formulario = document.getElementById("formulario");
-    const exito = document.getElementById("exito");
-    const detalleCita = document.getElementById("detalleCita");
-    const btnNueva = document.getElementById("btnNueva");
+    const nombre =
+      document.getElementById("nombre");
+
+    const dni =
+      document.getElementById("dni");
+
+    const celular =
+      document.getElementById("celular");
+
+    const motivo =
+      document.getElementById("motivo");
+
+
+    const btnAgendar =
+      document.getElementById("btnAgendar");
+
+
+    const resumen =
+      document.getElementById("resumen");
+
+    const resumenTexto =
+      document.getElementById("resumenTexto");
+
+
+    const mensajeError =
+      document.getElementById("mensajeError");
+
+
+    const formulario =
+      document.getElementById("formulario");
+
+    const exito =
+      document.getElementById("exito");
+
+    const detalleCita =
+      document.getElementById("detalleCita");
+
+    const btnNueva =
+      document.getElementById("btnNueva");
 
 
     let horaSeleccionada = "";
 
 
-    const HORARIOS = [
+    // Horario normal: 08:00 a 17:00
+    const HORARIOS_NORMALES = [
       "08:00",
       "08:30",
       "09:00",
@@ -565,22 +611,63 @@
     ];
 
 
+    // Copias certificadas: 09:00 a 17:00
+    const HORARIOS_COPIAS = [
+      "09:00",
+      "09:30",
+      "10:00",
+      "10:30",
+      "11:00",
+      "11:30",
+      "12:00",
+      "12:30",
+      "13:00",
+      "13:30",
+      "14:00",
+      "14:30",
+      "15:00",
+      "15:30",
+      "16:00",
+      "16:30",
+      "17:00"
+    ];
+
+
+    function obtenerHorarios() {
+
+      if (
+        area.value ===
+        "Copias certificadas y medidas de protección"
+      ) {
+
+        return HORARIOS_COPIAS;
+
+      }
+
+      return HORARIOS_NORMALES;
+    }
+
+
     function mostrarError(texto) {
 
       mensajeError.textContent = texto;
+
       mensajeError.style.display = "block";
 
       window.scrollTo({
         top: 0,
         behavior: "smooth"
       });
+
     }
 
 
     function ocultarError() {
 
       mensajeError.textContent = "";
+
       mensajeError.style.display = "none";
+
     }
 
 
@@ -588,11 +675,19 @@
 
       const ahora = new Date();
 
-      const year = ahora.getFullYear();
-      const month = String(ahora.getMonth() + 1).padStart(2, "0");
-      const day = String(ahora.getDate()).padStart(2, "0");
+      const year =
+        ahora.getFullYear();
+
+      const month =
+        String(ahora.getMonth() + 1)
+          .padStart(2, "0");
+
+      const day =
+        String(ahora.getDate())
+          .padStart(2, "0");
 
       return `${year}-${month}-${day}`;
+
     }
 
 
@@ -604,8 +699,11 @@
       ocultarError();
 
       horarios.innerHTML = "";
+
       resumen.style.display = "none";
+
       horaSeleccionada = "";
+
 
       if (!area.value || !fecha.value) {
 
@@ -613,12 +711,14 @@
           "Primero selecciona un área y una fecha.";
 
         return;
+
       }
 
 
-      const fechaSeleccionada = new Date(
-        fecha.value + "T00:00:00"
-      );
+      const fechaSeleccionada =
+        new Date(
+          fecha.value + "T00:00:00"
+        );
 
       const hoy = new Date();
 
@@ -631,6 +731,7 @@
           "No puedes seleccionar una fecha anterior a hoy.";
 
         return;
+
       }
 
 
@@ -662,16 +763,16 @@
         );
 
         return;
+
       }
 
 
-      const ocupados = new Set(
-        (data || []).map(item => {
-
-          return String(item.hora).slice(0, 5);
-
-        })
-      );
+      const ocupados =
+        new Set(
+          (data || []).map(item => {
+            return String(item.hora).slice(0, 5);
+          })
+        );
 
 
       horarios.innerHTML = "";
@@ -680,24 +781,34 @@
       let cantidadDisponibles = 0;
 
 
-      HORARIOS.forEach(hora => {
+      const horariosDelArea =
+        obtenerHorarios();
 
-        const boton = document.createElement("button");
+
+      horariosDelArea.forEach(hora => {
+
+        const boton =
+          document.createElement("button");
 
         boton.type = "button";
+
         boton.className = "horario";
+
         boton.textContent = hora;
 
 
         if (ocupados.has(hora)) {
 
           boton.classList.add("ocupado");
+
           boton.disabled = true;
+
           boton.title = "Horario ocupado";
 
           horarios.appendChild(boton);
 
           return;
+
         }
 
 
@@ -705,7 +816,8 @@
 
           const ahora = new Date();
 
-          const partes = hora.split(":");
+          const partes =
+            hora.split(":");
 
           const horaCita = new Date();
 
@@ -720,43 +832,60 @@
           if (horaCita <= ahora) {
 
             boton.classList.add("pasado");
+
             boton.disabled = true;
+
             boton.title = "Horario pasado";
 
             horarios.appendChild(boton);
 
             return;
+
           }
+
         }
 
 
         cantidadDisponibles++;
 
 
-        boton.addEventListener("click", () => {
+        boton.addEventListener(
+          "click",
+          () => {
 
-          document
-            .querySelectorAll(".horario.seleccionado")
-            .forEach(b => {
-              b.classList.remove("seleccionado");
-            });
-
-
-          boton.classList.add("seleccionado");
-
-          horaSeleccionada = hora;
-
-
-          resumen.style.display = "block";
-
-          resumenTexto.innerHTML =
-            `${area.value}<br>
-             ${formatearFecha(fecha.value)} a las ${hora}:00`;
+            document
+              .querySelectorAll(
+                ".horario.seleccionado"
+              )
+              .forEach(b => {
+                b.classList.remove(
+                  "seleccionado"
+                );
+              });
 
 
-          ocultarError();
+            boton.classList.add(
+              "seleccionado"
+            );
 
-        });
+
+            horaSeleccionada = hora;
+
+
+            resumen.style.display =
+              "block";
+
+
+            resumenTexto.innerHTML =
+              `${escapeHtml(area.value)}<br>
+               ${escapeHtml(formatearFecha(fecha.value))}
+               a las ${escapeHtml(hora)}:00`;
+
+
+            ocultarError();
+
+          }
+        );
 
 
         horarios.appendChild(boton);
@@ -781,18 +910,21 @@
 
     function formatearFecha(fechaTexto) {
 
-      const partes = fechaTexto.split("-");
+      const partes =
+        fechaTexto.split("-");
+
 
       if (partes.length !== 3) {
         return fechaTexto;
       }
 
 
-      const fechaObj = new Date(
-        Number(partes[0]),
-        Number(partes[1]) - 1,
-        Number(partes[2])
-      );
+      const fechaObj =
+        new Date(
+          Number(partes[0]),
+          Number(partes[1]) - 1,
+          Number(partes[2])
+        );
 
 
       return fechaObj.toLocaleDateString(
@@ -803,6 +935,7 @@
           year: "numeric"
         }
       );
+
     }
 
 
@@ -847,6 +980,7 @@
           area.focus();
 
           return;
+
         }
 
 
@@ -859,6 +993,7 @@
           fecha.focus();
 
           return;
+
         }
 
 
@@ -869,6 +1004,7 @@
           );
 
           return;
+
         }
 
 
@@ -881,6 +1017,7 @@
           nombre.focus();
 
           return;
+
         }
 
 
@@ -893,6 +1030,7 @@
           dni.focus();
 
           return;
+
         }
 
 
@@ -905,10 +1043,12 @@
           motivo.focus();
 
           return;
+
         }
 
 
         btnAgendar.disabled = true;
+
         btnAgendar.textContent =
           "Registrando cita...";
 
@@ -957,10 +1097,11 @@
               mostrarError(
                 "No se pudo registrar la cita. Inténtalo nuevamente."
               );
+
             }
 
-
             return;
+
           }
 
 
@@ -974,6 +1115,7 @@
 
 
           formulario.style.display = "none";
+
           exito.style.display = "block";
 
 
@@ -994,6 +1136,7 @@
         } finally {
 
           btnAgendar.disabled = false;
+
           btnAgendar.textContent =
             "Agendar cita";
 
@@ -1008,11 +1151,15 @@
       () => {
 
         nombre.value = "";
+
         dni.value = "";
+
         celular.value = "";
+
         motivo.value = "";
 
         area.value = "";
+
         fecha.value = "";
 
         horarios.innerHTML = "";
@@ -1027,9 +1174,11 @@
         detalleCita.innerHTML = "";
 
         exito.style.display = "none";
+
         formulario.style.display = "block";
 
         ocultarError();
+
 
         window.scrollTo({
           top: 0,
@@ -1055,3 +1204,4 @@
 
 </body>
 </html>
+```
