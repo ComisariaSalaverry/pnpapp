@@ -1,8 +1,8 @@
 // sw.js — Service Worker del Panel de Registros
-// Se encarga de: 1) recibir notificaciones push aunque la app esté cerrada,
-//                2) guardar en caché lo básico para que la app abra sin internet.
+// Recibe notificaciones push y guarda archivos básicos en caché.
 
-const CACHE_NOMBRE = 'panel-registros-v1';
+const CACHE_NOMBRE = 'panel-registros-v2';
+
 const ARCHIVOS_BASE = [
   './panel.html',
   './manifest.json',
@@ -14,6 +14,7 @@ self.addEventListener('install', (evento) => {
   evento.waitUntil(
     caches.open(CACHE_NOMBRE).then((cache) => cache.addAll(ARCHIVOS_BASE))
   );
+
   self.skipWaiting();
 });
 
@@ -27,23 +28,29 @@ self.addEventListener('activate', (evento) => {
       )
     )
   );
+
   self.clients.claim();
 });
 
-// Sirve desde caché si no hay internet; si hay, intenta traer lo más nuevo
+// Si hay internet, carga la versión actual.
+// Si no hay internet, usa la versión guardada en caché.
 self.addEventListener('fetch', (evento) => {
   evento.respondWith(
     fetch(evento.request).catch(() => caches.match(evento.request))
   );
 });
 
-// === Esto es lo importante: recibir la notificación push y mostrarla ===
+// Recibir notificación push
 self.addEventListener('push', (evento) => {
-  let datos = { titulo: 'Nuevo registro', cuerpo: 'Un cliente se acaba de registrar.' };
+  let datos = {
+    titulo: 'Nuevo registro',
+    cuerpo: 'Un cliente se acaba de registrar.'
+  };
+
   try {
     datos = evento.data.json();
   } catch (e) {
-    // si no llega en formato JSON, se usa el texto por defecto de arriba
+    // Se mantienen los datos por defecto
   }
 
   evento.waitUntil(
@@ -52,20 +59,36 @@ self.addEventListener('push', (evento) => {
       icon: './icon-192.png',
       badge: './icon-192.png',
       vibrate: [120, 60, 120],
-      data: { url: './panel.html' }
+      data: {
+        url: './panel.html'
+      }
     })
   );
 });
 
-// Al tocar la notificación, abre (o enfoca) el panel
+// Al tocar la notificación, abrir o enfocar el panel
 self.addEventListener('notificationclick', (evento) => {
   evento.notification.close();
+
   evento.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((listaClientes) => {
+    clients.matchAll({
+      type: 'window',
+      includeUncontrolled: true
+    }).then((listaClientes) => {
+
       for (const cliente of listaClientes) {
-        if (cliente.url.includes('panel.html') && 'focus' in cliente) return cliente.focus();
+        if (
+          cliente.url.includes('panel.html') &&
+          'focus' in cliente
+        ) {
+          return cliente.focus();
+        }
       }
-      if (clients.openWindow) return clients.openWindow('./panel.html');
+
+      if (clients.openWindow) {
+        return clients.openWindow('./panel.html');
+      }
+
     })
   );
 });
