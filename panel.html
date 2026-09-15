@@ -275,6 +275,44 @@
       cursor:not-allowed;
     }
 
+    .buscador{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-bottom:18px;
+    }
+
+    .buscador input[type=text]{
+      flex:1;
+      min-width:150px;
+      padding:10px 12px;
+      border-radius:8px;
+      border:1px solid var(--linea);
+      background:var(--papel);
+      color:var(--tinta);
+      font-family:'Inter',sans-serif;
+      font-size:.85rem;
+    }
+
+    .buscador button{
+      padding:10px 16px;
+      border-radius:8px;
+      border:none;
+      background:var(--musgo);
+      color:#fff;
+      font-weight:700;
+      font-size:.85rem;
+      cursor:pointer;
+      font-family:'Inter',sans-serif;
+      white-space:nowrap;
+    }
+
+    #btnLimpiarBusqueda{
+      background:var(--lino);
+      color:var(--musgo);
+      border:1px solid var(--linea);
+    }
+
     .lista{
       display:flex;
       flex-direction:column;
@@ -344,6 +382,15 @@
       margin-top:2px;
     }
 
+    .info-cliente .motivo-atendido{
+      color:var(--tinta);
+      font-size:.82rem;
+      margin-top:6px;
+      padding-top:6px;
+      border-top:1px dashed var(--linea);
+      overflow-wrap:anywhere;
+    }
+
     .acciones-registro{
       display:flex;
       align-items:center;
@@ -370,6 +417,24 @@
     .estado-btn.atendido{
       background:#e2ede6;
       color:var(--verde);
+    }
+
+    .motivo-btn{
+      border:none;
+      padding:9px 16px;
+      border-radius:8px;
+      font-weight:600;
+      font-size:.85rem;
+      cursor:pointer;
+      white-space:nowrap;
+      flex-shrink:0;
+      background:#eef0e4;
+      color:var(--musgo);
+    }
+
+    .motivo-btn.con-motivo{
+      background:var(--musgo);
+      color:var(--papel);
     }
 
     .eliminar-btn{
@@ -516,6 +581,7 @@
       }
 
       .estado-btn,
+      .motivo-btn,
       .eliminar-btn{
         padding:8px 10px;
         font-size:.78rem;
@@ -552,6 +618,7 @@
       }
 
       .estado-btn,
+      .motivo-btn,
       .eliminar-btn{
         width:100%;
         padding:10px;
@@ -567,6 +634,100 @@
       }
 
     }
+
+  .overlay-modal{
+    position:fixed;
+    top:0; left:0; right:0; bottom:0;
+    background:rgba(13,31,20,0.55);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:100;
+    padding:20px;
+  }
+
+  .caja-modal{
+    width:100%;
+    max-width:420px;
+    background:var(--papel);
+    border-radius:16px;
+    padding:28px 26px;
+    box-shadow:0 20px 50px rgba(13,31,20,0.25);
+  }
+
+  .caja-modal h2{
+    font-family:'Fraunces',serif;
+    font-size:1.3rem;
+    margin:0 0 18px 0;
+    color:var(--tinta);
+  }
+
+  .caja-modal label{
+    display:block;
+    font-weight:600;
+    font-size:0.85rem;
+    margin:14px 0 6px 0;
+    color:var(--musgo);
+  }
+
+  .caja-modal input[type=text],
+  .caja-modal textarea{
+    width:100%;
+    padding:11px 12px;
+    border-radius:10px;
+    border:2px solid var(--linea);
+    background:var(--lino);
+    font-family:'Inter',sans-serif;
+    font-size:0.92rem;
+    color:var(--tinta);
+    resize:vertical;
+  }
+
+  .caja-modal input[type=text]:focus,
+  .caja-modal textarea:focus{
+    outline:none;
+    border-color:var(--musgo);
+  }
+
+  .error-modal{
+    color:#a13a2a;
+    font-size:0.85rem;
+    min-height:18px;
+    margin-top:8px;
+  }
+
+  .botones-modal{
+    display:flex;
+    gap:10px;
+    margin-top:16px;
+  }
+
+  .btn-cancelar-modal, .btn-guardar-modal{
+    flex:1;
+    padding:12px;
+    border-radius:10px;
+    border:none;
+    font-weight:700;
+    font-size:0.9rem;
+    cursor:pointer;
+    font-family:'Inter',sans-serif;
+  }
+
+  .btn-cancelar-modal{
+    background:var(--lino);
+    color:var(--musgo);
+    border:1px solid var(--linea);
+  }
+
+  .btn-guardar-modal{
+    background:var(--musgo);
+    color:var(--papel);
+  }
+
+  .btn-guardar-modal:disabled{
+    opacity:0.6;
+    cursor:not-allowed;
+  }
 
   </style>
 
@@ -737,11 +898,34 @@
 
     <input
       type="date"
-      id="fechaDescarga"
+      id="fechaDesde"
+    >
+
+    <input
+      type="date"
+      id="fechaHasta"
     >
 
     <button id="btnDescargar">
-      ⬇ Descargar registros del día
+      ⬇ Descargar CSV
+    </button>
+
+  </div>
+
+  <div class="buscador">
+
+    <input
+      type="text"
+      id="inputBuscar"
+      placeholder="Buscar por DNI o nombre"
+    >
+
+    <button id="btnBuscar">
+      Buscar
+    </button>
+
+    <button id="btnLimpiarBusqueda" style="display:none;">
+      Limpiar
     </button>
 
   </div>
@@ -757,6 +941,56 @@
     class="lista"
     id="lista"
   ></div>
+
+</div>
+
+<div
+  id="overlayAtendido"
+  class="overlay-modal"
+  style="display:none;"
+>
+
+  <div class="caja-modal">
+
+    <h2>Marcar como atendido</h2>
+
+    <label for="motivoAtendido">
+      Motivo de la visita
+    </label>
+
+    <input
+      type="text"
+      id="motivoAtendido"
+      maxlength="150"
+      placeholder="Consulta, denuncia, trámite documentario..."
+    >
+
+    <label for="detalleAtendido">
+      Especificar
+    </label>
+
+    <textarea
+      id="detalleAtendido"
+      rows="4"
+      maxlength="500"
+      placeholder="Detalle adicional sobre la atención brindada"
+    ></textarea>
+
+    <div class="error-modal" id="errorModal"></div>
+
+    <div class="botones-modal">
+
+      <button id="btnCancelarAtendido" class="btn-cancelar-modal">
+        Cancelar
+      </button>
+
+      <button id="btnGuardarAtendido" class="btn-guardar-modal">
+        Guardar
+      </button>
+
+    </div>
+
+  </div>
 
 </div>
 
@@ -1381,6 +1615,10 @@ const SUPABASE_ANON_KEY =
       registro.dni ||
       "No registrado";
 
+    const celular =
+      registro.celular ||
+      null;
+
     const area =
       registro.area ||
       "Sin área";
@@ -1398,6 +1636,16 @@ const SUPABASE_ANON_KEY =
         </div>
 
         ${
+          celular
+            ? `
+              <div class="dni">
+                Cel. ${escaparHTML(celular)}
+              </div>
+            `
+            : ""
+        }
+
+        ${
           miRol === "admin"
             ? `
               <div class="area">
@@ -1410,6 +1658,21 @@ const SUPABASE_ANON_KEY =
         <div class="hora">
           ${formatoHora(registro.creado_en)}
         </div>
+
+        ${
+          registro.atendido && registro.motivo
+            ? `
+              <div class="motivo-atendido">
+                <strong>Motivo:</strong> ${escaparHTML(registro.motivo)}
+                ${
+                  registro.detalle
+                    ? `<br><strong>Detalle:</strong> ${escaparHTML(registro.detalle)}`
+                    : ""
+                }
+              </div>
+            `
+            : ""
+        }
 
       </div>
 
@@ -1427,6 +1690,20 @@ const SUPABASE_ANON_KEY =
             registro.atendido
               ? "Atendido"
               : "Marcar atendido"
+          }
+
+        </button>
+
+        <button
+          class="motivo-btn ${
+            registro.motivo ? "con-motivo" : ""
+          }"
+        >
+
+          ${
+            registro.motivo
+              ? "Editar motivo"
+              : "Motivo"
           }
 
         </button>
@@ -1462,6 +1739,23 @@ const SUPABASE_ANON_KEY =
       }
     );
 
+    const botonMotivo =
+      fila.querySelector(".motivo-btn");
+
+    botonMotivo.addEventListener(
+      "click",
+      () => {
+
+        abrirModalAtendido(
+          registro.id,
+          fila,
+          registro.motivo,
+          registro.detalle
+        );
+
+      }
+    );
+
     if(miRol === "admin"){
 
       const botonEliminar =
@@ -1489,36 +1783,139 @@ const SUPABASE_ANON_KEY =
 
   }
 
-  async function marcarAtendido(
-    id,
-    fila
-  ){
+  const overlayAtendido =
+    document.getElementById("overlayAtendido");
+
+  const inputMotivoAtendido =
+    document.getElementById("motivoAtendido");
+
+  const inputDetalleAtendido =
+    document.getElementById("detalleAtendido");
+
+  const errorModal =
+    document.getElementById("errorModal");
+
+  const btnCancelarAtendido =
+    document.getElementById("btnCancelarAtendido");
+
+  const btnGuardarAtendido =
+    document.getElementById("btnGuardarAtendido");
+
+  let registroPendienteId = null;
+  let filaPendiente = null;
+
+  function abrirModalAtendido(id, fila, motivoActual, detalleActual){
+
+    registroPendienteId = id;
+    filaPendiente = fila;
+
+    inputMotivoAtendido.value = motivoActual || "";
+    inputDetalleAtendido.value = detalleActual || "";
+    errorModal.textContent = "";
+
+    overlayAtendido.style.display = "flex";
+
+    inputMotivoAtendido.focus();
+
+  }
+
+  function cerrarModalAtendido(){
+
+    overlayAtendido.style.display = "none";
+
+    registroPendienteId = null;
+    filaPendiente = null;
+
+  }
+
+  btnCancelarAtendido.addEventListener("click", cerrarModalAtendido);
+
+  overlayAtendido.addEventListener("click", (evento) => {
+
+    if(evento.target === overlayAtendido){
+      cerrarModalAtendido();
+    }
+
+  });
+
+  btnGuardarAtendido.addEventListener("click", async () => {
+
+    const motivo = inputMotivoAtendido.value.trim();
+    const detalle = inputDetalleAtendido.value.trim();
+
+    if(!motivo){
+
+      errorModal.textContent =
+        "Ingresa el motivo de la visita.";
+
+      return;
+
+    }
+
+    btnGuardarAtendido.disabled = true;
+    btnGuardarAtendido.textContent = "Guardando...";
 
     try{
 
-      const {
-        error
-      } =
+      const { error } =
         await supabaseClient
           .from("registros")
           .update({
-            atendido:true
+            motivo: motivo,
+            detalle: detalle || null
           })
-          .eq(
-            "id",
-            id
-          );
+          .eq("id", registroPendienteId);
 
       if(error){
 
-        console.error(
-          "Error marcando atendido:",
-          error
-        );
+        console.error("Error guardando motivo:", error);
 
-        alert(
-          "No se pudo actualizar el registro."
-        );
+        errorModal.textContent =
+          "No se pudo guardar. Intenta de nuevo.";
+
+        return;
+
+      }
+
+      const botonMotivo =
+        filaPendiente.querySelector(".motivo-btn");
+
+      botonMotivo.textContent = "Editar motivo";
+      botonMotivo.classList.add("con-motivo");
+
+      cerrarModalAtendido();
+
+    }catch(error){
+
+      console.error("Error:", error);
+
+      errorModal.textContent =
+        "No se pudo guardar. Intenta de nuevo.";
+
+    }finally{
+
+      btnGuardarAtendido.disabled = false;
+      btnGuardarAtendido.textContent = "Guardar";
+
+    }
+
+  });
+
+  async function marcarAtendido(id, fila){
+
+    try{
+
+      const { error } =
+        await supabaseClient
+          .from("registros")
+          .update({ atendido: true })
+          .eq("id", id);
+
+      if(error){
+
+        console.error("Error marcando atendido:", error);
+
+        alert("No se pudo actualizar el registro.");
 
         return;
 
@@ -1527,18 +1924,12 @@ const SUPABASE_ANON_KEY =
       const boton =
         fila.querySelector(".estado-btn");
 
-      boton.textContent =
-        "Atendido";
-
-      boton.className =
-        "estado-btn atendido";
+      boton.textContent = "Atendido";
+      boton.className = "estado-btn atendido";
 
     }catch(error){
 
-      console.error(
-        "Error:",
-        error
-      );
+      console.error("Error:", error);
 
     }
 
@@ -2110,16 +2501,22 @@ const SUPABASE_ANON_KEY =
 
   }
 
-  const inputFechaDescarga =
-    document.getElementById("fechaDescarga");
+  const inputFechaDesde =
+    document.getElementById("fechaDesde");
+
+  const inputFechaHasta =
+    document.getElementById("fechaHasta");
 
   const btnDescargar =
     document.getElementById("btnDescargar");
 
-  if(inputFechaDescarga){
+  if(inputFechaDesde && inputFechaHasta){
 
-    inputFechaDescarga.value =
+    const hoy =
       new Date().toISOString().slice(0, 10);
+
+    inputFechaDesde.value = hoy;
+    inputFechaHasta.value = hoy;
 
   }
 
@@ -2139,13 +2536,26 @@ const SUPABASE_ANON_KEY =
 
         }
 
-        const fecha =
-          inputFechaDescarga.value;
+        const desde =
+          inputFechaDesde.value;
 
-        if(!fecha){
+        const hasta =
+          inputFechaHasta.value;
+
+        if(!desde || !hasta){
 
           alert(
-            "Selecciona una fecha primero."
+            "Selecciona la fecha de inicio y de fin."
+          );
+
+          return;
+
+        }
+
+        if(desde > hasta){
+
+          alert(
+            "La fecha 'desde' no puede ser posterior a la fecha 'hasta'."
           );
 
           return;
@@ -2157,18 +2567,18 @@ const SUPABASE_ANON_KEY =
         btnDescargar.textContent =
           "Generando...";
 
-        const inicioDia =
-          `${fecha}T00:00:00-05:00`;
+        const inicioRango =
+          `${desde}T00:00:00-05:00`;
 
-        const finDia =
-          `${fecha}T23:59:59-05:00`;
+        const finRango =
+          `${hasta}T23:59:59-05:00`;
 
         let consulta =
           supabaseClient
             .from("registros")
-            .select("dni, nombre, area, creado_en, atendido")
-            .gte("creado_en", inicioDia)
-            .lte("creado_en", finDia)
+            .select("dni, nombre, celular, area, creado_en, atendido, motivo, detalle")
+            .gte("creado_en", inicioRango)
+            .lte("creado_en", finRango)
             .order("area", { ascending:true })
             .order("creado_en", { ascending:true });
 
@@ -2188,7 +2598,7 @@ const SUPABASE_ANON_KEY =
         btnDescargar.disabled = false;
 
         btnDescargar.textContent =
-          "⬇ Descargar registros del día";
+          "⬇ Descargar CSV";
 
         if(error){
 
@@ -2208,7 +2618,7 @@ const SUPABASE_ANON_KEY =
         if(!data || data.length === 0){
 
           alert(
-            "No hay registros para esa fecha (con el filtro elegido)."
+            "No hay registros en ese rango de fechas (con el filtro elegido)."
           );
 
           return;
@@ -2216,15 +2626,18 @@ const SUPABASE_ANON_KEY =
         }
 
         const encabezados =
-          ["DNI", "Nombre completo", "Área", "Fecha y hora", "Atendido"];
+          ["DNI", "Nombre completo", "Celular", "Área", "Fecha y hora", "Atendido", "Motivo", "Detalle"];
 
         const filas =
           data.map((r) => [
             `="${r.dni}"`,
             r.nombre,
+            r.celular ? `="${r.celular}"` : "",
             r.area,
             new Date(r.creado_en).toLocaleString("es-PE"),
-            r.atendido ? "Sí" : "No"
+            r.atendido ? "Sí" : "No",
+            r.motivo || "",
+            r.detalle || ""
           ]);
 
         const csv =
@@ -2247,13 +2660,18 @@ const SUPABASE_ANON_KEY =
             ? "TODAS_LAS_AREAS"
             : areaFiltroAdmin.replace(/\s+/g, "_");
 
+        const rangoArchivo =
+          desde === hasta
+            ? desde
+            : `${desde}_a_${hasta}`;
+
         const enlace =
           document.createElement("a");
 
         enlace.href = url;
 
         enlace.download =
-          `registros_${nombreArea}_${fecha}.csv`;
+          `registros_${nombreArea}_${rangoArchivo}.csv`;
 
         enlace.click();
 
@@ -2263,6 +2681,144 @@ const SUPABASE_ANON_KEY =
     );
 
   }
+
+  const inputBuscar =
+    document.getElementById("inputBuscar");
+
+  const btnBuscar =
+    document.getElementById("btnBuscar");
+
+  const btnLimpiarBusqueda =
+    document.getElementById("btnLimpiarBusqueda");
+
+  async function buscarRegistros(){
+
+    const termino =
+      inputBuscar.value.trim();
+
+    if(!termino){
+
+      alert(
+        "Escribe un DNI o nombre para buscar."
+      );
+
+      return;
+
+    }
+
+    btnBuscar.disabled = true;
+
+    btnBuscar.textContent =
+      "Buscando...";
+
+    lista.innerHTML =
+      '<div class="vacio">Buscando...</div>';
+
+    try{
+
+      let consulta =
+        supabaseClient
+          .from("registros")
+          .select("*")
+          .or(`dni.ilike.%${termino}%,nombre.ilike.%${termino}%`)
+          .order("creado_en", { ascending:false })
+          .limit(50);
+
+      if(miRol === "admin"){
+
+        if(areaFiltroAdmin !== "TODAS"){
+
+          consulta =
+            consulta.eq("area", areaFiltroAdmin);
+
+        }
+
+      }else{
+
+        consulta =
+          consulta.eq("area", miArea);
+
+      }
+
+      const { data, error } =
+        await consulta;
+
+      if(error){
+
+        console.error("Error buscando:", error);
+
+        lista.innerHTML =
+          '<div class="vacio">No se pudo realizar la búsqueda.</div>';
+
+        return;
+
+      }
+
+      lista.innerHTML = "";
+
+      if(!data || data.length === 0){
+
+        lista.innerHTML =
+          '<div class="vacio">No se encontraron registros para esa búsqueda.</div>';
+
+        return;
+
+      }
+
+      data.forEach((r) => {
+        lista.appendChild(pintarFila(r, false));
+      });
+
+      btnLimpiarBusqueda.style.display =
+        "inline-block";
+
+    }catch(error){
+
+      console.error("Error:", error);
+
+      lista.innerHTML =
+        '<div class="vacio">No se pudo realizar la búsqueda.</div>';
+
+    }finally{
+
+      btnBuscar.disabled = false;
+
+      btnBuscar.textContent =
+        "Buscar";
+
+    }
+
+  }
+
+  btnBuscar.addEventListener(
+    "click",
+    buscarRegistros
+  );
+
+  inputBuscar.addEventListener(
+    "keydown",
+    (evento) => {
+
+      if(evento.key === "Enter"){
+        buscarRegistros();
+      }
+
+    }
+  );
+
+  btnLimpiarBusqueda.addEventListener(
+    "click",
+    async () => {
+
+      inputBuscar.value = "";
+
+      btnLimpiarBusqueda.style.display =
+        "none";
+
+      await cargarRegistros();
+
+    }
+  );
 
   iniciar();
 
