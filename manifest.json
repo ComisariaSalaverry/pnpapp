@@ -1,15 +1,25 @@
 {
-  "name": "Panel de Registros",
-  "short_name": "Registros",
-  "description": "Panel para ver los registros de clientes de tu área en tiempo real",
-  "start_url": "./panel.html",
+  "name": "Comisaría Salaverry",
+  "short_name": "Salaverry PNP",
+  "description": "Solicitud de citas y panel del personal - Comisaría Salaverry",
+  "start_url": "./menu.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#f4efe4",
-  "theme_color": "#1f3d31",
+  "background_color": "#f2f1ec",
+  "theme_color": "#0b3d24",
   "orientation": "portrait-primary",
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
   ]
 }
