@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Política de Privacidad - CIOP Salaverry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --tinta:#0d1f14;
+    --musgo:#0b3d24;
+    --lino:#f2f1ec;
+    --papel:#fff;
+    --cobre:#97781a;
+    --linea:#d6d3c4;
+    --dorado:#c9a227;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:var(--lino);
+    color:var(--tinta);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+  }
+  .franja{
+    height:8px;
+    background:linear-gradient(90deg, var(--musgo) 0%, var(--musgo) 60%, var(--dorado) 60%, var(--dorado) 100%);
+  }
+  .contenedor{
+    max-width:720px;
+    margin:0 auto;
+    padding:40px 24px 80px;
+  }
+  .cabecera{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:28px;
+    padding-bottom:20px;
+    border-bottom:2px solid var(--dorado);
+  }
+  .cabecera img{
+    width:56px;
+    height:56px;
+    object-fit:contain;
+    flex-shrink:0;
+  }
+  .cabecera .linea1{
+    font-size:.78rem;
+    font-weight:700;
+    letter-spacing:.02em;
+    color:var(--musgo);
+    text-transform:uppercase;
+  }
+  .cabecera .linea2{
+    font-size:.85rem;
+    color:#5c6b63;
+  }
+  h1{
+    font-family:'Fraunces',serif;
+    font-size:1.8rem;
+    margin:0 0 6px;
+  }
+  .actualizado{
+    color:#5c6b63;
+    font-size:.88rem;
+    margin-bottom:32px;
+  }
+  h2{
+    font-family:'Fraunces',serif;
+    font-size:1.25rem;
+    color:var(--musgo);
+    margin:32px 0 12px;
+  }
+  p, li{
+    font-size:.96rem;
+  }
+  ul{
+    padding-left:20px;
+  }
+  li{
+    margin-bottom:8px;
+  }
+  .caja-contacto{
+    background:var(--papel);
+    border:1px solid var(--linea);
+    border-radius:14px;
+    padding:20px 22px;
+    margin-top:12px;
+  }
+  a{
+    color:var(--cobre);
+  }
+</style>
+</head>
+<body>
+
+<div class="franja"></div>
+
+<div class="contenedor">
+
+  <div class="cabecera">
+    <img src="./logo.png" alt="Comisaría PNP Salaverry">
+    <div>
+      <div class="linea1">Policía Nacional del Perú</div>
+      <div class="linea2">Comisaría PNP Salaverry</div>
+    </div>
+  </div>
+
+  <h1>Política de Privacidad</h1>
+  <p class="actualizado">Última actualización: octubre de 2026</p>
+
+  <p>
+    Esta Política de Privacidad describe cómo la aplicación <strong>CIOP Salaverry</strong>
+    (en adelante, "la aplicación"), de la Comisaría PNP Salaverry, recopila, usa y
+    protege la información de las personas que la utilizan, ya sea para solicitar
+    una cita o como parte del personal autorizado que administra los registros.
+  </p>
+
+  <h2>1. Qué información recopilamos</h2>
+  <p>Dependiendo de cómo uses la aplicación, podemos recopilar:</p>
+  <ul>
+    <li><strong>Si solicitas una cita o te registras como visitante:</strong> nombre completo, número de documento de identidad (DNI u otro documento), número de celular, área a la que deseas ser atendido, y el motivo de tu visita o cita.</li>
+    <li><strong>Si eres personal autorizado (panel administrativo):</strong> tu correo electrónico y contraseña de acceso (gestionados de forma segura por nuestro proveedor de autenticación), y el área o rol asignado dentro de la institución.</li>
+    <li><strong>Información técnica básica:</strong> como la fecha y hora en que se realiza un registro, con fines de control y seguimiento interno.</li>
+  </ul>
+
+  <h2>2. Para qué usamos esta información</h2>
+  <ul>
+    <li>Gestionar el registro de visitantes y la programación de citas en la Comisaría PNP Salaverry.</li>
+    <li>Permitir que el personal autorizado dé seguimiento y atienda las solicitudes de manera ordenada.</li>
+    <li>Generar reportes internos de atención (por ejemplo, cuántas personas fueron atendidas en un periodo determinado).</li>
+  </ul>
+  <p>No usamos esta información con fines publicitarios ni la vendemos ni compartimos con terceros ajenos a la institución.</p>
+
+  <h2>3. Dónde se almacena la información</h2>
+  <p>
+    Los datos se almacenan en una base de datos proporcionada por un servicio de
+    terceros (Supabase), con mecanismos de seguridad a nivel de fila (Row Level
+    Security) que garantizan que cada usuario del personal solo pueda acceder a
+    la información correspondiente a su área o nivel de autorización, nunca a la
+    de otras áreas sin el permiso correspondiente.
+  </p>
+
+  <h2>4. Quién tiene acceso a tus datos</h2>
+  <ul>
+    <li>El personal de la Comisaría PNP Salaverry autorizado y vinculado al área correspondiente de tu registro o cita.</li>
+    <li>El personal con rol de administrador, que supervisa el funcionamiento general del sistema.</li>
+  </ul>
+  <p>Ninguna persona externa a la institución puede acceder a estos datos a través de la aplicación.</p>
+
+  <h2>5. Tus derechos</h2>
+  <p>
+    Puedes solicitar información sobre los datos que tenemos registrados a tu
+    nombre, pedir su corrección, o solicitar su eliminación, escribiendo al
+    correo de contacto indicado al final de este documento.
+  </p>
+
+  <h2>6. Seguridad</h2>
+  <p>
+    Aplicamos medidas técnicas razonables para proteger tu información,
+    incluyendo control de acceso basado en roles y cifrado de las conexiones
+    entre la aplicación y la base de datos. Sin embargo, ningún sistema es
+    100% infalible, y trabajamos de forma continua para mejorar estas medidas.
+  </p>
+
+  <h2>7. Cambios a esta política</h2>
+  <p>
+    Esta política puede actualizarse en el futuro para reflejar mejoras o
+    cambios en la aplicación. La fecha de la última actualización se indica
+    al inicio de este documento.
+  </p>
+
+  <h2>8. Contacto</h2>
+  <div class="caja-contacto">
+    <p style="margin:0;">
+      Si tienes preguntas sobre esta Política de Privacidad o sobre el
+      tratamiento de tus datos, puedes escribirnos a:<br>
+      <a href="mailto:Irvinggallegosgarcia1@gmail.com">Irvinggallegosgarcia1@gmail.com</a>
+    </p>
+  </div>
+
+</div>
+
+</body>
+</html>
