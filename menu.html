@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Comisaría Salaverry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --tinta:#0d1f14;
+    --musgo:#0b3d24;
+    --dorado:#c9a227;
+    --lino:#f2f1ec;
+    --papel:#ffffff;
+    --cobre:#97781a;
+    --linea:#d6d3c4;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0; padding:0; min-height:100%;
+    background:var(--lino);
+    font-family:'Inter',sans-serif;
+    color:var(--tinta);
+  }
+  .franja-institucional{
+    position:fixed; top:0; left:0; width:100%; height:8px;
+    background:linear-gradient(90deg, var(--musgo) 0%, var(--musgo) 60%, var(--dorado) 60%, var(--dorado) 100%);
+  }
+  .escena{
+    min-height:100vh; width:100%;
+    display:flex; align-items:center; justify-content:center;
+    padding:40px 20px;
+  }
+  .tarjeta{
+    width:100%; max-width:520px;
+    background:var(--papel);
+    border-radius:24px;
+    padding:44px 40px;
+    box-shadow:0 30px 60px rgba(13,31,20,0.12);
+    border:1px solid var(--linea);
+  }
+  .cabecera-institucional{
+    display:flex; align-items:center; gap:14px;
+    margin-bottom:28px; padding-bottom:20px;
+    border-bottom:2px solid var(--dorado);
+  }
+  .logo-institucional{ width:56px; height:56px; object-fit:contain; flex-shrink:0; }
+  .texto-institucional .linea0{
+    font-size:0.95rem; font-weight:700;
+    color:var(--tinta);
+  }
+  .texto-institucional .linea1{
+    font-size:0.78rem; font-weight:700; letter-spacing:0.02em;
+    color:var(--musgo); text-transform:uppercase;
+  }
+  .texto-institucional .linea2{ font-size:0.85rem; color:#5c6b63; }
+  .encabezado h1{
+    font-family:'Fraunces', serif; font-weight:600;
+    font-size:1.8rem; margin:0 0 8px 0; line-height:1.2;
+  }
+  .encabezado p{ margin:0 0 28px 0; color:#5c6b63; font-size:1rem; }
+
+  .opciones{ display:flex; flex-direction:column; gap:14px; }
+
+  .opcion{
+    display:flex; align-items:center; gap:16px;
+    padding:20px 22px; border-radius:16px;
+    border:2px solid var(--linea); background:var(--lino);
+    text-decoration:none; color:var(--tinta);
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .opcion:hover{ border-color:var(--musgo); background:#eceadf; }
+  .opcion:active{ transform:scale(0.99); }
+
+  .opcion .icono{
+    width:48px; height:48px; border-radius:50%;
+    background:var(--musgo); color:var(--papel);
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.4rem; flex-shrink:0;
+  }
+
+  .opcion .titulo{ font-weight:700; font-size:1.05rem; margin-bottom:3px; }
+  .opcion .detalle{ font-size:0.88rem; color:#5c6b63; }
+
+  .opcion.panel .icono{ background:var(--cobre); }
+</style>
+</head>
+<body>
+
+<div class="franja-institucional"></div>
+
+<div class="escena">
+  <div class="tarjeta">
+
+    <div class="cabecera-institucional">
+      <img src="./logo.png" alt="Policía Nacional del Perú" class="logo-institucional">
+      <div class="texto-institucional">
+        <div class="linea1">Policía Nacional del Perú</div>
+        <div class="linea2">Región Policial La Libertad</div>
+        <div class="linea0">Comisaría PNP Salaverry</div>
+      </div>
+    </div>
+
+    <div class="encabezado">
+      <h1>¿Qué deseas hacer?</h1>
+      <p>Selecciona una opción para continuar.</p>
+    </div>
+
+    <div class="opciones">
+
+      <a href="./citas.html" class="opcion cita">
+        <div class="icono">📅</div>
+        <div>
+          <div class="titulo">Solicitar una cita</div>
+          <div class="detalle">Elige área, fecha y hora de atención</div>
+        </div>
+      </a>
+
+      <a href="./panel.html" class="opcion panel">
+        <div class="icono">🔑</div>
+        <div>
+          <div class="titulo">Panel del personal</div>
+          <div class="detalle">Ingreso con usuario y contraseña</div>
+        </div>
+      </a>
+
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
