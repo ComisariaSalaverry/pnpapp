@@ -198,10 +198,26 @@
       margin-top:3px;
     }
 
+    .acciones-cabecera{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
     .salir{
       background:#fff;
       border:1px solid var(--linea);
       color:var(--musgo);
+      padding:9px 14px;
+      border-radius:8px;
+      font-weight:600;
+      cursor:pointer;
+    }
+
+    .btn-mapa-delitos{
+      background:var(--musgo);
+      border:1px solid var(--musgo);
+      color:#fff;
       padding:9px 14px;
       border-radius:8px;
       font-weight:600;
@@ -575,6 +591,47 @@
       color:#fff;
     }
 
+    /* ===== MODAL DEL MAPA (nuevo) ===== */
+
+    .caja-mapa{
+      width:100%;
+      max-width:900px;
+      height:85vh;
+      background:#fff;
+      border-radius:16px;
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      box-shadow:0 20px 50px rgba(13,31,20,.25);
+    }
+
+    .cabecera-mapa{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:14px 18px;
+      background:var(--musgo);
+      color:#fff;
+      font-weight:700;
+      flex-shrink:0;
+    }
+
+    .btn-cerrar-mapa{
+      background:none;
+      border:0;
+      color:#fff;
+      font-size:1.2rem;
+      cursor:pointer;
+      line-height:1;
+      padding:4px 8px;
+    }
+
+    .iframe-mapa{
+      flex:1;
+      border:0;
+      width:100%;
+    }
+
     @media(max-width:600px){
       #vistaPanel{
         padding:24px 14px 80px;
@@ -588,8 +645,13 @@
         font-size:1.55rem;
       }
 
-      .salir{
+      .acciones-cabecera{
         width:100%;
+      }
+
+      .salir,
+      .btn-mapa-delitos{
+        flex:1;
       }
 
       .fila{
@@ -604,6 +666,10 @@
       .btn{
         padding:8px 9px;
         font-size:.75rem;
+      }
+
+      .caja-mapa{
+        height:80vh;
       }
     }
 
@@ -736,12 +802,23 @@
 
       </div>
 
-      <button
-        class="salir"
-        id="btnSalir"
-      >
-        Cerrar sesión
-      </button>
+      <div class="acciones-cabecera">
+
+        <button
+          id="btnMapaDelitos"
+          class="btn-mapa-delitos"
+        >
+          🗺️ Mapa de delitos
+        </button>
+
+        <button
+          class="salir"
+          id="btnSalir"
+        >
+          Cerrar sesión
+        </button>
+
+      </div>
 
     </div>
 
@@ -1045,6 +1122,42 @@
   </div>
 
 
+  <!-- MODAL MAPA DE DELITOS (nuevo) -->
+
+  <div
+    id="overlayMapa"
+    class="overlay-modal"
+    style="display:none;"
+  >
+
+    <div class="caja-mapa">
+
+      <div class="cabecera-mapa">
+
+        <span>
+          🗺️ Mapa de delitos
+        </span>
+
+        <button
+          id="btnCerrarMapa"
+          class="btn-cerrar-mapa"
+        >
+          ✕
+        </button>
+
+      </div>
+
+      <iframe
+        src="https://www.google.com/maps/d/embed?mid=1PtgLD1_svGb2oP02_-aTo_TXZRQsdhM"
+        class="iframe-mapa"
+        loading="lazy"
+      ></iframe>
+
+    </div>
+
+  </div>
+
+
 <script>
 
   const SUPABASE_URL =
@@ -1127,6 +1240,15 @@
 
   const btnNotificaciones =
     document.getElementById("btnNotificaciones");
+
+  const btnMapaDelitos =
+    document.getElementById("btnMapaDelitos");
+
+  const overlayMapa =
+    document.getElementById("overlayMapa");
+
+  const btnCerrarMapa =
+    document.getElementById("btnCerrarMapa");
 
 
   let miArea = null;
@@ -1686,6 +1808,48 @@
           "Error cerrando sesión:",
           error
         );
+
+      }
+
+    }
+  );
+
+
+  /* ==========================
+     MAPA DE DELITOS (nuevo)
+  ========================== */
+
+
+  btnMapaDelitos.addEventListener(
+    "click",
+    () => {
+
+      overlayMapa.style.display =
+        "flex";
+
+    }
+  );
+
+
+  btnCerrarMapa.addEventListener(
+    "click",
+    () => {
+
+      overlayMapa.style.display =
+        "none";
+
+    }
+  );
+
+
+  overlayMapa.addEventListener(
+    "click",
+    evento => {
+
+      if(evento.target === overlayMapa){
+
+        overlayMapa.style.display =
+          "none";
 
       }
 
