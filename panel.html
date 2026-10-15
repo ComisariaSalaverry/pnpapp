@@ -841,6 +841,14 @@
         </button>
 
         <button
+          id="btnEstadisticas"
+          class="btn-mapa-delitos"
+          style="display:none;"
+        >
+          📊 Estadísticas
+        </button>
+
+        <button
           class="salir"
           id="btnSalir"
         >
@@ -1201,6 +1209,23 @@
         <div class="msg-aviso" id="msgAviso"></div>
         <div class="tit-lista">Avisos publicados</div>
         <div id="listaAvisos"></div>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="overlayEstad" class="overlay-modal" style="display:none;">
+    <div class="caja-avisos">
+      <div class="cabecera-mapa">
+        <span>📊 Personas atendidas</span>
+        <button id="btnCerrarEstad" class="btn-cerrar-mapa">✕</button>
+      </div>
+      <div class="cuerpo-avisos">
+        <div id="estadResumen" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center"></div>
+        <div class="tit-lista">Por área</div>
+        <div id="estadAreas"></div>
+        <div class="msg-aviso" id="estadMsg"></div>
+        <p style="font-size:.74rem;color:#6b766f;margin:14px 0 0;line-height:1.4">Cuenta los registros del kiosco marcados como atendidos y las citas en estado "Atendida".</p>
       </div>
     </div>
   </div>
@@ -1681,6 +1706,9 @@
       document.getElementById("btnAvisos").style.display =
         miRol === "admin" ? "" : "none";
 
+      document.getElementById("btnEstadisticas").style.display =
+        miRol === "admin" ? "" : "none";
+
       areaFiltroAdmin =
         "TODAS";
 
@@ -1953,6 +1981,53 @@
     const { error } = await supabaseClient.from("avisos").delete().eq("id", b.dataset.id);
     if(error){ console.error(error); msgAviso.style.color="#a13a2a"; msgAviso.textContent = "No se pudo quitar el aviso."; b.disabled=false; return; }
     cargarAvisos();
+  });
+
+
+  /* ==========================
+     ESTADÍSTICAS (solo admin)
+  ========================== */
+
+  const overlayEstad = document.getElementById("overlayEstad");
+
+  async function cargarEstadisticas(){
+    const resumen = document.getElementById("estadResumen");
+    const areas = document.getElementById("estadAreas");
+    const msg = document.getElementById("estadMsg");
+    msg.textContent = "";
+    resumen.innerHTML = "Cargando...";
+    areas.innerHTML = "";
+
+    const { data, error } = await supabaseClient.rpc("estadisticas_admin");
+    if(error || !data){
+      console.error(error);
+      resumen.innerHTML = "";
+      msg.textContent = "No se pudieron cargar las estadísticas.";
+      return;
+    }
+    const nf = new Intl.NumberFormat("es-PE");
+    const caja = (n, l) => '<div style="background:#eef0e4;border-radius:12px;padding:12px 4px"><div style="font-family:Fraunces,Georgia,serif;font-size:1.6rem;font-weight:600;color:#0b3d24">' + nf.format(n) + '</div><div style="font-size:.72rem;color:#5c6b63">' + l + '</div></div>';
+    resumen.innerHTML = caja(data.hoy, "Hoy") + caja(data.mes, "Este mes") + caja(data.total, "En total");
+
+    if(!data.por_area.length){
+      areas.innerHTML = '<div class="aviso-item"><div class="txt">Aún no hay personas atendidas.</div></div>';
+      return;
+    }
+    areas.innerHTML = data.por_area.map(a =>
+      '<div class="aviso-item"><div class="txt">' + escaparHTML(a.area || "Sin área") +
+      '</div><div style="text-align:right;font-size:.8rem;white-space:nowrap"><b>' + nf.format(a.mes) + '</b> este mes<br><span style="color:#6b766f">' + nf.format(a.total) + ' en total</span></div></div>'
+    ).join("");
+  }
+
+  document.getElementById("btnEstadisticas").addEventListener("click", () => {
+    overlayEstad.style.display = "flex";
+    cargarEstadisticas();
+  });
+  document.getElementById("btnCerrarEstad").addEventListener("click", () => {
+    overlayEstad.style.display = "none";
+  });
+  overlayEstad.addEventListener("click", e => {
+    if(e.target === overlayEstad) overlayEstad.style.display = "none";
   });
 
 
