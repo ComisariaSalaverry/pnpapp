@@ -4269,6 +4269,20 @@
             .join("\n");
 
 
+        /* App Android: el WebView no baja archivos "blob", se guarda desde la app */
+        if(window.AndroidPush && window.AndroidPush.guardarArchivo){
+          const nArea = areaFiltroAdmin === "TODAS"
+            ? "TODAS_LAS_AREAS"
+            : areaFiltroAdmin.replace(/\s+/g, "_");
+          const msg = window.AndroidPush.guardarArchivo(
+            `registros_${nArea}_${desde}_a_${hasta}.csv`,
+            "\uFEFF" + csv
+          );
+          alert(msg);
+          return;
+        }
+
+
         const blob =
           new Blob(
             ["\uFEFF" + csv],
