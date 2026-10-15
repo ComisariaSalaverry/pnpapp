@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Descargar app - Comisaría Salaverry</title>
+<link rel="icon" href="./icon-192.png">
+<style>
+  :root{--musgo:#0b3d24;--dorado:#c9a227;--lino:#f2f1ec;--linea:#d6d3c4;--tinta:#0d1f14}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,Helvetica,Arial,sans-serif;background:var(--lino);color:var(--tinta)}
+  .cab{background:linear-gradient(135deg,#0b3d24,#0f5a35);color:#fff;padding:22px 20px 20px;border-bottom:4px solid var(--dorado);display:flex;gap:14px;align-items:center}
+  .cab img{width:62px;height:62px;border-radius:50%;background:#fff;padding:5px;object-fit:contain}
+  .cab small{display:block;color:#e6c75a;font-size:.68rem;letter-spacing:.09em;text-transform:uppercase;font-weight:700}
+  .cab b{font-family:Georgia,serif;font-size:1.25rem;display:block;margin:3px 0 1px}
+  .cab span{font-size:.8rem;opacity:.85}
+  main{max-width:520px;margin:0 auto;padding:22px 16px 40px}
+  h1{font-family:Georgia,serif;font-size:1.5rem;margin:0 0 6px}
+  p.sub{margin:0 0 18px;color:#5c6b63;font-size:.92rem}
+  .card{background:#fff;border:1px solid var(--linea);border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:0 2px 8px rgba(13,31,20,.05)}
+  .card h2{margin:0 0 10px;font-size:1.05rem;color:var(--musgo)}
+  .btn{display:block;text-align:center;text-decoration:none;background:linear-gradient(135deg,#0f5a35,#0b3d24);color:#fff;font-weight:700;padding:15px;border-radius:12px;font-size:1.02rem;box-shadow:0 8px 18px rgba(11,61,36,.28)}
+  ol{margin:12px 0 0;padding-left:20px;line-height:1.6;font-size:.9rem}
+  .nota{font-size:.8rem;color:#5c6b63;margin-top:10px;line-height:1.45}
+  .tag{display:inline-block;font-size:.68rem;font-weight:700;background:#e3edf9;color:#23559a;border-radius:999px;padding:3px 9px;margin-left:6px;vertical-align:middle}
+</style>
+</head>
+<body>
+<div class="cab">
+  <img src="./logo.png" alt="PNP">
+  <div><small>Policía Nacional del Perú</small><b>Comisaría PNP Salaverry</b><span>CIOP Salaverry · App oficial</span></div>
+</div>
+<main>
+  <h1>Descarga la app</h1>
+  <p class="sub">Citas, atención inclusiva, botón de pánico y más, en tu celular.</p>
+
+  <div class="card" id="cAndroid">
+    <h2>Android <span class="tag" id="tagA" style="display:none">Tu dispositivo</span></h2>
+    <a class="btn" href="./CIOP_Salaverry.apk" download>Descargar la app (APK)</a>
+    <ol>
+      <li>Toca <b>Descargar</b> y espera que termine.</li>
+      <li>Abre el archivo descargado <b>CIOP_Salaverry.apk</b>.</li>
+      <li>Si Android lo pide, toca <b>Ajustes</b> y activa <b>"Permitir desde esta fuente"</b>.</li>
+      <li>Vuelve atrás y toca <b>Instalar</b>.</li>
+    </ol>
+    <p class="nota">Si aparece un aviso de Play Protect, toca <b>"Más detalles"</b> y luego <b>"Instalar de todos modos"</b>. La app es de la Comisaría Salaverry.</p>
+  </div>
+
+  <div class="card" id="cIphone">
+    <h2>iPhone <span class="tag" id="tagI" style="display:none">Tu dispositivo</span></h2>
+    <p class="nota" style="margin-top:0">En iPhone se instala desde Safari, sin descargar archivos:</p>
+    <ol>
+      <li>Abre este enlace en <b>Safari</b>: <b style="word-break:break-all">comisariasalaverry.github.io/pnpapp/menu.html</b></li>
+      <li>Toca el botón <b>Compartir</b> (el cuadrado con la flecha).</li>
+      <li>Elige <b>"Añadir a pantalla de inicio"</b> y toca <b>Añadir</b>.</li>
+    </ol>
+    <a class="btn" style="margin-top:14px" href="./menu.html">Abrir la app en el navegador</a>
+  </div>
+</main>
+<script>
+  (function(){
+    var ua = navigator.userAgent || "";
+    var ios = /iPhone|iPad|iPod/i.test(ua);
+    var and = /Android/i.test(ua);
+    var a = document.getElementById("cAndroid"), i = document.getElementById("cIphone");
+    var main = a.parentNode;
+    if(ios){ main.insertBefore(i, a); document.getElementById("tagI").style.display = "inline-block"; }
+    else if(and){ document.getElementById("tagA").style.display = "inline-block"; }
+  })();
+</script>
+</body>
+</html>
