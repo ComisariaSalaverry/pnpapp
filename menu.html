@@ -831,7 +831,7 @@
     const detalle = document.getElementById("panDetalle").value.trim();
     const hora = new Date().toLocaleString("es-PE", { timeZone:"America/Lima" });
 
-    let lineas = ["🚨 *ALERTA DE PÁNICO* 🚨", "Tipo: " + tipoSel];
+    let lineas = ["*ALERTA DE PÁNICO*", "Tipo: " + tipoSel];
     if(nombre) lineas.push("Nombre: " + nombre);
     if(detalle) lineas.push("Detalle: " + detalle);
     lineas.push("Hora: " + hora);
