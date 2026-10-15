@@ -84,7 +84,234 @@
   .opcion .detalle{ font-size:0.88rem; color:#5c6b63; }
 
   .opcion.panel .icono{ background:var(--cobre); }
+  .opcion.chat .icono{ background:#25a244; }
+  .opcion.escucha .icono{ background:var(--verde-esc,#3c7a56); }
+  button.opcion{ width:100%; font-family:inherit; font-size:inherit; text-align:left; cursor:pointer; }
+  .opcion.panico{ border-color:#a13a2a; background:#fbeeeb; }
+  .opcion.panico:hover{ background:#f6dcd6; border-color:#a13a2a; }
+  .opcion.panico .icono{ background:#a13a2a; }
+
+  .fondo-modal{
+    display:none; position:fixed; inset:0; z-index:50;
+    background:rgba(13,31,20,.6); padding:16px; overflow-y:auto;
+    align-items:flex-start; justify-content:center;
+  }
+  .fondo-modal.activo{ display:flex; }
+  .modal{
+    width:100%; max-width:480px; margin:auto; background:#fff;
+    border-radius:20px; padding:26px 22px; border-top:6px solid #a13a2a;
+  }
+  .modal h2{ font-family:'Fraunces',serif; margin:0 0 6px; font-size:1.5rem; color:#a13a2a; }
+  .modal p.sub{ margin:0 0 16px; color:#5c6b63; font-size:.88rem; line-height:1.45; }
+  .modal label.et{ display:block; font-weight:600; font-size:.85rem; margin:14px 0 7px; color:var(--musgo); }
+  .tipos{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .tipo{
+    padding:12px 8px; border:2px solid var(--linea); border-radius:10px;
+    background:var(--lino); font-family:inherit; font-size:.88rem; font-weight:600;
+    cursor:pointer; color:var(--tinta);
+  }
+  .tipo.sel{ border-color:#a13a2a; background:#fbeeeb; color:#a13a2a; }
+  .modal textarea, .modal input{
+    width:100%; padding:11px 12px; border-radius:10px; border:2px solid var(--linea);
+    background:var(--lino); font-family:inherit; font-size:.95rem; outline:none;
+  }
+  .modal textarea{ min-height:80px; resize:vertical; }
+  .gps-estado{ font-size:.82rem; margin-top:12px; padding:10px 12px; border-radius:10px; background:#eef0e4; color:var(--musgo); }
+  .gps-estado.mal{ background:#fbeeeb; color:#a13a2a; }
+  .btn-pan{
+    width:100%; margin-top:16px; padding:15px; border:0; border-radius:10px;
+    background:#a13a2a; color:#fff; font-weight:700; font-size:1rem; cursor:pointer; font-family:inherit;
+  }
+  .btn-pan:disabled{ opacity:.6; }
+  .btn-cerrar{
+    width:100%; margin-top:10px; padding:12px; border:2px solid var(--linea);
+    border-radius:10px; background:#fff; font-weight:600; cursor:pointer; font-family:inherit;
+  }
+  .err-pan{ color:#a13a2a; font-size:.85rem; min-height:18px; margin-top:10px; text-align:center; }
+  .aviso-emerg{ font-size:.78rem; color:#5c6b63; text-align:center; margin-top:12px; line-height:1.4; }
+
+  /* ===== REDISEÑO VISUAL ===== */
+  html,body{
+    background:
+      radial-gradient(900px 400px at 50% -120px, rgba(201,162,39,.18), transparent 70%),
+      linear-gradient(180deg,#e9ece4 0%, #f2f1ec 45%);
+    background-attachment:fixed;
+  }
+  .franja-institucional{ height:6px; }
+  .escena{ align-items:flex-start; padding:28px 16px 40px; }
+  .tarjeta{
+    padding:0; overflow:hidden; border:0; border-radius:26px;
+    box-shadow:0 24px 60px rgba(13,31,20,.16), 0 2px 6px rgba(13,31,20,.06);
+  }
+  .cabecera-institucional{
+    margin:0; padding:26px 24px 22px; gap:16px; border-bottom:0;
+    background:linear-gradient(135deg,#0b3d24 0%,#0f5a35 100%);
+    position:relative;
+  }
+  .cabecera-institucional::after{
+    content:""; position:absolute; left:0; right:0; bottom:0; height:4px;
+    background:linear-gradient(90deg,#c9a227,#e6c75a,#c9a227);
+  }
+  .logo-institucional{
+    width:68px; height:68px; padding:6px; background:#fff; border-radius:50%;
+    box-shadow:0 4px 14px rgba(0,0,0,.25);
+  }
+  .texto-institucional .linea0{ color:#fff; font-family:'Fraunces',serif; font-size:1.2rem; font-weight:600; line-height:1.15; }
+  .texto-institucional .linea1{ color:#e6c75a; margin-top:5px; font-size:.7rem; letter-spacing:.08em; }
+  .texto-institucional .linea2{ color:rgba(255,255,255,.75); font-size:.78rem; margin-top:2px; }
+
+  .encabezado{ padding:26px 24px 4px; }
+  .encabezado h1{ font-size:1.55rem; margin-bottom:4px; }
+  .encabezado p{ margin-bottom:18px; font-size:.92rem; }
+
+  .opciones{ padding:20px 18px 22px; gap:12px; }
+  .opcion{
+    position:relative; background:#fff; border:1px solid var(--linea);
+    border-radius:18px; padding:16px 44px 16px 16px; gap:14px;
+    box-shadow:0 2px 8px rgba(13,31,20,.05);
+    transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  }
+  .opcion:hover{ background:#fff; border-color:var(--dorado); box-shadow:0 8px 20px rgba(13,31,20,.12); transform:translateY(-1px); }
+  .opcion::after{
+    content:""; position:absolute; right:18px; top:50%; width:9px; height:9px;
+    border-right:2.5px solid #b9b49a; border-top:2.5px solid #b9b49a;
+    transform:translateY(-50%) rotate(45deg);
+  }
+  .opcion .icono{
+    width:54px; height:54px; border-radius:16px;
+    background:linear-gradient(145deg,#0f5a35,#0b3d24);
+    box-shadow:0 6px 14px rgba(11,61,36,.28);
+  }
+  .opcion .icono svg{ width:26px; height:26px; }
+  .opcion.panel .icono{ background:linear-gradient(145deg,#b8932b,#8a6d17); box-shadow:0 6px 14px rgba(138,109,23,.3); }
+  .opcion.escucha .icono{ background:linear-gradient(145deg,#2f6f4c,#1f4f35); box-shadow:0 6px 14px rgba(31,79,53,.3); }
+  .opcion .titulo{ font-size:1.02rem; }
+  .opcion .detalle{ font-size:.84rem; line-height:1.35; }
+
+  .opcion.panico{
+    background:linear-gradient(135deg,#b23a2a,#8c2418); border:0; color:#fff;
+    box-shadow:0 10px 24px rgba(161,58,42,.35);
+  }
+  .opcion.panico:hover{ background:linear-gradient(135deg,#bf4332,#962a1c); box-shadow:0 12px 28px rgba(161,58,42,.45); }
+  .opcion.panico::after{ border-color:rgba(255,255,255,.7); }
+  .opcion.panico .icono{ background:rgba(255,255,255,.18); box-shadow:none; }
+  .opcion.panico .detalle{ color:rgba(255,255,255,.85); }
+
+  .modal{ border-radius:22px; border-top:0; padding:0 22px 20px; overflow:hidden; }
+  .modal h2{ margin:0 -22px !important; padding:20px 22px 16px; background:linear-gradient(135deg,#b23a2a,#8c2418); color:#fff; }
+  .modal p.sub{ margin-top:16px; }
+  .btn-pan{ border-radius:12px; background:linear-gradient(135deg,#b23a2a,#8c2418); box-shadow:0 8px 18px rgba(161,58,42,.3); }
+  .tipo{ border-radius:12px; }
+
+  /* ===== TELÉFONOS DE EMERGENCIA ===== */
+  .emergencias{ padding:0 18px 24px; }
+  .emergencias h3{ margin:0 0 10px; font-size:.78rem; letter-spacing:.08em; text-transform:uppercase; color:#5c6b63; }
+  .tel-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+  .tel{
+    display:flex; flex-direction:column; align-items:center; gap:2px; text-decoration:none;
+    background:#fff; border:1px solid var(--linea); border-radius:16px; padding:12px 6px;
+    color:var(--tinta); box-shadow:0 2px 8px rgba(13,31,20,.05);
+  }
+  .tel:active{ transform:scale(.97); }
+  .tel .num{ font-family:'Fraunces',serif; font-size:1.5rem; font-weight:600; color:var(--musgo); line-height:1.1; }
+  .tel .nom{ font-size:.72rem; color:#5c6b63; text-align:center; line-height:1.25; }
+  .tel.comisaria{ grid-column:1 / -1; flex-direction:row; justify-content:center; gap:10px; background:var(--musgo); border:0; }
+  .tel.comisaria .num{ color:#fff; font-size:1.15rem; }
+  .tel.comisaria .nom{ color:#e6c75a; font-size:.8rem; }
+
+  .avisos{ padding:0 18px 4px; display:none; }
+  .aviso{
+    display:flex; gap:12px; align-items:flex-start; margin-bottom:10px;
+    background:#fbf6e3; border:1px solid #e6d58f; border-left:5px solid var(--dorado);
+    border-radius:14px; padding:12px 14px;
+  }
+  .aviso svg{ flex-shrink:0; color:var(--cobre); margin-top:1px; }
+  .aviso .a-txt{ font-size:.9rem; line-height:1.4; color:var(--tinta); word-break:break-word; }
+  .aviso .a-fecha{ font-size:.72rem; color:#7a6a2a; margin-top:3px; }
+
+  /* avisos en carrusel horizontal */
+  .avisos{
+    display:none; padding:0 0 4px; margin:18px 0 6px;
+    overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .avisos::-webkit-scrollbar{ display:none; }
+  .avisos .pista{ display:flex; gap:10px; padding:0 18px; }
+  .avisos .aviso{
+    flex:0 0 86%; scroll-snap-align:center; margin:0; box-sizing:border-box;
+    min-height:88px;
+  }
+  .avisos .pista.uno .aviso{ flex-basis:100%; }
+  .puntos{ display:none; justify-content:center; gap:6px; margin:2px 0 14px; }
+  .puntos i{ width:7px; height:7px; border-radius:50%; background:#d6d3c4; transition:all .2s; }
+  .puntos i.on{ background:var(--dorado); width:18px; border-radius:4px; }
+
+  .opcion.inclusiva .icono{ background:linear-gradient(145deg,#3b7dd0,#23559a); box-shadow:0 6px 14px rgba(35,85,154,.3); }
+  .modal.azul h2{ background:linear-gradient(135deg,#3b7dd0,#23559a) !important; }
+  .modal.azul .btn-pan{ background:linear-gradient(135deg,#3b7dd0,#23559a); box-shadow:0 8px 18px rgba(35,85,154,.3); text-decoration:none; display:block; text-align:center; box-sizing:border-box; }
+  .pasos{ margin:14px 0 0; padding:0; list-style:none; }
+  .pasos li{ display:flex; gap:12px; align-items:flex-start; padding:9px 0; font-size:.9rem; line-height:1.4; border-bottom:1px solid #eee; }
+  .pasos li:last-child{ border-bottom:0; }
+  .pasos b{ flex-shrink:0; width:26px; height:26px; border-radius:50%; background:#e3edf9; color:#23559a; display:flex; align-items:center; justify-content:center; font-size:.8rem; }
+
+  .cifras{ margin:0 18px 22px; padding:16px 12px 14px; border-radius:18px; display:none;
+    background:linear-gradient(135deg,#0b3d24,#0f5a35); color:#fff; text-align:center; position:relative; overflow:hidden; }
+  .cifras h3{ margin:0 0 12px; font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; color:#e6c75a; font-weight:700; }
+  .cifras .fila{ display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+  .cifras .n{ font-family:'Fraunces',serif; font-size:1.9rem; font-weight:600; line-height:1.05; }
+  .cifras .l{ font-size:.7rem; color:rgba(255,255,255,.78); margin-top:3px; }
+  .cifras .fila > div + div{ border-left:1px solid rgba(255,255,255,.18); }
+
+  .vial{ margin:0 18px 14px; padding:15px 16px; border-radius:18px; background:#fff8e1;
+    border:1px solid #ecd58a; display:flex; gap:14px; align-items:flex-start; }
+  .vial .sena{ flex-shrink:0; width:46px; height:46px; border-radius:10px; background:#f2b705; color:#1b1b1b;
+    display:flex; align-items:center; justify-content:center; transform:rotate(45deg) scale(.82); box-shadow:0 3px 8px rgba(0,0,0,.18); }
+  .vial .sena svg{ transform:rotate(-45deg); }
+  .vial .t1{ font-size:.7rem; letter-spacing:.09em; text-transform:uppercase; color:#8a6d17; font-weight:700; margin-bottom:4px; }
+  .vial .t2{ font-size:.92rem; line-height:1.45; color:var(--tinta); font-weight:500; }
+
+  .vial{ display:block !important; padding:12px 14px 15px !important; }
+  .vial-tabs{ display:flex; gap:6px; margin-bottom:12px; overflow-x:auto; scrollbar-width:none; }
+  .vial-tabs::-webkit-scrollbar{ display:none; }
+  .vial-tabs button{ flex-shrink:0; border:1px solid #ecd58a; background:#fff; color:#8a6d17; border-radius:999px;
+    padding:6px 12px; font-family:inherit; font-size:.76rem; font-weight:700; cursor:pointer; }
+  .vial-tabs button.on{ background:#8a6d17; border-color:#8a6d17; color:#fff; }
+  .vial-cuerpo{ display:flex; gap:14px; align-items:flex-start; }
+  .vial.k-valor .sena{ background:#7bc89a; }
+  .vial.k-robo .sena{ background:#e58f7f; }
+  .vial.k-valor{ background:#eef8f1; border-color:#b9dcc6; }
+  .vial.k-robo{ background:#fdf0ed; border-color:#efc4bb; }
+  .vial.k-valor .t1, .vial.k-valor .vial-tabs button{ color:#2f6f4c; }
+  .vial.k-robo .t1, .vial.k-robo .vial-tabs button{ color:#a13a2a; }
+  .vial.k-valor .vial-tabs button, .vial.k-robo .vial-tabs button{ border-color:rgba(0,0,0,.12); }
+  .vial.k-valor .vial-tabs button.on{ background:#2f6f4c; color:#fff; }
+  .vial.k-robo .vial-tabs button.on{ background:#a13a2a; color:#fff; }
+  .opcion.violencia .icono{ background:linear-gradient(145deg,#8a4fa8,#5f2f7d); box-shadow:0 6px 14px rgba(95,47,125,.3); }
+  .modal.lila h2{ background:linear-gradient(135deg,#8a4fa8,#5f2f7d) !important; }
+  .acciones-ayuda{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:16px; }
+  .acciones-ayuda a{ display:flex; flex-direction:column; align-items:center; gap:2px; text-decoration:none; padding:12px 6px;
+    border-radius:12px; font-weight:700; color:#fff; background:linear-gradient(135deg,#8a4fa8,#5f2f7d); font-size:.85rem; text-align:center; }
+  .acciones-ayuda a .g{ font-family:'Fraunces',serif; font-size:1.5rem; line-height:1.1; }
+  .acciones-ayuda a.r{ background:linear-gradient(135deg,#b23a2a,#8c2418); }
+  .acciones-ayuda a small{ font-weight:500; opacity:.9; font-size:.7rem; }
+  .btn-cita-ayuda{ display:block; margin-top:10px; text-align:center; text-decoration:none; padding:13px; border-radius:12px;
+    background:#fff; color:#5f2f7d; border:2px solid #cdb6dc; font-weight:700; font-size:.9rem; }
+  .lista-senales{ margin:10px 0 0; padding-left:18px; font-size:.88rem; line-height:1.55; color:var(--tinta); }
+
+  .vtabs{ display:flex; gap:6px; margin-top:14px; }
+  .vtabs button{ flex:1; border:1px solid #cdb6dc; background:#fff; color:#5f2f7d; border-radius:999px; padding:8px 6px;
+    font-family:inherit; font-size:.8rem; font-weight:700; cursor:pointer; }
+  .vtabs button.on{ background:#5f2f7d; border-color:#5f2f7d; color:#fff; }
 </style>
+
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#0b3d24">
+
+  <!-- Etiquetas específicas para que instale bien en iPhone/iPad -->
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="CIOP Salaverry">
 </head>
 <body>
 
@@ -96,21 +323,19 @@
     <div class="cabecera-institucional">
       <img src="./logo.png" alt="Policía Nacional del Perú" class="logo-institucional">
       <div class="texto-institucional">
+        <div class="linea0">Comisaría PNP Salaverry</div>
         <div class="linea1">Policía Nacional del Perú</div>
         <div class="linea2">Región Policial La Libertad</div>
-        <div class="linea0">Comisaría PNP Salaverry</div>
       </div>
     </div>
 
-    <div class="encabezado">
-      <h1>¿Qué deseas hacer?</h1>
-      <p>Selecciona una opción para continuar.</p>
-    </div>
+    <div class="avisos" id="avisos"></div>
+    <div class="puntos" id="puntos"></div>
 
     <div class="opciones">
 
       <a href="./citas.html" class="opcion cita">
-        <div class="icono">📅</div>
+        <div class="icono"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></div>
         <div>
           <div class="titulo">Solicitar una cita</div>
           <div class="detalle">Elige área, fecha y hora de atención</div>
@@ -118,17 +343,468 @@
       </a>
 
       <a href="./panel.html" class="opcion panel">
-        <div class="icono">🔑</div>
+        <div class="icono"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l8-8M16 7l3 3M14 9l2 2"/></svg></div>
         <div>
           <div class="titulo">Panel del personal</div>
           <div class="detalle">Ingreso con usuario y contraseña</div>
         </div>
       </a>
 
+      <a href="https://forms.gle/6b4izd3C7i6gngqe7" target="_blank" rel="noopener" class="opcion escucha">
+        <div class="icono"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.2-7 10-4-1.8-7-5.5-7-10V6z"/><path d="M12 8.5l1.2 2.4 2.6.4-1.9 1.8.5 2.6-2.4-1.3-2.4 1.3.5-2.6-1.9-1.8 2.6-.4z"/></svg></div>
+        <div>
+          <div class="titulo">Comisario te escucha</div>
+          <div class="detalle">Envía tu mensaje, queja o sugerencia al comisario</div>
+        </div>
+      </a>
+
+      <button type="button" class="opcion inclusiva" id="btnAbrirInclusiva">
+        <div class="icono"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.5s-7.5-4.4-7.5-10A4.3 4.3 0 0112 7.9a4.3 4.3 0 017.5 2.6c0 5.6-7.5 10-7.5 10z"/></svg></div>
+        <div>
+          <div class="titulo">Atención inclusiva</div>
+          <div class="detalle">Atención adaptada para personas con discapacidad u otra necesidad especial</div>
+        </div>
+      </button>
+
+      <button type="button" class="opcion violencia" id="btnAbrirViolencia">
+        <div class="icono"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-4.6-7-10.5A4 4 0 0112 8a4 4 0 017 2.5C19 16.4 12 21 12 21z"/><path d="M9 12h6M12 9v6"/></svg></div>
+        <div>
+          <div class="titulo">Ayuda ante violencia</div>
+          <div class="detalle">Línea 100, señales de alerta y cómo pedir protección</div>
+        </div>
+      </button>
+
+      <button type="button" class="opcion panico" id="btnAbrirPanico">
+        <div class="icono"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5L2.8 19.5h18.4z"/><path d="M12 10v4.5M12 17.2v.1"/></svg></div>
+        <div>
+          <div class="titulo">Botón de pánico</div>
+          <div class="detalle">Envía tu ubicación por WhatsApp en una emergencia</div>
+        </div>
+      </button>
+
+    </div>
+
+    <div class="vial" id="vial">
+      <div class="vial-tabs" id="vialTabs">
+        <button type="button" data-k="vial" class="on">Seguridad vial</button>
+        <button type="button" data-k="valor">Valores</button>
+        <button type="button" data-k="robo">Prevenir robos</button>
+      </div>
+      <div class="vial-cuerpo">
+        <div class="sena" id="vialIcono"></div>
+        <div>
+          <div class="t1" id="vialTitulo"></div>
+          <div class="t2" id="vialTexto"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cifras" id="cifras">
+      <h3>Personas atendidas en la comisaría</h3>
+      <div class="fila">
+        <div><div class="n" id="cHoy">0</div><div class="l">Hoy</div></div>
+        <div><div class="n" id="cMes">0</div><div class="l">Este mes</div></div>
+        <div><div class="n" id="cTotal">0</div><div class="l">En total</div></div>
+      </div>
+    </div>
+
+    <div class="emergencias">
+      <h3>Teléfonos de emergencia</h3>
+      <div class="tel-grid">
+        <a class="tel" href="tel:105"><span class="num">105</span><span class="nom">Policía Nacional</span></a>
+        <a class="tel" href="tel:116"><span class="num">116</span><span class="nom">Bomberos</span></a>
+        <a class="tel" href="tel:106"><span class="num">106</span><span class="nom">SAMU (ambulancia)</span></a>
+        <a class="tel comisaria" id="telComisaria" href="#" style="display:none"><span class="nom">Comisaría Salaverry</span><span class="num" id="telComisariaNum"></span></a>
+      </div>
     </div>
 
   </div>
 </div>
+
+<!-- MODAL BOTÓN DE PÁNICO -->
+<div class="fondo-modal" id="modalPanico">
+  <div class="modal">
+    <h2>Botón de pánico</h2>
+    <p class="sub">Selecciona qué ocurre. Se enviará tu ubicación por WhatsApp a la Comisaría. Si es una emergencia grave, llama también al <strong>105</strong>.</p>
+
+    <label class="et">¿Qué está pasando?</label>
+    <div class="tipos" id="tipos">
+      <button type="button" class="tipo" data-t="Robo / Asalto">Robo / Asalto</button>
+      <button type="button" class="tipo" data-t="Violencia familiar">Violencia familiar</button>
+      <button type="button" class="tipo" data-t="Persona sospechosa">Persona sospechosa</button>
+      <button type="button" class="tipo" data-t="Accidente de tránsito">Accidente de tránsito</button>
+      <button type="button" class="tipo" data-t="Riña / Disturbios">Riña / Disturbios</button>
+      <button type="button" class="tipo" data-t="Otra emergencia">Otra emergencia</button>
+    </div>
+
+    <label class="et" for="panNombre">Tu nombre (opcional)</label>
+    <input type="text" id="panNombre" maxlength="80" placeholder="Nombre">
+
+    <label class="et" for="panDetalle">Describe lo que pasa (opcional)</label>
+    <textarea id="panDetalle" maxlength="300" placeholder="Ej: dos sujetos en moto, color rojo..."></textarea>
+
+    <div class="gps-estado" id="gpsEstado">Se pedirá permiso para usar tu ubicación al enviar.</div>
+
+    <button type="button" class="btn-pan" id="btnEnviarPanico">Enviar alerta por WhatsApp</button>
+    <div class="err-pan" id="errPanico"></div>
+    <button type="button" class="btn-cerrar" id="btnCerrarPanico">Cancelar</button>
+    <div class="aviso-emerg">Se abrirá WhatsApp con el mensaje listo. Debes tocar "Enviar" allí para completar el aviso.</div>
+  </div>
+</div>
+
+<!-- MODAL ATENCIÓN INCLUSIVA -->
+<div class="fondo-modal" id="modalInclusiva">
+  <div class="modal azul">
+    <h2>Atención inclusiva</h2>
+    <p class="sub">Queremos que toda persona pueda acudir a la comisaría y ser atendida con respeto y comodidad: personas con discapacidad, autismo, adultos mayores, gestantes y sus familias.</p>
+    <ul class="pasos">
+      <li><b>1</b><span>Solicita tu cita y marca la casilla <strong>"Necesito atención especial"</strong>.</span></li>
+      <li><b>2</b><span>Cuéntanos, si quieres, qué necesitas: acceso sin escaleras, hablar despacio, intérprete, evitar ruido o venir acompañado.</span></li>
+      <li><b>3</b><span>El personal se prepara antes de tu llegada para atenderte de la mejor forma posible.</span></li>
+    </ul>
+    <a class="btn-pan" href="./citas.html?inclusiva=1">Solicitar cita con atención especial</a>
+    <button type="button" class="btn-cerrar" id="btnCerrarInclusiva">Cerrar</button>
+    <div class="aviso-emerg">Puedes venir acompañado de un familiar o de una persona de confianza durante toda la atención.</div>
+  </div>
+</div>
+
+<!-- MODAL VIOLENCIA -->
+<div class="fondo-modal" id="modalViolencia">
+  <div class="modal lila">
+    <h2>Ayuda ante violencia</h2>
+    <p class="sub">Si tú o alguien que conoces sufre violencia, no estás solo. Pedir ayuda es el primer paso.</p>
+
+    <div class="vtabs" id="vtabs">
+      <button type="button" data-v="mujer" class="on">Mujeres y familia</button>
+      <button type="button" data-v="ninos">Niños y adolescentes</button>
+    </div>
+
+    <div class="acciones-ayuda">
+      <a href="tel:100"><span class="g">100</span>Línea 100<small>Violencia familiar y sexual</small></a>
+      <a href="tel:105" class="r"><span class="g">105</span>Policía<small>Si hay peligro ahora</small></a>
+    </div>
+
+    <div id="vMujer">
+      <label class="et">Señales de alerta</label>
+      <ul class="lista-senales">
+        <li>Insultos, humillaciones o amenazas constantes.</li>
+        <li>Golpes, empujones o intimidación.</li>
+        <li>Te controlan el dinero, el celular o con quién hablas.</li>
+        <li>Te aíslan de tu familia y amistades.</li>
+        <li>Sientes miedo de cómo reaccionará la otra persona.</li>
+      </ul>
+      <label class="et">Qué puedes hacer</label>
+      <ul class="lista-senales">
+        <li>Si estás en peligro ahora, llama al <strong>105</strong>.</li>
+        <li>Llama a la <strong>Línea 100</strong>: orientación y apoyo por violencia familiar y sexual.</li>
+        <li>Pide una <strong>medida de protección</strong> en la comisaría.</li>
+        <li>Acude a un <strong>Centro Emergencia Mujer (CEM)</strong> para atención legal y psicológica.</li>
+        <li>Avisa a una persona de confianza y guarda mensajes o pruebas.</li>
+      </ul>
+    </div>
+
+    <div id="vNinos" style="display:none">
+      <label class="et">Señales de alerta en niños y adolescentes</label>
+      <ul class="lista-senales">
+        <li>Cambios bruscos: miedo, llanto, aislamiento o agresividad.</li>
+        <li>Moretones o lesiones que no se explican.</li>
+        <li>Rechazo a ir a un lugar o a estar con una persona.</li>
+        <li>Baja repentina en el colegio o problemas para dormir.</li>
+        <li>Conductas que no corresponden a su edad.</li>
+      </ul>
+      <label class="et">Qué puedes hacer</label>
+      <ul class="lista-senales">
+        <li>Escúchalo con calma, <strong>créele</strong> y dile que no es su culpa.</li>
+        <li>Si está en peligro ahora, llama al <strong>105</strong>.</li>
+        <li>Llama a la <strong>Línea 100</strong> para recibir orientación.</li>
+        <li>Acude a la <strong>DEMUNA</strong> de tu municipalidad o a la comisaría para denunciar y pedir protección.</li>
+        <li>No confrontes tú solo a la persona agresora.</li>
+      </ul>
+    </div>
+
+    <a class="btn-cita-ayuda" href="./citas.html">Pedir cita en Familia o medidas de protección</a>
+    <button type="button" class="btn-cerrar" id="btnCerrarViolencia">Cerrar</button>
+    <div class="aviso-emerg">La violencia no es tu culpa. Pide ayuda sin miedo.</div>
+  </div>
+</div>
+
+<script>
+  // ===== CONFIGURACIÓN: número de WhatsApp de la Comisaría (con código de país, sin + ni espacios) =====
+  const WHATSAPP_NUMERO = "51980748175"; // número de WhatsApp de la Comisaría
+
+  const TELEFONO_COMISARIA = ""; // <-- opcional: ej. "044123456" (solo números)
+  if(TELEFONO_COMISARIA){
+    const t=document.getElementById("telComisaria");
+    t.href="tel:"+TELEFONO_COMISARIA; t.style.display="flex";
+    document.getElementById("telComisariaNum").textContent=TELEFONO_COMISARIA;
+  }
+
+  // ===== AVISOS (se editan desde el panel del personal) =====
+  (async function cargarAvisos(){
+    try{
+      const U = "https://cthpbxqwsjcgpdfqkdwr.supabase.co";
+      const K = "sb_publishable_qTNkWQAQLrzS2-81BpeDeA_DFDCrVol";
+      const r = await fetch(U + "/rest/v1/avisos?select=texto,creado_en&order=creado_en.desc&limit=5",
+        { headers:{ apikey:K, Authorization:"Bearer " + K } });
+      if(!r.ok) return;
+      const datos = await r.json();
+      if(!datos.length) return;
+      const cont = document.getElementById("avisos");
+      const esc = t => { const d=document.createElement("div"); d.textContent=t; return d.innerHTML; };
+      const icono = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4h3l5 4V6L7 10z"/><path d="M16 9a4 4 0 010 6"/></svg>';
+      const tarjetas = datos.map(a => {
+        const f = new Date(a.creado_en).toLocaleDateString("es-PE",{timeZone:"America/Lima"});
+        return '<div class="aviso">' + icono + '<div><div class="a-txt">' + esc(a.texto) + '</div><div class="a-fecha">' + f + '</div></div></div>';
+      }).join("");
+      cont.innerHTML = '<div class="pista' + (datos.length === 1 ? ' uno' : '') + '">' + tarjetas + '</div>';
+      cont.style.display = "block";
+      if(datos.length > 1){
+        const pts = document.getElementById("puntos");
+        pts.innerHTML = datos.map((_, i) => '<i' + (i === 0 ? ' class="on"' : '') + '></i>').join("");
+        pts.style.display = "flex";
+        cont.addEventListener("scroll", () => {
+          const t = cont.querySelector(".aviso");
+          const paso = t.offsetWidth + 10;
+          const idx = Math.round(cont.scrollLeft / paso);
+          pts.querySelectorAll("i").forEach((p, i) => p.classList.toggle("on", i === idx));
+        }, { passive:true });
+      }
+    }catch(e){}
+  })();
+
+  document.getElementById("btnAbrirInclusiva").addEventListener("click", () => document.getElementById("modalInclusiva").classList.add("activo"));
+  document.getElementById("btnCerrarInclusiva").addEventListener("click", () => document.getElementById("modalInclusiva").classList.remove("activo"));
+
+  // ===== PERSONAS ATENDIDAS (solo cifras, sin datos personales) =====
+  (async function cargarCifras(){
+    try{
+      const U = "https://cthpbxqwsjcgpdfqkdwr.supabase.co";
+      const K = "sb_publishable_qTNkWQAQLrzS2-81BpeDeA_DFDCrVol";
+      const r = await fetch(U + "/rest/v1/rpc/estadisticas_publicas", {
+        method:"POST",
+        headers:{ apikey:K, Authorization:"Bearer " + K, "Content-Type":"application/json" },
+        body:"{}"
+      });
+      if(!r.ok) return;
+      const d = await r.json();
+      const nf = new Intl.NumberFormat("es-PE");
+      const poner = (id, v, ) => {
+        const el = document.getElementById(id), fin = Number(v) || 0;
+        const t0 = performance.now(), dur = 900;
+        (function paso(t){
+          const k = Math.min(1, (t - t0) / dur);
+          el.textContent = nf.format(Math.round(fin * (1 - Math.pow(1 - k, 3))));
+          if(k < 1) requestAnimationFrame(paso);
+        })(t0);
+      };
+      document.getElementById("cifras").style.display = "block";
+      poner("cHoy", d.hoy); poner("cMes", d.mes); poner("cTotal", d.total);
+    }catch(e){}
+  })();
+
+  // ===== MENSAJES DEL DÍA (vial / valores / prevenir robos): cambian cada día, hora de Lima =====
+  (function(){
+    const DATOS = {
+      vial:{
+        titulo:"Seguridad vial · Consejo del día", cuerpoIcono:"vial",
+        items:[
+          "Usa siempre el cinturón de seguridad, en el asiento delantero y en el de atrás.",
+          "Si conduces moto, usa casco bien abrochado. Es la protección que más vidas salva.",
+          "Si vas a beber, no conduzcas. Designa a un conductor sobrio o pide un taxi.",
+          "No uses el celular mientras conduces. Una mirada a la pantalla basta para un accidente.",
+          "Cruza siempre por las esquinas y por el paso peatonal, nunca entre vehículos.",
+          "Respeta la luz roja del semáforo, aunque no veas venir a nadie.",
+          "Antes de cruzar, mira a ambos lados, aunque la calle sea de un solo sentido.",
+          "Los niños deben viajar en el asiento trasero y con sistema de retención adecuado.",
+          "Mantén la distancia de seguridad con el vehículo de adelante. Evita pegarte.",
+          "Adecúa tu velocidad a la lluvia, la neblina y la noche. Frenar toma más distancia.",
+          "Revisa tus llantas, luces y frenos antes de salir de viaje.",
+          "Cede el paso a peatones, adultos mayores y personas con discapacidad.",
+          "Antes de girar o cambiar de carril, usa siempre las luces direccionales.",
+          "Si estás cansado o con sueño, detente a descansar. El sueño al volante es peligroso.",
+          "Motociclista: usa ropa clara o reflectante para que te vean de noche.",
+          "Ciclista: usa casco, luces y respeta las señales como cualquier otro vehículo.",
+          "Peatón: no cruces mirando el celular ni con audífonos a todo volumen.",
+          "No manejes si tomaste medicinas que dan sueño. Pregunta a tu médico o farmacéutico.",
+          "Respeta los límites de velocidad: están pensados para proteger a todos.",
+          "Lleva siempre contigo tu licencia, tarjeta de propiedad y SOAT vigente.",
+          "No estaciones sobre veredas, rampas ni pasos peatonales.",
+          "Con niños, camina del lado de la pista y tómalos de la mano al cruzar.",
+          "Al detenerte, deja libre el paso peatonal. Esa franja es para quien camina.",
+          "En una moto, nunca lleves más pasajeros de los permitidos ni sin casco.",
+          "Si ves un accidente, llama al 105 y no muevas a los heridos si no es necesario.",
+          "Ceder el paso es de personas amables, no de personas lentas.",
+          "Respeta las señales de tránsito: te avisan de peligros que no ves.",
+          "Antes de abrir la puerta de tu auto, mira por el espejo. Puede venir una moto o bicicleta.",
+          "Maneja con calma. Llegar unos minutos tarde es mejor que no llegar.",
+          "Educar en seguridad vial es tarea de todos. Comparte este consejo con tu familia."
+        ]
+      },
+      valor:{
+        titulo:"Valores ciudadanos · Mensaje del día",
+        items:[
+          "El respeto empieza por saludar y escuchar. Un buen trato cambia el día de otros.",
+          "La honestidad vale más que cualquier ventaja. Haz lo correcto aunque nadie te vea.",
+          "Ayudar a un vecino fortalece a toda la comunidad.",
+          "La puntualidad es una forma de respeto hacia los demás.",
+          "Cuidar lo público, como parques, bancas y postes, es cuidar lo que es de todos.",
+          "Dialogar resuelve más que gritar. Escucha antes de responder.",
+          "La solidaridad se practica todos los días, no solo en emergencias.",
+          "Respetar la fila y los turnos es respetar a las personas.",
+          "Una ciudad limpia empieza en tu puerta. Cuida tu calle.",
+          "Enseña con el ejemplo: los niños aprenden más de lo que ven que de lo que oyen.",
+          "La tolerancia es aceptar que otros piensen distinto sin dejar de respetarlos.",
+          "Decir la verdad construye confianza, en casa y en la comunidad.",
+          "Ceder el asiento a un adulto mayor o a una embarazada es un gesto que se agradece.",
+          "El buen vecino cuida y no molesta: baja el volumen y respeta el descanso.",
+          "Las normas existen para que todos podamos convivir en paz.",
+          "Denunciar con responsabilidad ayuda a proteger a tu comunidad.",
+          "Agradecer es gratis y alegra a quien lo recibe. Dilo hoy.",
+          "Trata a todos con la misma dignidad, sin importar su origen, edad o condición.",
+          "La seguridad se construye entre vecinos y policía. Participa en tu comunidad.",
+          "Un pequeño gesto de amabilidad puede cambiar el día de alguien.",
+          "Respetar a las mujeres, a los niños y a los adultos mayores es base de una sociedad justa.",
+          "Resolver los problemas sin violencia es una muestra de fortaleza.",
+          "Cuidar el medio ambiente es cuidar a las próximas generaciones.",
+          "Tu palabra vale: cumple lo que prometes.",
+          "La educación empieza en casa. Conversa con tus hijos sobre respeto y valores."
+        ]
+      },
+      robo:{
+        titulo:"Prevención de robos · Consejo del día",
+        items:[
+          "No uses el celular en la calle si no es necesario. Guárdalo en un bolsillo interior.",
+          "Evita caminar de noche por zonas oscuras o solitarias. Prefiere calles iluminadas y con gente.",
+          "Al salir de casa, asegúrate de cerrar bien puertas y ventanas.",
+          "No muestres joyas, dinero ni objetos de valor en público.",
+          "Si te asaltan, no te resistas. Tu vida vale más que tus cosas. Luego llama al 105.",
+          "Pide a tu vecino que revise tu casa si viajas, y evita publicar tu viaje en redes sociales.",
+          "Antes de subir a un taxi, anota la placa y compártela con un familiar.",
+          "En el transporte público, lleva la mochila adelante y tus cosas a la vista.",
+          "No dejes objetos de valor a la vista dentro del auto, ni siquiera por un momento.",
+          "Estaciona en lugares iluminados y vigilados, y siempre cierra con seguro.",
+          "Conoce a tus vecinos: una comunidad unida es la mejor alarma contra el delito.",
+          "Retira dinero del cajero en horas de mucha afluencia y revisa que nadie te siga.",
+          "No abras la puerta a desconocidos. Verifica quién es antes de abrir.",
+          "Instala buena iluminación en la entrada de tu casa y negocio.",
+          "Guarda una copia de tu DNI y anota el código IMEI de tu celular, ayuda a recuperarlo.",
+          "Desconfía de ofertas demasiado buenas: pueden ser estafas por teléfono o internet.",
+          "Nunca compartas claves, códigos o datos de tu tarjeta por llamada o mensaje.",
+          "Si notas movimientos sospechosos en tu cuadra, avisa al 105.",
+          "No dejes a tus hijos solos con el celular o la mochila a la vista en la calle.",
+          "Si usas bicicleta o moto, asegúrala con candado, incluso si te ausentas unos minutos.",
+          "Evita caminar mirando el celular o con audífonos: pierdes atención del entorno.",
+          "Ten a mano los números de emergencia: 105 Policía, 116 Bomberos, 106 SAMU.",
+          "En tu negocio, no guardes grandes cantidades de dinero y varía tus rutas al depositar.",
+          "Participa en las juntas vecinales y acude a la Policía Comunitaria de tu sector.",
+          "Denunciar ayuda a prevenir: cada denuncia permite a la policía actuar mejor."
+        ]
+      }
+    };
+    const ICONOS = {
+      vial:'<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M7 17l1.6-6.5h6.8L17 17M9 11V8h6v3"/></svg>',
+      valor:'<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-9.7A4 4 0 0112 8a4 4 0 017 2.3C19 15.6 12 20 12 20z"/></svg>',
+      robo:'<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8.2-7 10-4-1.8-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>'
+    };
+    const hoy = new Date().toLocaleDateString("en-CA", { timeZone:"America/Lima" });
+    const [y, mo, d] = hoy.split("-").map(Number);
+    const dias = Math.floor(Date.UTC(y, mo - 1, d) / 86400000);
+    const caja = document.getElementById("vial");
+    function mostrar(k){
+      const info = DATOS[k];
+      document.getElementById("vialTitulo").textContent = info.titulo;
+      document.getElementById("vialTexto").textContent = info.items[dias % info.items.length];
+      document.getElementById("vialIcono").innerHTML = ICONOS[k];
+      caja.classList.remove("k-vial","k-valor","k-robo");
+      caja.classList.add("k-" + k);
+      document.querySelectorAll("#vialTabs button").forEach(b => b.classList.toggle("on", b.dataset.k === k));
+    }
+    document.querySelectorAll("#vialTabs button").forEach(b => b.addEventListener("click", () => mostrar(b.dataset.k)));
+    mostrar("vial");
+  })();
+
+  document.getElementById("btnAbrirViolencia").addEventListener("click", () => document.getElementById("modalViolencia").classList.add("activo"));
+  document.getElementById("btnCerrarViolencia").addEventListener("click", () => document.getElementById("modalViolencia").classList.remove("activo"));
+
+  document.querySelectorAll("#vtabs button").forEach(b => b.addEventListener("click", () => {
+    document.querySelectorAll("#vtabs button").forEach(x => x.classList.toggle("on", x === b));
+    document.getElementById("vMujer").style.display = b.dataset.v === "mujer" ? "block" : "none";
+    document.getElementById("vNinos").style.display = b.dataset.v === "ninos" ? "block" : "none";
+  }));
+
+  const modal = document.getElementById("modalPanico");
+  const gpsEstado = document.getElementById("gpsEstado");
+  const errPanico = document.getElementById("errPanico");
+  const btnEnviar = document.getElementById("btnEnviarPanico");
+  let tipoSel = "";
+
+  document.getElementById("btnAbrirPanico").addEventListener("click", () => modal.classList.add("activo"));
+  document.getElementById("btnCerrarPanico").addEventListener("click", () => modal.classList.remove("activo"));
+
+  document.querySelectorAll(".tipo").forEach(b => {
+    b.addEventListener("click", () => {
+      document.querySelectorAll(".tipo").forEach(x => x.classList.remove("sel"));
+      b.classList.add("sel");
+      tipoSel = b.dataset.t;
+      errPanico.textContent = "";
+    });
+  });
+
+  function obtenerUbicacion(){
+    return new Promise((resolve, reject) => {
+      if(!navigator.geolocation){ reject(new Error("sin-gps")); return; }
+      navigator.geolocation.getCurrentPosition(
+        p => resolve(p.coords),
+        e => reject(e),
+        { enableHighAccuracy:true, timeout:12000, maximumAge:0 }
+      );
+    });
+  }
+
+  function abrirWhatsApp(texto){
+    const url = "https://wa.me/" + WHATSAPP_NUMERO + "?text=" + encodeURIComponent(texto);
+    window.location.href = url;
+  }
+
+  btnEnviar.addEventListener("click", async () => {
+    errPanico.textContent = "";
+    if(!tipoSel){ errPanico.textContent = "Selecciona qué está pasando."; return; }
+
+    btnEnviar.disabled = true;
+    btnEnviar.textContent = "Obteniendo ubicación...";
+    gpsEstado.className = "gps-estado";
+    gpsEstado.textContent = "Obteniendo tu ubicación...";
+
+    const nombre = document.getElementById("panNombre").value.trim();
+    const detalle = document.getElementById("panDetalle").value.trim();
+    const hora = new Date().toLocaleString("es-PE", { timeZone:"America/Lima" });
+
+    let lineas = ["🚨 *ALERTA DE PÁNICO* 🚨", "Tipo: " + tipoSel];
+    if(nombre) lineas.push("Nombre: " + nombre);
+    if(detalle) lineas.push("Detalle: " + detalle);
+    lineas.push("Hora: " + hora);
+
+    try{
+      const c = await obtenerUbicacion();
+      const lat = c.latitude.toFixed(6), lng = c.longitude.toFixed(6);
+      lineas.push("Ubicación: https://maps.google.com/?q=" + lat + "," + lng);
+      lineas.push("(precisión aprox. " + Math.round(c.accuracy) + " m)");
+      gpsEstado.textContent = "Ubicación obtenida. Abriendo WhatsApp...";
+    }catch(e){
+      lineas.push("Ubicación: NO disponible (el usuario no permitió el GPS)");
+      gpsEstado.className = "gps-estado mal";
+      gpsEstado.textContent = "No se pudo obtener la ubicación. Se enviará la alerta sin GPS.";
+    }
+
+    btnEnviar.disabled = false;
+    btnEnviar.textContent = "Enviar alerta por WhatsApp";
+    const urlWsp = "https://wa.me/" + WHATSAPP_NUMERO + "?text=" + encodeURIComponent(lineas.join("\n"));
+    gpsEstado.innerHTML = gpsEstado.textContent +
+      '<br><br>Se abrirá el chat de WhatsApp con tu alerta. Toca <strong>Enviar</strong> y podrás seguir hablando ahí.' +
+      '<br>¿No se abrió? <a href="' + urlWsp + '" style="color:#a13a2a;font-weight:700">Toca aquí para abrir el chat</a>';
+    window.location.href = urlWsp;
+  });
+</script>
 
 </body>
 </html>
