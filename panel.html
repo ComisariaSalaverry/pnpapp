@@ -699,7 +699,29 @@
   </style>
 
   <link rel="manifest" href="./manifest.json">
-  <meta name="theme-color" content="#1f3d31">
+  <meta name="theme-color" content="#0b3d24">
+
+  <!-- Etiquetas específicas para que instale bien en iPhone/iPad -->
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="CIOP Salaverry">
+
+  <style>
+    .caja-avisos{width:100%;max-width:520px;max-height:88vh;background:#fff;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 50px rgba(13,31,20,.25)}
+    .cuerpo-avisos{padding:16px 18px;overflow-y:auto}
+    .cuerpo-avisos textarea,.cuerpo-avisos input[type=date]{width:100%;padding:11px 12px;border-radius:10px;border:2px solid var(--linea);background:var(--lino);font-family:inherit;font-size:.92rem;box-sizing:border-box}
+    .cuerpo-avisos textarea{min-height:76px;resize:vertical}
+    .cuerpo-avisos label{display:block;font-size:.8rem;font-weight:600;color:var(--musgo);margin:12px 0 6px}
+    .btn-publicar-aviso{width:100%;margin-top:14px;padding:12px;border:0;border-radius:10px;background:var(--musgo);color:#fff;font-weight:700;cursor:pointer}
+    .btn-publicar-aviso:disabled{opacity:.6}
+    .aviso-item{border:1px solid var(--linea);border-radius:12px;padding:11px 12px;margin-top:10px;display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+    .aviso-item .txt{font-size:.9rem;line-height:1.4;word-break:break-word}
+    .aviso-item .meta{font-size:.74rem;color:#6b766f;margin-top:4px}
+    .aviso-item .quitar{flex-shrink:0;border:1px solid #d9b3ab;color:#a13a2a;background:#fff;border-radius:8px;padding:6px 9px;font-size:.78rem;font-weight:600;cursor:pointer}
+    .msg-aviso{font-size:.84rem;margin-top:10px;min-height:18px;color:#a13a2a}
+    .tit-lista{margin:20px 0 0;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:#5c6b63}
+  </style>
 </head>
 
 <body>
@@ -809,6 +831,13 @@
           class="btn-mapa-delitos"
         >
           🗺️ Mapa de delitos
+        </button>
+
+        <button
+          id="btnAvisos"
+          class="btn-mapa-delitos"
+        >
+          📢 Avisos
         </button>
 
         <button
@@ -1156,6 +1185,26 @@
     </div>
 
   </div>
+
+  <div id="overlayAvisos" class="overlay-modal" style="display:none;">
+    <div class="caja-avisos">
+      <div class="cabecera-mapa">
+        <span>📢 Avisos para el menú</span>
+        <button id="btnCerrarAvisos" class="btn-cerrar-mapa">✕</button>
+      </div>
+      <div class="cuerpo-avisos">
+        <label for="avisoTexto" style="margin-top:0">Nuevo aviso (lo verá el público en el menú)</label>
+        <textarea id="avisoTexto" maxlength="300" placeholder="Ej: Hoy la atención será hasta las 3 pm."></textarea>
+        <label for="avisoVence">Mostrar hasta (opcional)</label>
+        <input type="date" id="avisoVence">
+        <button class="btn-publicar-aviso" id="btnPublicarAviso">Publicar aviso</button>
+        <div class="msg-aviso" id="msgAviso"></div>
+        <div class="tit-lista">Avisos publicados</div>
+        <div id="listaAvisos"></div>
+      </div>
+    </div>
+  </div>
+
 
 
 <script>
@@ -1629,6 +1678,9 @@
       miRol =
         perfil.rol || "usuario";
 
+      document.getElementById("btnAvisos").style.display =
+        miRol === "admin" ? "" : "none";
+
       areaFiltroAdmin =
         "TODAS";
 
@@ -1813,6 +1865,95 @@
 
     }
   );
+
+
+  /* ==========================
+     AVISOS PARA EL MENÚ
+  ========================== */
+
+  const overlayAvisos = document.getElementById("overlayAvisos");
+  const listaAvisos = document.getElementById("listaAvisos");
+  const msgAviso = document.getElementById("msgAviso");
+  let miUserId = null;
+
+  function fechaLimaHoy(){
+    return new Date().toLocaleDateString("en-CA",{timeZone:"America/Lima"});
+  }
+
+  async function cargarAvisos(){
+    listaAvisos.innerHTML = '<div class="aviso-item"><div class="txt">Cargando...</div></div>';
+    const { data: ses } = await supabaseClient.auth.getSession();
+    miUserId = ses && ses.session ? ses.session.user.id : null;
+
+    const { data, error } = await supabaseClient
+      .from("avisos").select("*").order("creado_en",{ascending:false}).limit(30);
+
+    if(error){
+      console.error(error);
+      listaAvisos.innerHTML = '<div class="aviso-item"><div class="txt">No se pudieron cargar los avisos.</div></div>';
+      return;
+    }
+    if(!data.length){
+      listaAvisos.innerHTML = '<div class="aviso-item"><div class="txt">Aún no hay avisos.</div></div>';
+      return;
+    }
+    const hoy = fechaLimaHoy();
+    listaAvisos.innerHTML = data.map(a => {
+      const vencido = a.vence_en && a.vence_en < hoy;
+      const puede = miRol === "admin" || a.creado_por === miUserId;
+      const fecha = new Date(a.creado_en).toLocaleDateString("es-PE",{timeZone:"America/Lima"});
+      const meta = escaparHTML((a.area || "") + " · " + fecha)
+        + (a.vence_en ? " · hasta " + escaparHTML(a.vence_en.split("-").reverse().join("/")) : "")
+        + (vencido ? " · <strong>vencido</strong>" : "");
+      return '<div class="aviso-item"><div><div class="txt">' + escaparHTML(a.texto) + '</div><div class="meta">' + meta + '</div></div>'
+        + (puede ? '<button class="quitar" data-id="' + a.id + '">Quitar</button>' : '') + '</div>';
+    }).join("");
+  }
+
+  document.getElementById("btnAvisos").addEventListener("click", () => {
+    msgAviso.textContent = "";
+    overlayAvisos.style.display = "flex";
+    cargarAvisos();
+  });
+  document.getElementById("btnCerrarAvisos").addEventListener("click", () => {
+    overlayAvisos.style.display = "none";
+  });
+  overlayAvisos.addEventListener("click", e => {
+    if(e.target === overlayAvisos) overlayAvisos.style.display = "none";
+  });
+
+  document.getElementById("btnPublicarAviso").addEventListener("click", async () => {
+    const btn = document.getElementById("btnPublicarAviso");
+    const texto = document.getElementById("avisoTexto").value.trim();
+    const vence = document.getElementById("avisoVence").value;
+    msgAviso.style.color = "#a13a2a";
+    if(!texto){ msgAviso.textContent = "Escribe el aviso."; return; }
+    if(vence && vence < fechaLimaHoy()){ msgAviso.textContent = "La fecha no puede ser anterior a hoy."; return; }
+    btn.disabled = true;
+    const { error } = await supabaseClient.from("avisos").insert({
+      texto, area: miArea || null, vence_en: vence || null
+    });
+    btn.disabled = false;
+    if(error){
+      console.error(error);
+      msgAviso.textContent = "No se pudo publicar el aviso.";
+      return;
+    }
+    document.getElementById("avisoTexto").value = "";
+    document.getElementById("avisoVence").value = "";
+    msgAviso.style.color = "#3c7a56";
+    msgAviso.textContent = "Aviso publicado.";
+    cargarAvisos();
+  });
+
+  listaAvisos.addEventListener("click", async e => {
+    const b = e.target.closest(".quitar");
+    if(!b) return;
+    b.disabled = true;
+    const { error } = await supabaseClient.from("avisos").delete().eq("id", b.dataset.id);
+    if(error){ console.error(error); msgAviso.style.color="#a13a2a"; msgAviso.textContent = "No se pudo quitar el aviso."; b.disabled=false; return; }
+    cargarAvisos();
+  });
 
 
   /* ==========================
