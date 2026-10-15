@@ -356,6 +356,19 @@
       }
 
     }
+
+    .caja-inclusiva{
+      background:#eef3fb; border:1px solid #c9d8ee; border-radius:12px;
+      padding:12px 14px; margin:-4px 0 17px;
+    }
+    .caja-inclusiva label.chk{
+      display:flex; gap:10px; align-items:flex-start; margin:0; cursor:pointer;
+      font-weight:600; font-size:.88rem; color:#23466f; line-height:1.35;
+    }
+    .caja-inclusiva input[type=checkbox]{ width:20px; height:20px; margin-top:1px; flex-shrink:0; accent-color:#2f6fbf; padding:0; }
+    .caja-inclusiva .sub{ font-weight:400; color:#4a5f7a; font-size:.8rem; display:block; margin-top:2px; }
+    #detalleEspecial{ display:none; margin-top:10px; min-height:70px; width:100%; padding:12px 13px; border-radius:10px; border:2px solid #c9d8ee; background:#fff; color:var(--tinta); font-size:.9rem; outline:none; resize:vertical; box-sizing:border-box; }
+    #detalleEspecial:focus{ border-color:#2f6fbf; }
   </style>
 
   <link rel="manifest" href="./manifest.json">
@@ -519,6 +532,16 @@
           placeholder="Indique brevemente el motivo de su cita"
         ></textarea>
 
+      </div>
+
+      <div class="caja-inclusiva">
+        <label class="chk">
+          <input type="checkbox" id="atencionEspecial">
+          <span>Necesito atención especial o inclusiva
+            <span class="sub">Por ejemplo: discapacidad física, visual o auditiva, autismo, adulto mayor o gestante. Nos prepararemos para atenderle mejor.</span>
+          </span>
+        </label>
+        <textarea id="detalleEspecial" maxlength="250" placeholder="Opcional: cuéntenos qué necesita (ej. acceso sin escaleras, hablar despacio, intérprete, evitar ruido)"></textarea>
       </div>
 
 
@@ -1101,8 +1124,21 @@
         celular.value.trim();
 
 
-      const motivoValor =
+      const esEspecial =
+        document.getElementById("atencionEspecial").checked;
+
+      const detalleEspecial =
+        document.getElementById("detalleEspecial").value.trim();
+
+      let motivoValor =
         motivo.value.trim();
+
+      if(motivoValor && esEspecial){
+        motivoValor =
+          "[ATENCIÓN ESPECIAL" +
+          (detalleEspecial ? ": " + detalleEspecial : "") +
+          "] " + motivoValor;
+      }
 
 
       if(!area.value){
@@ -1308,6 +1344,10 @@
       );
 
 
+      document.getElementById("atencionEspecial").checked = false;
+      document.getElementById("detalleEspecial").value = "";
+      document.getElementById("detalleEspecial").style.display = "none";
+
       nombre.value =
         "";
 
@@ -1367,6 +1407,16 @@
 
   }
 
+
+  // Atención inclusiva: casilla + detalle (y enlace directo desde el menú)
+  (function(){
+    const chk = document.getElementById("atencionEspecial");
+    const det = document.getElementById("detalleEspecial");
+    function mostrar(){ det.style.display = chk.checked ? "block" : "none"; }
+    chk.addEventListener("change", mostrar);
+    if(new URLSearchParams(location.search).get("inclusiva") === "1"){ chk.checked = true; }
+    mostrar();
+  })();
 
   cargarHorarios();
 
