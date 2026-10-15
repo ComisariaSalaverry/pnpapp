@@ -3831,9 +3831,47 @@
   );
 
 
+    /* App Android: registra el celular en Firebase */
+  async function activarNotificacionesApp(){
+    try{
+      window.AndroidPush.pedirPermiso();
+      let token = "";
+      for(let n = 0; n < 20 && !token; n++){
+        token = window.AndroidPush.obtenerToken();
+        if(!token) await new Promise(r => setTimeout(r, 500));
+      }
+      if(!token){
+        alert("No se pudo obtener el identificador del dispositivo. Revisa tu conexión a internet y vuelve a intentar.");
+        return;
+      }
+      const { error } = await supabaseClient.rpc("registrar_fcm", { p_token: token });
+      if(error){
+        console.error("registrar_fcm:", error);
+        alert("No se pudo guardar el dispositivo.");
+        return;
+      }
+      btnNotificaciones.textContent = "🔔 Notificaciones activadas en este dispositivo";
+      btnNotificaciones.classList.add("activo");
+      btnNotificaciones.disabled = true;
+      if(!window.AndroidPush.permisoOk()){
+        alert("Acepta el permiso de notificaciones cuando Android te lo pida. Si no aparece, actívalo en Ajustes > Apps > SalaverryPNP > Notificaciones.");
+      }
+    }catch(e){
+      console.error(e);
+      alert("No se pudieron activar las notificaciones.");
+    }
+  }
+
+
   async function activarNotificaciones(){
 
     try{
+
+      if(window.AndroidPush){
+        await activarNotificacionesApp();
+        return;
+      }
+
 
       if(!("Notification" in window)){
 
