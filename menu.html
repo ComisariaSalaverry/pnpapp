@@ -302,6 +302,15 @@
   .vtabs button{ flex:1; border:1px solid #cdb6dc; background:#fff; color:#5f2f7d; border-radius:999px; padding:8px 6px;
     font-family:inherit; font-size:.8rem; font-weight:700; cursor:pointer; }
   .vtabs button.on{ background:#5f2f7d; border-color:#5f2f7d; color:#fff; }
+
+  .gps-estado.ok{ background:#e2ede6; color:#1f5a3a; }
+  .btn-gps{ width:100%; margin-top:8px; padding:11px; border-radius:10px; border:2px solid #cdb6dc; background:#fff; color:#5f2f7d;
+    font-family:inherit; font-weight:700; font-size:.88rem; cursor:pointer; }
+  .gps-pasos{ display:none; margin-top:8px; padding:10px 12px; border-radius:10px; background:#fff7e0; border:1px solid #ecd58a;
+    font-size:.82rem; line-height:1.5; color:#5b4a0f; }
+  .gps-pasos b{ color:#3d3108; }
+  .btn-sinubic{ display:none; width:100%; margin-top:8px; padding:12px; border-radius:10px; border:2px solid #d9b3ab; background:#fff;
+    color:#a13a2a; font-family:inherit; font-weight:700; font-size:.88rem; cursor:pointer; }
 </style>
 
   <link rel="manifest" href="./manifest.json">
@@ -434,9 +443,12 @@
     <label class="et" for="panDetalle">Describe lo que pasa (opcional)</label>
     <textarea id="panDetalle" maxlength="300" placeholder="Ej: dos sujetos en moto, color rojo..."></textarea>
 
-    <div class="gps-estado" id="gpsEstado">Se pedirá permiso para usar tu ubicación al enviar.</div>
+    <div class="gps-estado" id="gpsEstado">Comprobando tu ubicación...</div>
+    <div class="gps-pasos" id="gpsPasos"></div>
+    <button type="button" class="btn-gps" id="btnGps">Activar / comprobar ubicación</button>
 
     <button type="button" class="btn-pan" id="btnEnviarPanico">Enviar alerta por WhatsApp</button>
+    <button type="button" class="btn-sinubic" id="btnSinUbic">Enviar de todos modos, sin ubicación</button>
     <div class="err-pan" id="errPanico"></div>
     <button type="button" class="btn-cerrar" id="btnCerrarPanico">Cancelar</button>
     <div class="aviso-emerg">Se abrirá WhatsApp con el mensaje listo. Debes tocar "Enviar" allí para completar el aviso.</div>
@@ -521,7 +533,7 @@
 
 <script>
   // ===== CONFIGURACIÓN: número de WhatsApp de la Comisaría (con código de país, sin + ni espacios) =====
-  const WHATSAPP_NUMERO = "51980748175"; // número de WhatsApp de la Comisaría
+  const WHATSAPP_NUMERO = "51926277823"; // número de WhatsApp de la Comisaría
 
   const TELEFONO_COMISARIA = ""; // <-- opcional: ej. "044123456" (solo números)
   if(TELEFONO_COMISARIA){
@@ -702,7 +714,6 @@
   const btnEnviar = document.getElementById("btnEnviarPanico");
   let tipoSel = "";
 
-  document.getElementById("btnAbrirPanico").addEventListener("click", () => modal.classList.add("activo"));
   document.getElementById("btnCerrarPanico").addEventListener("click", () => modal.classList.remove("activo"));
 
   document.querySelectorAll(".tipo").forEach(b => {
@@ -714,15 +725,29 @@
     });
   });
 
-  function obtenerUbicacion(){
+  function pedirPosicion(opts){
     return new Promise((resolve, reject) => {
-      if(!navigator.geolocation){ reject(new Error("sin-gps")); return; }
-      navigator.geolocation.getCurrentPosition(
-        p => resolve(p.coords),
-        e => reject(e),
-        { enableHighAccuracy:true, timeout:12000, maximumAge:0 }
-      );
+      navigator.geolocation.getCurrentPosition(p => resolve(p.coords), e => reject(e), opts);
     });
+  }
+
+  // Intenta con alta precisión; si falla por tiempo o señal, reintenta con precisión normal
+  async function obtenerUbicacion(){
+    if(!navigator.geolocation){ const e = new Error("sin-gps"); e.code = 0; throw e; }
+    try{
+      return await pedirPosicion({ enableHighAccuracy:true, timeout:10000, maximumAge:0 });
+    }catch(e){
+      if(e.code === 1) throw e; // permiso denegado: no tiene sentido reintentar
+      return await pedirPosicion({ enableHighAccuracy:false, timeout:15000, maximumAge:60000 });
+    }
+  }
+
+  function motivoGps(e){
+    if(!e || e.code === 0) return "Este dispositivo o navegador no permite usar el GPS.";
+    if(e.code === 1) return "El permiso de ubicación está bloqueado para esta app. Actívalo en los ajustes del celular (Ubicación) y vuelve a intentar.";
+    if(e.code === 2) return "No se pudo detectar tu ubicación. Activa el GPS del celular y sal a un lugar abierto.";
+    if(e.code === 3) return "La ubicación tardó demasiado. Revisa que el GPS esté encendido y vuelve a intentar.";
+    return "No se pudo obtener la ubicación.";
   }
 
   function abrirWhatsApp(texto){
@@ -730,14 +755,77 @@
     window.location.href = url;
   }
 
+  // ===== GPS: se comprueba al abrir la ventana, para que la persona lo active ANTES de enviar =====
+  const gpsPasos = document.getElementById("gpsPasos");
+  const btnGps = document.getElementById("btnGps");
+  let ubicacion = null, ubicacionHora = 0, enviarSinGps = false;
+
+  function pasosGps(e){
+    const ios = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const bloqueado = e && e.code === 1;
+    if(ios){
+      return bloqueado
+        ? "<b>Permiso bloqueado.</b> Ve a <b>Ajustes → Privacidad → Localización</b>, activa <b>Localización</b> y permite el acceso a <b>Safari</b> (o a esta app)."
+        : "<b>Activa la ubicación:</b> Ajustes → Privacidad → <b>Localización</b> → actívala. Luego toca el botón de abajo.";
+    }
+    return bloqueado
+      ? "<b>Permiso bloqueado.</b> Abre los <b>ajustes de la app</b> → <b>Permisos → Ubicación</b> y elige <b>Permitir</b>. Luego toca el botón de abajo."
+      : "<b>Enciende el GPS:</b> desliza hacia abajo desde la parte de arriba de la pantalla y toca el ícono <b>Ubicación</b> (o Ajustes → Ubicación → Activar). Luego toca el botón de abajo.";
+  }
+
+  async function comprobarGps(){
+    enviarSinGps = false;
+    document.getElementById("btnSinUbic").style.display = "none";
+    gpsEstado.className = "gps-estado";
+    gpsEstado.textContent = "Buscando tu ubicación...";
+    gpsPasos.style.display = "none";
+    try{
+      const c = await obtenerUbicacion();
+      ubicacion = c; ubicacionHora = Date.now();
+      gpsEstado.className = "gps-estado ok";
+      gpsEstado.textContent = "Ubicación lista (precisión aprox. " + Math.round(c.accuracy) + " m). Ya puedes enviar la alerta.";
+      btnGps.textContent = "Actualizar ubicación";
+      return true;
+    }catch(e){
+      ubicacion = null;
+      gpsEstado.className = "gps-estado mal";
+      gpsEstado.textContent = "Tu ubicación NO está activada. " + motivoGps(e);
+      gpsPasos.innerHTML = pasosGps(e);
+      gpsPasos.style.display = "block";
+      btnGps.textContent = "Ya la activé, comprobar de nuevo";
+      return false;
+    }
+  }
+
+  document.getElementById("btnAbrirPanico").addEventListener("click", () => {
+    modal.classList.add("activo");
+    comprobarGps();
+  });
+  btnGps.addEventListener("click", comprobarGps);
+
   btnEnviar.addEventListener("click", async () => {
     errPanico.textContent = "";
     if(!tipoSel){ errPanico.textContent = "Selecciona qué está pasando."; return; }
 
     btnEnviar.disabled = true;
     btnEnviar.textContent = "Obteniendo ubicación...";
-    gpsEstado.className = "gps-estado";
-    gpsEstado.textContent = "Obteniendo tu ubicación...";
+
+    // usar la ubicación reciente si existe; si no, intentar de nuevo
+    let c = (ubicacion && Date.now() - ubicacionHora < 60000) ? ubicacion : null;
+    if(!c && !enviarSinGps){
+      const ok = await comprobarGps();
+      c = ok ? ubicacion : null;
+    }
+
+    // Sin GPS: avisar y dejar elegir (activar el GPS o enviar igual)
+    if(!c && !enviarSinGps){
+      btnEnviar.disabled = false;
+      btnEnviar.textContent = "Enviar alerta por WhatsApp";
+      errPanico.textContent = "Activa el GPS para que la policía vea dónde estás, o envía la alerta sin ubicación.";
+      const bs = document.getElementById("btnSinUbic");
+      bs.style.display = "block";
+      return;
+    }
 
     const nombre = document.getElementById("panNombre").value.trim();
     const detalle = document.getElementById("panDetalle").value.trim();
@@ -747,26 +835,24 @@
     if(nombre) lineas.push("Nombre: " + nombre);
     if(detalle) lineas.push("Detalle: " + detalle);
     lineas.push("Hora: " + hora);
-
-    try{
-      const c = await obtenerUbicacion();
-      const lat = c.latitude.toFixed(6), lng = c.longitude.toFixed(6);
-      lineas.push("Ubicación: https://maps.google.com/?q=" + lat + "," + lng);
+    if(c){
+      lineas.push("Ubicación: https://maps.google.com/?q=" + c.latitude.toFixed(6) + "," + c.longitude.toFixed(6));
       lineas.push("(precisión aprox. " + Math.round(c.accuracy) + " m)");
-      gpsEstado.textContent = "Ubicación obtenida. Abriendo WhatsApp...";
-    }catch(e){
-      lineas.push("Ubicación: NO disponible (el usuario no permitió el GPS)");
-      gpsEstado.className = "gps-estado mal";
-      gpsEstado.textContent = "No se pudo obtener la ubicación. Se enviará la alerta sin GPS.";
+    }else{
+      lineas.push("Ubicación: NO disponible (GPS apagado). Preguntar dónde se encuentra.");
     }
 
     btnEnviar.disabled = false;
     btnEnviar.textContent = "Enviar alerta por WhatsApp";
     const urlWsp = "https://wa.me/" + WHATSAPP_NUMERO + "?text=" + encodeURIComponent(lineas.join("\n"));
-    gpsEstado.innerHTML = gpsEstado.textContent +
-      '<br><br>Se abrirá el chat de WhatsApp con tu alerta. Toca <strong>Enviar</strong> y podrás seguir hablando ahí.' +
-      '<br>¿No se abrió? <a href="' + urlWsp + '" style="color:#a13a2a;font-weight:700">Toca aquí para abrir el chat</a>';
+    errPanico.innerHTML = 'Se abrirá WhatsApp. Toca <strong>Enviar</strong> y podrás seguir hablando ahí.<br>¿No se abrió? <a href="' + urlWsp + '" style="color:#a13a2a;font-weight:700">Toca aquí para abrir el chat</a>';
     window.location.href = urlWsp;
+  });
+
+  document.getElementById("btnSinUbic").addEventListener("click", () => {
+    enviarSinGps = true;
+    document.getElementById("btnSinUbic").style.display = "none";
+    btnEnviar.click();
   });
 </script>
 
