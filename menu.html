@@ -399,15 +399,6 @@
       </div>
     </div>
 
-    <div class="cifras" id="cifras">
-      <h3>Personas atendidas en la comisaría</h3>
-      <div class="fila">
-        <div><div class="n" id="cHoy">0</div><div class="l">Hoy</div></div>
-        <div><div class="n" id="cMes">0</div><div class="l">Este mes</div></div>
-        <div><div class="n" id="cTotal">0</div><div class="l">En total</div></div>
-      </div>
-    </div>
-
     <div class="emergencias">
       <h3>Teléfonos de emergencia</h3>
       <div class="tel-grid">
@@ -574,33 +565,6 @@
 
   document.getElementById("btnAbrirInclusiva").addEventListener("click", () => document.getElementById("modalInclusiva").classList.add("activo"));
   document.getElementById("btnCerrarInclusiva").addEventListener("click", () => document.getElementById("modalInclusiva").classList.remove("activo"));
-
-  // ===== PERSONAS ATENDIDAS (solo cifras, sin datos personales) =====
-  (async function cargarCifras(){
-    try{
-      const U = "https://cthpbxqwsjcgpdfqkdwr.supabase.co";
-      const K = "sb_publishable_qTNkWQAQLrzS2-81BpeDeA_DFDCrVol";
-      const r = await fetch(U + "/rest/v1/rpc/estadisticas_publicas", {
-        method:"POST",
-        headers:{ apikey:K, Authorization:"Bearer " + K, "Content-Type":"application/json" },
-        body:"{}"
-      });
-      if(!r.ok) return;
-      const d = await r.json();
-      const nf = new Intl.NumberFormat("es-PE");
-      const poner = (id, v, ) => {
-        const el = document.getElementById(id), fin = Number(v) || 0;
-        const t0 = performance.now(), dur = 900;
-        (function paso(t){
-          const k = Math.min(1, (t - t0) / dur);
-          el.textContent = nf.format(Math.round(fin * (1 - Math.pow(1 - k, 3))));
-          if(k < 1) requestAnimationFrame(paso);
-        })(t0);
-      };
-      document.getElementById("cifras").style.display = "block";
-      poner("cHoy", d.hoy); poner("cMes", d.mes); poner("cTotal", d.total);
-    }catch(e){}
-  })();
 
   // ===== MENSAJES DEL DÍA (vial / valores / prevenir robos): cambian cada día, hora de Lima =====
   (function(){
