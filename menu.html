@@ -1,702 +1,317 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Panel de registros - Comisaría Salaverry</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600;700&display=swap"
-    rel="stylesheet"
-  >
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-    :root{
-      --tinta:#0d1f14;
-      --musgo:#0b3d24;
-      --lino:#f2f1ec;
-      --papel:#fff;
-      --cobre:#97781a;
-      --linea:#d6d3c4;
-      --verde:#3c7a56;
-      --dorado:#c9a227;
-      --rojo:#a13a2a;
-      --azul:#365d85;
-    }
-
-    *{box-sizing:border-box}
-
-    html{
-      min-height:100%;
-      overflow-x:hidden;
-      overflow-y:auto;
-    }
-
-    body{
-      margin:0;
-      min-height:100vh;
-      background:var(--lino);
-      color:var(--tinta);
-      font-family:'Inter',sans-serif;
-      overflow-x:hidden;
-      overflow-y:auto;
-      -webkit-overflow-scrolling:touch;
-    }
-
-    button,input,textarea,select{
-      font-family:'Inter',sans-serif;
-    }
-
-    #vistaLogin{
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:24px;
-    }
-
-    .caja-login{
-      width:100%;
-      max-width:400px;
-      background:var(--papel);
-      border:1px solid var(--linea);
-      border-radius:20px;
-      padding:40px 32px;
-      box-shadow:0 20px 40px rgba(20,38,31,.1);
-    }
-
-    .cabecera-institucional-login,
-    .cabecera-institucional{
-      display:flex;
-      align-items:center;
-      gap:14px;
-    }
-
-    .cabecera-institucional-login{
-      margin-bottom:24px;
-      padding-bottom:18px;
-      border-bottom:2px solid var(--dorado);
-    }
-
-    .logo-institucional{
-      width:56px;
-      height:56px;
-      object-fit:contain;
-      flex-shrink:0;
-    }
-
-    .texto-institucional .linea1{
-      font-size:.75rem;
-      font-weight:700;
-      color:var(--musgo);
-      text-transform:uppercase;
-    }
-
-    .texto-institucional .linea2{
-      font-size:.85rem;
-      color:#5c6b63;
-    }
-
-    .caja-login h1{
-      font-family:'Fraunces',serif;
-      font-size:1.7rem;
-      margin:0 0 6px;
-    }
-
-    .caja-login p{
-      margin:0 0 28px;
-      color:#5c6b63;
-      font-size:.95rem;
-    }
-
-    .caja-login label,
-    .caja-modal label{
-      display:block;
-      font-weight:600;
-      font-size:.85rem;
-      margin:16px 0 6px;
-      color:var(--musgo);
-    }
-
-    .caja-login input,
-    .editable-input,
-    .caja-modal input,
-    .caja-modal textarea{
-      width:100%;
-      padding:12px 13px;
-      border-radius:10px;
-      border:2px solid var(--linea);
-      background:var(--lino);
-      color:var(--tinta);
-      font-size:.95rem;
-      outline:none;
-    }
-
-    .caja-login input:focus,
-    .editable-input:focus,
-    .caja-modal input:focus,
-    .caja-modal textarea:focus{
-      border-color:var(--musgo);
-    }
-
-    .caja-login button{
-      width:100%;
-      margin-top:22px;
-      padding:14px;
-      background:var(--musgo);
-      color:#fff;
-      border:0;
-      border-radius:10px;
-      font-weight:700;
-      font-size:1rem;
-      cursor:pointer;
-    }
-
-    .caja-login button:disabled{
-      opacity:.7;
-    }
-
-    .error-login{
-      color:var(--rojo);
-      font-size:.88rem;
-      margin-top:14px;
-      min-height:18px;
-    }
-
-    #vistaPanel{
-      display:none;
-      width:100%;
-      max-width:900px;
-      margin:0 auto;
-      padding:32px 24px 70px;
-      min-height:100vh;
-    }
-
-    .cabecera{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:14px;
-      flex-wrap:wrap;
-      margin-bottom:22px;
-    }
-
-    .cabecera h1{
-      font-family:'Fraunces',serif;
-      font-size:1.9rem;
-      margin:0;
-    }
-
-    .sub{
-      color:#5c6b63;
-      font-size:.9rem;
-      margin-top:3px;
-    }
-
-    .acciones-cabecera{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-    }
-
-    .salir{
-      background:#fff;
-      border:1px solid var(--linea);
-      color:var(--musgo);
-      padding:9px 14px;
-      border-radius:8px;
-      font-weight:600;
-      cursor:pointer;
-    }
-
-    .btn-mapa-delitos{
-      background:var(--musgo);
-      border:1px solid var(--musgo);
-      color:#fff;
-      padding:9px 14px;
-      border-radius:8px;
-      font-weight:600;
-      cursor:pointer;
-    }
-
-    .filtro-admin{
-      display:flex;
-      gap:8px;
-      margin-bottom:18px;
-      overflow-x:auto;
-      padding-bottom:5px;
-      -webkit-overflow-scrolling:touch;
-    }
-
-    .filtro-area{
-      flex-shrink:0;
-      border:1px solid var(--linea);
-      background:#fff;
-      color:var(--musgo);
-      padding:9px 12px;
-      border-radius:8px;
-      font-size:.82rem;
-      font-weight:600;
-      cursor:pointer;
-    }
-
-    .filtro-area.activo{
-      background:var(--musgo);
-      color:#fff;
-      border-color:var(--musgo);
-    }
-
-    .pestanas{
-      display:flex;
-      gap:8px;
-      margin-bottom:18px;
-    }
-
-    .pestana{
-      flex:1;
-      border:1px solid var(--linea);
-      background:#fff;
-      color:var(--musgo);
-      padding:12px;
-      border-radius:10px;
-      font-weight:700;
-      cursor:pointer;
-    }
-
-    .pestana.activa{
-      background:var(--musgo);
-      color:#fff;
-    }
-
-    .descarga-admin{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin-bottom:18px;
-    }
-
-    .descarga-admin input{
-      flex:1;
-      min-width:140px;
-      padding:10px;
-      border:1px solid var(--linea);
-      border-radius:8px;
-      background:#fff;
-    }
-
-    .descarga-admin button{
-      padding:10px 16px;
-      border:0;
-      border-radius:8px;
-      background:var(--cobre);
-      color:#fff;
-      font-weight:700;
-      cursor:pointer;
-    }
-
-    .buscador{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin-bottom:18px;
-    }
-
-    .buscador input{
-      flex:1;
-      min-width:160px;
-      padding:11px 12px;
-      border:1px solid var(--linea);
-      border-radius:8px;
-      background:#fff;
-      outline:none;
-    }
-
-    .buscador button{
-      padding:10px 16px;
-      border:0;
-      border-radius:8px;
-      background:var(--musgo);
-      color:#fff;
-      font-weight:700;
-      cursor:pointer;
-    }
-
-    #btnLimpiarBusqueda{
-      background:var(--lino);
-      color:var(--musgo);
-      border:1px solid var(--linea);
-    }
-
-    .btn-notificaciones{
-      width:100%;
-      margin-bottom:18px;
-      padding:13px;
-      border-radius:12px;
-      border:2px solid var(--musgo);
-      background:#fff;
-      color:var(--musgo);
-      font-weight:700;
-      cursor:pointer;
-    }
-
-    .btn-notificaciones.activo{
-      background:var(--musgo);
-      color:#fff;
-      cursor:default;
-    }
-
-    .lista{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      width:100%;
-    }
-
-    .fila{
-      width:100%;
-      background:#fff;
-      border:1px solid var(--linea);
-      border-radius:14px;
-      padding:16px 18px;
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:14px;
-    }
-
-    .fila.nueva{
-      animation:resaltar 1.8s ease;
-    }
-
-    @keyframes resaltar{
-      0%{
-        background:#fdf0e4;
-        border-color:var(--cobre);
-      }
-      100%{
-        background:#fff;
-        border-color:var(--linea);
-      }
-    }
-
-    .info-cliente{
-      min-width:0;
-      flex:1;
-    }
-
-    .nombre{
-      font-weight:700;
-      font-size:1.03rem;
-      overflow-wrap:anywhere;
-    }
-
-    .dato{
-      color:#5c6b63;
-      font-size:.84rem;
-      margin-top:3px;
-      overflow-wrap:anywhere;
-    }
-
-    .area{
-      color:var(--musgo);
-      font-size:.84rem;
-      font-weight:600;
-      margin-top:3px;
-      overflow-wrap:anywhere;
-    }
-
-    .hora{
-      color:#5c6b63;
-      font-size:.81rem;
-      margin-top:4px;
-    }
-
-    .motivo-atendido{
-      margin-top:7px;
-      padding-top:7px;
-      border-top:1px dashed var(--linea);
-      font-size:.82rem;
-      overflow-wrap:anywhere;
-    }
-
-    .acciones-registro,
-    .acciones-cita{
-      display:flex;
-      flex-direction:column;
-      gap:7px;
-      flex-shrink:0;
-      min-width:130px;
-    }
-
-    .btn{
-      border:0;
-      padding:9px 12px;
-      border-radius:8px;
-      font-weight:700;
-      font-size:.8rem;
-      cursor:pointer;
-      white-space:nowrap;
-    }
-
-    .btn-atendido{
-      background:#e2ede6;
-      color:var(--verde);
-    }
-
-    .btn-pendiente{
-      background:#fde8da;
-      color:var(--cobre);
-    }
-
-    .btn-motivo,
-    .btn-editar{
-      background:#eef0e4;
-      color:var(--musgo);
-    }
-
-    .btn-editar{
-      border:0;
-    }
-
-    .btn-eliminar{
-      background:#f5dfdc;
-      color:var(--rojo);
-    }
-
-    .btn-llegada{
-      background:var(--musgo);
-      color:#fff;
-    }
-
-    .btn-cita-atendida{
-      background:#e2ede6;
-      color:var(--verde);
-    }
-
-    .btn-cita-cancelar{
-      background:#f5dfdc;
-      color:var(--rojo);
-    }
-
-    .btn-cita-no{
-      background:#eee;
-      color:#555;
-    }
-
-    .estado-cita{
-      display:inline-block;
-      margin-top:7px;
-      padding:5px 9px;
-      border-radius:7px;
-      font-size:.76rem;
-      font-weight:700;
-      background:#eee;
-    }
-
-    .estado-Pendiente{
-      background:#fde8da;
-      color:var(--cobre);
-    }
-
-    .estado-Llegó,
-    .estado-Atendida{
-      background:#e2ede6;
-      color:var(--verde);
-    }
-
-    .estado-Cancelada{
-      background:#f5dfdc;
-      color:var(--rojo);
-    }
-
-    .estado-No{
-      background:#eee;
-      color:#555;
-    }
-
-    .vacio{
-      text-align:center;
-      padding:55px 20px;
-      color:#5c6b63;
-    }
-
-    .overlay-modal{
-      position:fixed;
-      inset:0;
-      background:rgba(13,31,20,.55);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      z-index:100;
-      padding:20px;
-    }
-
-    .caja-modal{
-      width:100%;
-      max-width:430px;
-      max-height:90vh;
-      overflow-y:auto;
-      background:#fff;
-      border-radius:16px;
-      padding:28px 26px;
-      box-shadow:0 20px 50px rgba(13,31,20,.25);
-    }
-
-    .caja-modal h2{
-      font-family:'Fraunces',serif;
-      font-size:1.3rem;
-      margin:0 0 18px;
-    }
-
-    .caja-modal textarea{
-      resize:vertical;
-    }
-
-    .error-modal{
-      color:var(--rojo);
-      font-size:.85rem;
-      min-height:18px;
-      margin-top:8px;
-    }
-
-    .botones-modal{
-      display:flex;
-      gap:10px;
-      margin-top:16px;
-    }
-
-    .btn-cancelar-modal,
-    .btn-guardar-modal{
-      flex:1;
-      padding:12px;
-      border-radius:10px;
-      border:0;
-      font-weight:700;
-      cursor:pointer;
-    }
-
-    .btn-cancelar-modal{
-      background:var(--lino);
-      color:var(--musgo);
-      border:1px solid var(--linea);
-    }
-
-    .btn-guardar-modal{
-      background:var(--musgo);
-      color:#fff;
-    }
-
-    /* ===== MODAL DEL MAPA (nuevo) ===== */
-
-    .caja-mapa{
-      width:100%;
-      max-width:900px;
-      height:85vh;
-      background:#fff;
-      border-radius:16px;
-      overflow:hidden;
-      display:flex;
-      flex-direction:column;
-      box-shadow:0 20px 50px rgba(13,31,20,.25);
-    }
-
-    .cabecera-mapa{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      padding:14px 18px;
-      background:var(--musgo);
-      color:#fff;
-      font-weight:700;
-      flex-shrink:0;
-    }
-
-    .btn-cerrar-mapa{
-      background:none;
-      border:0;
-      color:#fff;
-      font-size:1.2rem;
-      cursor:pointer;
-      line-height:1;
-      padding:4px 8px;
-    }
-
-    .iframe-mapa{
-      flex:1;
-      border:0;
-      width:100%;
-    }
-
-    @media(max-width:600px){
-      #vistaPanel{
-        padding:24px 14px 80px;
-      }
-
-      .cabecera{
-        align-items:flex-start;
-      }
-
-      .cabecera h1{
-        font-size:1.55rem;
-      }
-
-      .acciones-cabecera{
-        width:100%;
-      }
-
-      .salir,
-      .btn-mapa-delitos{
-        flex:1;
-      }
-
-      .fila{
-        padding:14px;
-      }
-
-      .acciones-registro,
-      .acciones-cita{
-        min-width:120px;
-      }
-
-      .btn{
-        padding:8px 9px;
-        font-size:.75rem;
-      }
-
-      .caja-mapa{
-        height:80vh;
-      }
-    }
-
-    @media(max-width:430px){
-      .fila{
-        flex-direction:column;
-      }
-
-      .acciones-registro,
-      .acciones-cita{
-        width:100%;
-        min-width:0;
-      }
-
-      .btn{
-        width:100%;
-      }
-
-      .pestanas{
-        position:sticky;
-        top:0;
-        z-index:5;
-        background:var(--lino);
-        padding:5px 0;
-      }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Comisaría Salaverry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --tinta:#0d1f14;
+    --musgo:#0b3d24;
+    --dorado:#c9a227;
+    --lino:#f2f1ec;
+    --papel:#ffffff;
+    --cobre:#97781a;
+    --linea:#d6d3c4;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0; padding:0; min-height:100%;
+    background:var(--lino);
+    font-family:'Inter',sans-serif;
+    color:var(--tinta);
+  }
+  .franja-institucional{
+    position:fixed; top:0; left:0; width:100%; height:8px;
+    background:linear-gradient(90deg, var(--musgo) 0%, var(--musgo) 60%, var(--dorado) 60%, var(--dorado) 100%);
+  }
+  .escena{
+    min-height:100vh; width:100%;
+    display:flex; align-items:center; justify-content:center;
+    padding:40px 20px;
+  }
+  .tarjeta{
+    width:100%; max-width:520px;
+    background:var(--papel);
+    border-radius:24px;
+    padding:44px 40px;
+    box-shadow:0 30px 60px rgba(13,31,20,0.12);
+    border:1px solid var(--linea);
+  }
+  .cabecera-institucional{
+    display:flex; align-items:center; gap:14px;
+    margin-bottom:28px; padding-bottom:20px;
+    border-bottom:2px solid var(--dorado);
+  }
+  .logo-institucional{ width:56px; height:56px; object-fit:contain; flex-shrink:0; }
+  .texto-institucional .linea0{
+    font-size:0.95rem; font-weight:700;
+    color:var(--tinta);
+  }
+  .texto-institucional .linea1{
+    font-size:0.78rem; font-weight:700; letter-spacing:0.02em;
+    color:var(--musgo); text-transform:uppercase;
+  }
+  .texto-institucional .linea2{ font-size:0.85rem; color:#5c6b63; }
+  .encabezado h1{
+    font-family:'Fraunces', serif; font-weight:600;
+    font-size:1.8rem; margin:0 0 8px 0; line-height:1.2;
+  }
+  .encabezado p{ margin:0 0 28px 0; color:#5c6b63; font-size:1rem; }
+
+  .opciones{ display:flex; flex-direction:column; gap:14px; }
+
+  .opcion{
+    display:flex; align-items:center; gap:16px;
+    padding:20px 22px; border-radius:16px;
+    border:2px solid var(--linea); background:var(--lino);
+    text-decoration:none; color:var(--tinta);
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .opcion:hover{ border-color:var(--musgo); background:#eceadf; }
+  .opcion:active{ transform:scale(0.99); }
+
+  .opcion .icono{
+    width:48px; height:48px; border-radius:50%;
+    background:var(--musgo); color:var(--papel);
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.4rem; flex-shrink:0;
+  }
+
+  .opcion .titulo{ font-weight:700; font-size:1.05rem; margin-bottom:3px; }
+  .opcion .detalle{ font-size:0.88rem; color:#5c6b63; }
+
+  .opcion.panel .icono{ background:var(--cobre); }
+  .opcion.chat .icono{ background:#25a244; }
+  .opcion.escucha .icono{ background:var(--verde-esc,#3c7a56); }
+  button.opcion{ width:100%; font-family:inherit; font-size:inherit; text-align:left; cursor:pointer; }
+  .opcion.panico{ border-color:#a13a2a; background:#fbeeeb; }
+  .opcion.panico:hover{ background:#f6dcd6; border-color:#a13a2a; }
+  .opcion.panico .icono{ background:#a13a2a; }
+
+  .fondo-modal{
+    display:none; position:fixed; inset:0; z-index:50;
+    background:rgba(13,31,20,.6); padding:16px; overflow-y:auto;
+    align-items:flex-start; justify-content:center;
+  }
+  .fondo-modal.activo{ display:flex; }
+  .modal{
+    width:100%; max-width:480px; margin:auto; background:#fff;
+    border-radius:20px; padding:26px 22px; border-top:6px solid #a13a2a;
+  }
+  .modal h2{ font-family:'Fraunces',serif; margin:0 0 6px; font-size:1.5rem; color:#a13a2a; }
+  .modal p.sub{ margin:0 0 16px; color:#5c6b63; font-size:.88rem; line-height:1.45; }
+  .modal label.et{ display:block; font-weight:600; font-size:.85rem; margin:14px 0 7px; color:var(--musgo); }
+  .tipos{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .tipo{
+    padding:12px 8px; border:2px solid var(--linea); border-radius:10px;
+    background:var(--lino); font-family:inherit; font-size:.88rem; font-weight:600;
+    cursor:pointer; color:var(--tinta);
+  }
+  .tipo.sel{ border-color:#a13a2a; background:#fbeeeb; color:#a13a2a; }
+  .modal textarea, .modal input{
+    width:100%; padding:11px 12px; border-radius:10px; border:2px solid var(--linea);
+    background:var(--lino); font-family:inherit; font-size:.95rem; outline:none;
+  }
+  .modal textarea{ min-height:80px; resize:vertical; }
+  .gps-estado{ font-size:.82rem; margin-top:12px; padding:10px 12px; border-radius:10px; background:#eef0e4; color:var(--musgo); }
+  .gps-estado.mal{ background:#fbeeeb; color:#a13a2a; }
+  .btn-pan{
+    width:100%; margin-top:16px; padding:15px; border:0; border-radius:10px;
+    background:#a13a2a; color:#fff; font-weight:700; font-size:1rem; cursor:pointer; font-family:inherit;
+  }
+  .btn-pan:disabled{ opacity:.6; }
+  .btn-cerrar{
+    width:100%; margin-top:10px; padding:12px; border:2px solid var(--linea);
+    border-radius:10px; background:#fff; font-weight:600; cursor:pointer; font-family:inherit;
+  }
+  .err-pan{ color:#a13a2a; font-size:.85rem; min-height:18px; margin-top:10px; text-align:center; }
+  .aviso-emerg{ font-size:.78rem; color:#5c6b63; text-align:center; margin-top:12px; line-height:1.4; }
+
+  /* ===== REDISEÑO VISUAL ===== */
+  html,body{
+    background:
+      radial-gradient(900px 400px at 50% -120px, rgba(201,162,39,.18), transparent 70%),
+      linear-gradient(180deg,#e9ece4 0%, #f2f1ec 45%);
+    background-attachment:fixed;
+  }
+  .franja-institucional{ height:6px; }
+  .escena{ align-items:flex-start; padding:28px 16px 40px; }
+  .tarjeta{
+    padding:0; overflow:hidden; border:0; border-radius:26px;
+    box-shadow:0 24px 60px rgba(13,31,20,.16), 0 2px 6px rgba(13,31,20,.06);
+  }
+  .cabecera-institucional{
+    margin:0; padding:26px 24px 22px; gap:16px; border-bottom:0;
+    background:linear-gradient(135deg,#0b3d24 0%,#0f5a35 100%);
+    position:relative;
+  }
+  .cabecera-institucional::after{
+    content:""; position:absolute; left:0; right:0; bottom:0; height:4px;
+    background:linear-gradient(90deg,#c9a227,#e6c75a,#c9a227);
+  }
+  .logo-institucional{
+    width:68px; height:68px; padding:6px; background:#fff; border-radius:50%;
+    box-shadow:0 4px 14px rgba(0,0,0,.25);
+  }
+  .texto-institucional .linea0{ color:#fff; font-family:'Fraunces',serif; font-size:1.2rem; font-weight:600; line-height:1.15; }
+  .texto-institucional .linea1{ color:#e6c75a; margin-top:5px; font-size:.7rem; letter-spacing:.08em; }
+  .texto-institucional .linea2{ color:rgba(255,255,255,.75); font-size:.78rem; margin-top:2px; }
+
+  .encabezado{ padding:26px 24px 4px; }
+  .encabezado h1{ font-size:1.55rem; margin-bottom:4px; }
+  .encabezado p{ margin-bottom:18px; font-size:.92rem; }
+
+  .opciones{ padding:16px 18px 22px; gap:12px; }
+  .opcion{
+    position:relative; background:#fff; border:1px solid var(--linea);
+    border-radius:18px; padding:16px 44px 16px 16px; gap:14px;
+    box-shadow:0 2px 8px rgba(13,31,20,.05);
+    transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  }
+  .opcion:hover{ background:#fff; border-color:var(--dorado); box-shadow:0 8px 20px rgba(13,31,20,.12); transform:translateY(-1px); }
+  .opcion::after{
+    content:""; position:absolute; right:18px; top:50%; width:9px; height:9px;
+    border-right:2.5px solid #b9b49a; border-top:2.5px solid #b9b49a;
+    transform:translateY(-50%) rotate(45deg);
+  }
+  .opcion .icono{
+    width:54px; height:54px; border-radius:16px;
+    background:linear-gradient(145deg,#0f5a35,#0b3d24);
+    box-shadow:0 6px 14px rgba(11,61,36,.28);
+  }
+  .opcion .icono svg{ width:26px; height:26px; }
+  .opcion.panel .icono{ background:linear-gradient(145deg,#b8932b,#8a6d17); box-shadow:0 6px 14px rgba(138,109,23,.3); }
+  .opcion.escucha .icono{ background:linear-gradient(145deg,#2f6f4c,#1f4f35); box-shadow:0 6px 14px rgba(31,79,53,.3); }
+  .opcion .titulo{ font-size:1.02rem; }
+  .opcion .detalle{ font-size:.84rem; line-height:1.35; }
+
+  .opcion.panico{
+    background:linear-gradient(135deg,#b23a2a,#8c2418); border:0; color:#fff;
+    box-shadow:0 10px 24px rgba(161,58,42,.35);
+  }
+  .opcion.panico:hover{ background:linear-gradient(135deg,#bf4332,#962a1c); box-shadow:0 12px 28px rgba(161,58,42,.45); }
+  .opcion.panico::after{ border-color:rgba(255,255,255,.7); }
+  .opcion.panico .icono{ background:rgba(255,255,255,.18); box-shadow:none; }
+  .opcion.panico .detalle{ color:rgba(255,255,255,.85); }
+
+  .modal{ border-radius:22px; border-top:0; padding:0 22px 20px; overflow:hidden; }
+  .modal h2{ margin:0 -22px !important; padding:20px 22px 16px; background:linear-gradient(135deg,#b23a2a,#8c2418); color:#fff; }
+  .modal p.sub{ margin-top:16px; }
+  .btn-pan{ border-radius:12px; background:linear-gradient(135deg,#b23a2a,#8c2418); box-shadow:0 8px 18px rgba(161,58,42,.3); }
+  .tipo{ border-radius:12px; }
+
+  /* ===== TELÉFONOS DE EMERGENCIA ===== */
+  .emergencias{ padding:0 18px 24px; }
+  .emergencias h3{ margin:0 0 10px; font-size:.78rem; letter-spacing:.08em; text-transform:uppercase; color:#5c6b63; }
+  .tel-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+  .tel{
+    display:flex; flex-direction:column; align-items:center; gap:2px; text-decoration:none;
+    background:#fff; border:1px solid var(--linea); border-radius:16px; padding:12px 6px;
+    color:var(--tinta); box-shadow:0 2px 8px rgba(13,31,20,.05);
+  }
+  .tel:active{ transform:scale(.97); }
+  .tel .num{ font-family:'Fraunces',serif; font-size:1.5rem; font-weight:600; color:var(--musgo); line-height:1.1; }
+  .tel .nom{ font-size:.72rem; color:#5c6b63; text-align:center; line-height:1.25; }
+  .tel.comisaria{ grid-column:1 / -1; flex-direction:row; justify-content:center; gap:10px; background:var(--musgo); border:0; }
+  .tel.comisaria .num{ color:#fff; font-size:1.15rem; }
+  .tel.comisaria .nom{ color:#e6c75a; font-size:.8rem; }
+
+  .avisos{ padding:0 18px 4px; display:none; }
+  .aviso{
+    display:flex; gap:12px; align-items:flex-start; margin-bottom:10px;
+    background:#fbf6e3; border:1px solid #e6d58f; border-left:5px solid var(--dorado);
+    border-radius:14px; padding:12px 14px;
+  }
+  .aviso svg{ flex-shrink:0; color:var(--cobre); margin-top:1px; }
+  .aviso .a-txt{ font-size:.9rem; line-height:1.4; color:var(--tinta); word-break:break-word; }
+  .aviso .a-fecha{ font-size:.72rem; color:#7a6a2a; margin-top:3px; }
+
+  /* avisos en carrusel horizontal */
+  .avisos{
+    display:none; padding:0 0 4px; margin:18px 0 6px;
+    overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .avisos::-webkit-scrollbar{ display:none; }
+  .avisos .pista{ display:flex; gap:10px; padding:0 18px; }
+  .avisos .aviso{
+    flex:0 0 86%; scroll-snap-align:center; margin:0; box-sizing:border-box;
+    min-height:88px;
+  }
+  .avisos .pista.uno .aviso{ flex-basis:100%; }
+  .puntos{ display:none; justify-content:center; gap:6px; margin:2px 0 14px; }
+  .puntos i{ width:7px; height:7px; border-radius:50%; background:#d6d3c4; transition:all .2s; }
+  .puntos i.on{ background:var(--dorado); width:18px; border-radius:4px; }
+
+  .opcion.inclusiva .icono{ background:linear-gradient(145deg,#3b7dd0,#23559a); box-shadow:0 6px 14px rgba(35,85,154,.3); }
+  .modal.azul h2{ background:linear-gradient(135deg,#3b7dd0,#23559a) !important; }
+  .modal.azul .btn-pan{ background:linear-gradient(135deg,#3b7dd0,#23559a); box-shadow:0 8px 18px rgba(35,85,154,.3); text-decoration:none; display:block; text-align:center; box-sizing:border-box; }
+  .pasos{ margin:14px 0 0; padding:0; list-style:none; }
+  .pasos li{ display:flex; gap:12px; align-items:flex-start; padding:9px 0; font-size:.9rem; line-height:1.4; border-bottom:1px solid #eee; }
+  .pasos li:last-child{ border-bottom:0; }
+  .pasos b{ flex-shrink:0; width:26px; height:26px; border-radius:50%; background:#e3edf9; color:#23559a; display:flex; align-items:center; justify-content:center; font-size:.8rem; }
+
+  .cifras{ margin:0 18px 22px; padding:16px 12px 14px; border-radius:18px; display:none;
+    background:linear-gradient(135deg,#0b3d24,#0f5a35); color:#fff; text-align:center; position:relative; overflow:hidden; }
+  .cifras h3{ margin:0 0 12px; font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; color:#e6c75a; font-weight:700; }
+  .cifras .fila{ display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+  .cifras .n{ font-family:'Fraunces',serif; font-size:1.9rem; font-weight:600; line-height:1.05; }
+  .cifras .l{ font-size:.7rem; color:rgba(255,255,255,.78); margin-top:3px; }
+  .cifras .fila > div + div{ border-left:1px solid rgba(255,255,255,.18); }
+
+  .vial{ margin:16px 18px 0; padding:15px 16px; border-radius:18px; background:#fff8e1;
+    border:1px solid #ecd58a; display:flex; gap:14px; align-items:flex-start; }
+  .vial .sena{ flex-shrink:0; width:46px; height:46px; border-radius:10px; background:#f2b705; color:#1b1b1b;
+    display:flex; align-items:center; justify-content:center; transform:rotate(45deg) scale(.82); box-shadow:0 3px 8px rgba(0,0,0,.18); }
+  .vial .sena svg{ transform:rotate(-45deg); }
+  .vial .t1{ font-size:.7rem; letter-spacing:.09em; text-transform:uppercase; color:#8a6d17; font-weight:700; margin-bottom:4px; }
+  .vial .t2{ font-size:.92rem; line-height:1.45; color:var(--tinta); font-weight:500; }
+
+  .vial{ display:block !important; padding:12px 14px 15px !important; }
+  .vial-tabs{ display:flex; gap:6px; margin-bottom:12px; overflow-x:auto; scrollbar-width:none; }
+  .vial-tabs::-webkit-scrollbar{ display:none; }
+  .vial-tabs button{ flex-shrink:0; border:1px solid #ecd58a; background:#fff; color:#8a6d17; border-radius:999px;
+    padding:6px 12px; font-family:inherit; font-size:.76rem; font-weight:700; cursor:pointer; }
+  .vial-tabs button.on{ background:#8a6d17; border-color:#8a6d17; color:#fff; }
+  .vial-cuerpo{ display:flex; gap:14px; align-items:flex-start; }
+  .vial.k-valor .sena{ background:#7bc89a; }
+  .vial.k-robo .sena{ background:#e58f7f; }
+  .vial.k-valor{ background:#eef8f1; border-color:#b9dcc6; }
+  .vial.k-robo{ background:#fdf0ed; border-color:#efc4bb; }
+  .vial.k-valor .t1, .vial.k-valor .vial-tabs button{ color:#2f6f4c; }
+  .vial.k-robo .t1, .vial.k-robo .vial-tabs button{ color:#a13a2a; }
+  .vial.k-valor .vial-tabs button, .vial.k-robo .vial-tabs button{ border-color:rgba(0,0,0,.12); }
+  .vial.k-valor .vial-tabs button.on{ background:#2f6f4c; color:#fff; }
+  .vial.k-robo .vial-tabs button.on{ background:#a13a2a; color:#fff; }
+  .opcion.violencia .icono{ background:linear-gradient(145deg,#8a4fa8,#5f2f7d); box-shadow:0 6px 14px rgba(95,47,125,.3); }
+  .modal.lila h2{ background:linear-gradient(135deg,#8a4fa8,#5f2f7d) !important; }
+  .acciones-ayuda{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:16px; }
+  .acciones-ayuda a{ display:flex; flex-direction:column; align-items:center; gap:2px; text-decoration:none; padding:12px 6px;
+    border-radius:12px; font-weight:700; color:#fff; background:linear-gradient(135deg,#8a4fa8,#5f2f7d); font-size:.85rem; text-align:center; }
+  .acciones-ayuda a .g{ font-family:'Fraunces',serif; font-size:1.5rem; line-height:1.1; }
+  .acciones-ayuda a.r{ background:linear-gradient(135deg,#b23a2a,#8c2418); }
+  .acciones-ayuda a small{ font-weight:500; opacity:.9; font-size:.7rem; }
+  .btn-cita-ayuda{ display:block; margin-top:10px; text-align:center; text-decoration:none; padding:13px; border-radius:12px;
+    background:#fff; color:#5f2f7d; border:2px solid #cdb6dc; font-weight:700; font-size:.9rem; }
+  .lista-senales{ margin:10px 0 0; padding-left:18px; font-size:.88rem; line-height:1.55; color:var(--tinta); }
+
+  .vtabs{ display:flex; gap:6px; margin-top:14px; }
+  .vtabs button{ flex:1; border:1px solid #cdb6dc; background:#fff; color:#5f2f7d; border-radius:999px; padding:8px 6px;
+    font-family:inherit; font-size:.8rem; font-weight:700; cursor:pointer; }
+  .vtabs button.on{ background:#5f2f7d; border-color:#5f2f7d; color:#fff; }
+
+  .gps-estado.ok{ background:#e2ede6; color:#1f5a3a; }
+  .btn-gps{ width:100%; margin-top:8px; padding:11px; border-radius:10px; border:2px solid #cdb6dc; background:#fff; color:#5f2f7d;
+    font-family:inherit; font-weight:700; font-size:.88rem; cursor:pointer; }
+  .gps-pasos{ display:none; margin-top:8px; padding:10px 12px; border-radius:10px; background:#fff7e0; border:1px solid #ecd58a;
+    font-size:.82rem; line-height:1.5; color:#5b4a0f; }
+  .gps-pasos b{ color:#3d3108; }
+  .btn-sinubic{ display:none; width:100%; margin-top:8px; padding:12px; border-radius:10px; border:2px solid #d9b3ab; background:#fff;
+    color:#a13a2a; font-family:inherit; font-weight:700; font-size:.88rem; cursor:pointer; }
+</style>
 
   <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#0b3d24">
@@ -706,3643 +321,562 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="CIOP Salaverry">
-
-  <style>
-    .caja-avisos{width:100%;max-width:520px;max-height:88vh;background:#fff;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 50px rgba(13,31,20,.25)}
-    .cuerpo-avisos{padding:16px 18px;overflow-y:auto}
-    .cuerpo-avisos textarea,.cuerpo-avisos input[type=date]{width:100%;padding:11px 12px;border-radius:10px;border:2px solid var(--linea);background:var(--lino);font-family:inherit;font-size:.92rem;box-sizing:border-box}
-    .cuerpo-avisos textarea{min-height:76px;resize:vertical}
-    .cuerpo-avisos label{display:block;font-size:.8rem;font-weight:600;color:var(--musgo);margin:12px 0 6px}
-    .btn-publicar-aviso{width:100%;margin-top:14px;padding:12px;border:0;border-radius:10px;background:var(--musgo);color:#fff;font-weight:700;cursor:pointer}
-    .btn-publicar-aviso:disabled{opacity:.6}
-    .aviso-item{border:1px solid var(--linea);border-radius:12px;padding:11px 12px;margin-top:10px;display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
-    .aviso-item .txt{font-size:.9rem;line-height:1.4;word-break:break-word}
-    .aviso-item .meta{font-size:.74rem;color:#6b766f;margin-top:4px}
-    .aviso-item .quitar{flex-shrink:0;border:1px solid #d9b3ab;color:#a13a2a;background:#fff;border-radius:8px;padding:6px 9px;font-size:.78rem;font-weight:600;cursor:pointer}
-    .msg-aviso{font-size:.84rem;margin-top:10px;min-height:18px;color:#a13a2a}
-    .tit-lista{margin:20px 0 0;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:#5c6b63}
-  </style>
 </head>
-
 <body>
 
-  <!-- LOGIN -->
+<div class="franja-institucional"></div>
 
-  <div id="vistaLogin">
+<div class="escena">
+  <div class="tarjeta">
 
-    <div class="caja-login">
-
-      <div class="cabecera-institucional-login">
-
-        <img
-          src="./logo.png"
-          alt="Comisaría Salaverry"
-          class="logo-institucional"
-        >
-
-        <div class="texto-institucional">
-
-          <div class="linea1">
-            Comisaría Salaverry
-          </div>
-
-          <div class="linea2">
-            Panel de área
-          </div>
-
-        </div>
-
+    <div class="cabecera-institucional">
+      <img src="./logo.png" alt="Policía Nacional del Perú" class="logo-institucional">
+      <div class="texto-institucional">
+        <div class="linea0">Comisaría PNP Salaverry</div>
+        <div class="linea1">Policía Nacional del Perú</div>
+        <div class="linea2">Región Policial La Libertad</div>
       </div>
-
-      <p>
-        Ingrese con la cuenta de su área para ver los registros.
-      </p>
-
-      <label for="correo">
-        Correo
-      </label>
-
-      <input
-        type="email"
-        id="correo"
-        autocomplete="username"
-        placeholder="correo@pnp.pe"
-      >
-
-      <label for="clave">
-        Contraseña
-      </label>
-
-      <input
-        type="password"
-        id="clave"
-        autocomplete="current-password"
-      >
-
-      <button id="btnEntrar">
-        Ingresar
-      </button>
-
-      <div
-        class="error-login"
-        id="errorLogin"
-      ></div>
-
     </div>
 
-  </div>
+    <div class="avisos" id="avisos"></div>
+    <div class="puntos" id="puntos"></div>
 
-
-  <!-- PANEL -->
-
-  <div id="vistaPanel">
-
-    <div class="cabecera">
-
-      <div class="cabecera-institucional">
-
-        <img
-          src="./logo.png"
-          alt="Comisaría Salaverry"
-          class="logo-institucional"
-        >
-
+    <div class="vial" id="vial">
+      <div class="vial-tabs" id="vialTabs">
+        <button type="button" data-k="vial" class="on">Seguridad vial</button>
+        <button type="button" data-k="valor">Valores</button>
+        <button type="button" data-k="robo">Prevenir robos</button>
+      </div>
+      <div class="vial-cuerpo">
+        <div class="sena" id="vialIcono"></div>
         <div>
-
-          <h1 id="nombreArea">
-            Registros
-          </h1>
-
-          <div
-            class="sub"
-            id="subtituloPanel"
-          >
-            Se actualiza automáticamente.
-          </div>
-
+          <div class="t1" id="vialTitulo"></div>
+          <div class="t2" id="vialTexto"></div>
         </div>
-
       </div>
-
-      <div class="acciones-cabecera">
-
-        <button
-          id="btnMapaDelitos"
-          class="btn-mapa-delitos"
-        >
-          🗺️ Mapa de delitos
-        </button>
-
-        <button
-          id="btnAvisos"
-          class="btn-mapa-delitos"
-        >
-          📢 Avisos
-        </button>
-
-        <button
-          id="btnEstadisticas"
-          class="btn-mapa-delitos"
-          style="display:none;"
-        >
-          📊 Estadísticas
-        </button>
-
-        <button
-          class="salir"
-          id="btnSalir"
-        >
-          Cerrar sesión
-        </button>
-
-      </div>
-
     </div>
 
+    <div class="opciones">
 
-    <!-- FILTRO ADMIN -->
+      <a href="./citas.html" class="opcion cita">
+        <div class="icono"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></div>
+        <div>
+          <div class="titulo">Solicitar una cita</div>
+          <div class="detalle">Elige área, fecha y hora de atención</div>
+        </div>
+      </a>
 
-    <div
-      id="filtroAdmin"
-      class="filtro-admin"
-      style="display:none;"
-    >
+      <a href="./panel.html" class="opcion panel">
+        <div class="icono"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l8-8M16 7l3 3M14 9l2 2"/></svg></div>
+        <div>
+          <div class="titulo">Panel del personal</div>
+          <div class="detalle">Ingreso con usuario y contraseña</div>
+        </div>
+      </a>
 
-      <button
-        class="filtro-area activo"
-        data-area="TODAS"
-      >
-        Todas
+      <a href="https://forms.gle/6b4izd3C7i6gngqe7" target="_blank" rel="noopener" class="opcion escucha">
+        <div class="icono"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.2-7 10-4-1.8-7-5.5-7-10V6z"/><path d="M12 8.5l1.2 2.4 2.6.4-1.9 1.8.5 2.6-2.4-1.3-2.4 1.3.5-2.6-1.9-1.8 2.6-.4z"/></svg></div>
+        <div>
+          <div class="titulo">Comisario te escucha</div>
+          <div class="detalle">Envía tu mensaje, queja o sugerencia al comisario</div>
+        </div>
+      </a>
+
+      <button type="button" class="opcion inclusiva" id="btnAbrirInclusiva">
+        <div class="icono"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.5s-7.5-4.4-7.5-10A4.3 4.3 0 0112 7.9a4.3 4.3 0 017.5 2.6c0 5.6-7.5 10-7.5 10z"/></svg></div>
+        <div>
+          <div class="titulo">Atención inclusiva</div>
+          <div class="detalle">Atención adaptada para personas con discapacidad u otra necesidad especial</div>
+        </div>
       </button>
 
-      <button
-        class="filtro-area"
-        data-area="Sección de Delitos, Faltas y Tránsito"
-      >
-        Sección de Delitos, Faltas y Tránsito
+      <button type="button" class="opcion violencia" id="btnAbrirViolencia">
+        <div class="icono"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-4.6-7-10.5A4 4 0 0112 8a4 4 0 017 2.5C19 16.4 12 21 12 21z"/><path d="M9 12h6M12 9v6"/></svg></div>
+        <div>
+          <div class="titulo">Ayuda ante violencia</div>
+          <div class="detalle">Línea 100, señales de alerta y cómo pedir protección</div>
+        </div>
       </button>
 
-      <button
-        class="filtro-area"
-        data-area="Familia"
-      >
-        Familia
-      </button>
-
-      <button
-        class="filtro-area"
-        data-area="Policía comunitaria"
-      >
-        Policía comunitaria
-      </button>
-
-      <button
-        class="filtro-area"
-        data-area="Secretaría"
-      >
-        Secretaría
-      </button>
-
-      <button
-        class="filtro-area"
-        data-area="Comisario"
-      >
-        Comisario
-      </button>
-
-      <button
-        class="filtro-area"
-        data-area="Copias certificadas y medidas de protección"
-      >
-        Copias certificadas y medidas de protección
+      <button type="button" class="opcion panico" id="btnAbrirPanico">
+        <div class="icono"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5L2.8 19.5h18.4z"/><path d="M12 10v4.5M12 17.2v.1"/></svg></div>
+        <div>
+          <div class="titulo">Botón de pánico</div>
+          <div class="detalle">Envía tu ubicación por WhatsApp en una emergencia</div>
+        </div>
       </button>
 
     </div>
 
-
-    <!-- PESTAÑAS -->
-
-    <div class="pestanas">
-
-      <button
-        id="btnTabRegistros"
-        class="pestana activa"
-      >
-        REGISTROS
-      </button>
-
-      <button
-        id="btnTabCitas"
-        class="pestana"
-      >
-        CITAS
-      </button>
-
-    </div>
-
-
-    <!-- REGISTROS -->
-
-    <div id="seccionRegistros">
-
-      <div
-        id="descargaAdmin"
-        class="descarga-admin"
-        style="display:none;"
-      >
-
-        <input
-          type="date"
-          id="fechaDesde"
-        >
-
-        <input
-          type="date"
-          id="fechaHasta"
-        >
-
-        <button id="btnDescargar">
-          ⬇ Descargar CSV
-        </button>
-
+    <div class="emergencias">
+      <h3>Teléfonos de emergencia</h3>
+      <div class="tel-grid">
+        <a class="tel" href="tel:105"><span class="num">105</span><span class="nom">Policía Nacional</span></a>
+        <a class="tel" href="tel:116"><span class="num">116</span><span class="nom">Bomberos</span></a>
+        <a class="tel" href="tel:106"><span class="num">106</span><span class="nom">SAMU (ambulancia)</span></a>
+        <a class="tel comisaria" id="telComisaria" href="#" style="display:none"><span class="nom">Comisaría Salaverry</span><span class="num" id="telComisariaNum"></span></a>
       </div>
-
-
-      <div class="buscador">
-
-        <input
-          type="text"
-          id="inputBuscar"
-          placeholder="Buscar por DNI o nombre"
-        >
-
-        <button id="btnBuscar">
-          Buscar
-        </button>
-
-        <button
-          id="btnLimpiarBusqueda"
-          style="display:none;"
-        >
-          Limpiar
-        </button>
-
-      </div>
-
-
-      <button
-        id="btnNotificaciones"
-        class="btn-notificaciones"
-      >
-        🔔 Activar notificaciones en este dispositivo
-      </button>
-
-
-      <div
-        class="lista"
-        id="listaRegistros"
-      ></div>
-
-    </div>
-
-
-    <!-- CITAS -->
-
-    <div
-      id="seccionCitas"
-      style="display:none;"
-    >
-
-      <div
-        class="lista"
-        id="listaCitas"
-      ></div>
-
     </div>
 
   </div>
+</div>
 
+<!-- MODAL BOTÓN DE PÁNICO -->
+<div class="fondo-modal" id="modalPanico">
+  <div class="modal">
+    <h2>Botón de pánico</h2>
+    <p class="sub">Selecciona qué ocurre. Se enviará tu ubicación por WhatsApp a la Comisaría. Si es una emergencia grave, llama también al <strong>105</strong>.</p>
 
-  <!-- MODAL ATENDIDO -->
-
-  <div
-    id="overlayAtendido"
-    class="overlay-modal"
-    style="display:none;"
-  >
-
-    <div class="caja-modal">
-
-      <h2>
-        Información de atención
-      </h2>
-
-      <label for="motivoAtendido">
-        Motivo de la visita
-      </label>
-
-      <input
-        type="text"
-        id="motivoAtendido"
-        maxlength="150"
-        placeholder="Consulta, denuncia, trámite..."
-      >
-
-      <label for="detalleAtendido">
-        Especificar
-      </label>
-
-      <textarea
-        id="detalleAtendido"
-        rows="4"
-        maxlength="500"
-        placeholder="Detalle adicional"
-      ></textarea>
-
-      <div
-        class="error-modal"
-        id="errorModal"
-      ></div>
-
-      <div class="botones-modal">
-
-        <button
-          id="btnCancelarAtendido"
-          class="btn-cancelar-modal"
-        >
-          Cancelar
-        </button>
-
-        <button
-          id="btnGuardarAtendido"
-          class="btn-guardar-modal"
-        >
-          Guardar
-        </button>
-
-      </div>
-
+    <label class="et">¿Qué está pasando?</label>
+    <div class="tipos" id="tipos">
+      <button type="button" class="tipo" data-t="Robo / Asalto">Robo / Asalto</button>
+      <button type="button" class="tipo" data-t="Violencia familiar">Violencia familiar</button>
+      <button type="button" class="tipo" data-t="Persona sospechosa">Persona sospechosa</button>
+      <button type="button" class="tipo" data-t="Accidente de tránsito">Accidente de tránsito</button>
+      <button type="button" class="tipo" data-t="Riña / Disturbios">Riña / Disturbios</button>
+      <button type="button" class="tipo" data-t="Otra emergencia">Otra emergencia</button>
     </div>
 
+    <label class="et" for="panNombre">Tu nombre (opcional)</label>
+    <input type="text" id="panNombre" maxlength="80" placeholder="Nombre">
+
+    <label class="et" for="panDetalle">Describe lo que pasa (opcional)</label>
+    <textarea id="panDetalle" maxlength="300" placeholder="Ej: dos sujetos en moto, color rojo..."></textarea>
+
+    <div class="gps-estado" id="gpsEstado">Comprobando tu ubicación...</div>
+    <div class="gps-pasos" id="gpsPasos"></div>
+    <button type="button" class="btn-gps" id="btnGps">Activar / comprobar ubicación</button>
+
+    <button type="button" class="btn-pan" id="btnEnviarPanico">Enviar alerta por WhatsApp</button>
+    <button type="button" class="btn-sinubic" id="btnSinUbic">Enviar de todos modos, sin ubicación</button>
+    <div class="err-pan" id="errPanico"></div>
+    <button type="button" class="btn-cerrar" id="btnCerrarPanico">Cancelar</button>
+    <div class="aviso-emerg">Se abrirá WhatsApp con el mensaje listo. Debes tocar "Enviar" allí para completar el aviso.</div>
   </div>
+</div>
 
+<!-- MODAL ATENCIÓN INCLUSIVA -->
+<div class="fondo-modal" id="modalInclusiva">
+  <div class="modal azul">
+    <h2>Atención inclusiva</h2>
+    <p class="sub">Queremos que toda persona pueda acudir a la comisaría y ser atendida con respeto y comodidad: personas con discapacidad, autismo, adultos mayores, gestantes y sus familias.</p>
+    <ul class="pasos">
+      <li><b>1</b><span>Solicita tu cita y marca la casilla <strong>"Necesito atención especial"</strong>.</span></li>
+      <li><b>2</b><span>Cuéntanos, si quieres, qué necesitas: acceso sin escaleras, hablar despacio, intérprete, evitar ruido o venir acompañado.</span></li>
+      <li><b>3</b><span>El personal se prepara antes de tu llegada para atenderte de la mejor forma posible.</span></li>
+    </ul>
+    <a class="btn-pan" href="./citas.html?inclusiva=1">Solicitar cita con atención especial</a>
+    <button type="button" class="btn-cerrar" id="btnCerrarInclusiva">Cerrar</button>
+    <div class="aviso-emerg">Puedes venir acompañado de un familiar o de una persona de confianza durante toda la atención.</div>
+  </div>
+</div>
 
-  <!-- MODAL EDITAR -->
+<!-- MODAL VIOLENCIA -->
+<div class="fondo-modal" id="modalViolencia">
+  <div class="modal lila">
+    <h2>Ayuda ante violencia</h2>
+    <p class="sub">Si tú o alguien que conoces sufre violencia, no estás solo. Pedir ayuda es el primer paso.</p>
 
-  <div
-    id="overlayEditar"
-    class="overlay-modal"
-    style="display:none;"
-  >
-
-    <div class="caja-modal">
-
-      <h2>
-        Editar registro
-      </h2>
-
-      <label for="editarDni">
-        DNI
-      </label>
-
-      <input
-        type="text"
-        id="editarDni"
-        maxlength="20"
-      >
-
-      <label for="editarNombre">
-        Nombre completo
-      </label>
-
-      <input
-        type="text"
-        id="editarNombre"
-        maxlength="150"
-      >
-
-      <label for="editarCelular">
-        Celular
-      </label>
-
-      <input
-        type="text"
-        id="editarCelular"
-        maxlength="30"
-      >
-
-      <div
-        class="error-modal"
-        id="errorEditar"
-      ></div>
-
-      <div class="botones-modal">
-
-        <button
-          id="btnCancelarEditar"
-          class="btn-cancelar-modal"
-        >
-          Cancelar
-        </button>
-
-        <button
-          id="btnGuardarEditar"
-          class="btn-guardar-modal"
-        >
-          Guardar cambios
-        </button>
-
-      </div>
-
+    <div class="vtabs" id="vtabs">
+      <button type="button" data-v="mujer" class="on">Mujeres y familia</button>
+      <button type="button" data-v="ninos">Niños y adolescentes</button>
     </div>
 
-  </div>
-
-
-  <!-- MODAL MAPA DE DELITOS (nuevo) -->
-
-  <div
-    id="overlayMapa"
-    class="overlay-modal"
-    style="display:none;"
-  >
-
-    <div class="caja-mapa">
-
-      <div class="cabecera-mapa">
-
-        <span>
-          🗺️ Mapa de delitos
-        </span>
-
-        <button
-          id="btnCerrarMapa"
-          class="btn-cerrar-mapa"
-        >
-          ✕
-        </button>
-
-      </div>
-
-      <iframe
-        src="https://www.google.com/maps/d/embed?mid=1PtgLD1_svGb2oP02_-aTo_TXZRQsdhM"
-        class="iframe-mapa"
-        loading="lazy"
-      ></iframe>
-
+    <div class="acciones-ayuda">
+      <a href="tel:100"><span class="g">100</span>Línea 100<small>Violencia familiar y sexual</small></a>
+      <a href="tel:105" class="r"><span class="g">105</span>Policía<small>Si hay peligro ahora</small></a>
     </div>
 
-  </div>
-
-  <div id="overlayAvisos" class="overlay-modal" style="display:none;">
-    <div class="caja-avisos">
-      <div class="cabecera-mapa">
-        <span>📢 Avisos para el menú</span>
-        <button id="btnCerrarAvisos" class="btn-cerrar-mapa">✕</button>
-      </div>
-      <div class="cuerpo-avisos">
-        <label for="avisoTexto" style="margin-top:0">Nuevo aviso (lo verá el público en el menú)</label>
-        <textarea id="avisoTexto" maxlength="300" placeholder="Ej: Hoy la atención será hasta las 3 pm."></textarea>
-        <label for="avisoVence">Mostrar hasta (opcional)</label>
-        <input type="date" id="avisoVence">
-        <button class="btn-publicar-aviso" id="btnPublicarAviso">Publicar aviso</button>
-        <div class="msg-aviso" id="msgAviso"></div>
-        <div class="tit-lista">Avisos publicados</div>
-        <div id="listaAvisos"></div>
-      </div>
+    <div id="vMujer">
+      <label class="et">Señales de alerta</label>
+      <ul class="lista-senales">
+        <li>Insultos, humillaciones o amenazas constantes.</li>
+        <li>Golpes, empujones o intimidación.</li>
+        <li>Te controlan el dinero, el celular o con quién hablas.</li>
+        <li>Te aíslan de tu familia y amistades.</li>
+        <li>Sientes miedo de cómo reaccionará la otra persona.</li>
+      </ul>
+      <label class="et">Qué puedes hacer</label>
+      <ul class="lista-senales">
+        <li>Si estás en peligro ahora, llama al <strong>105</strong>.</li>
+        <li>Llama a la <strong>Línea 100</strong>: orientación y apoyo por violencia familiar y sexual.</li>
+        <li>Pide una <strong>medida de protección</strong> en la comisaría.</li>
+        <li>Acude a un <strong>Centro Emergencia Mujer (CEM)</strong> para atención legal y psicológica.</li>
+        <li>Avisa a una persona de confianza y guarda mensajes o pruebas.</li>
+      </ul>
     </div>
-  </div>
 
-
-  <div id="overlayEstad" class="overlay-modal" style="display:none;">
-    <div class="caja-avisos">
-      <div class="cabecera-mapa">
-        <span>📊 Personas atendidas</span>
-        <button id="btnCerrarEstad" class="btn-cerrar-mapa">✕</button>
-      </div>
-      <div class="cuerpo-avisos">
-        <div id="estadResumen" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center"></div>
-        <div class="tit-lista">Por área</div>
-        <div id="estadAreas"></div>
-        <div class="msg-aviso" id="estadMsg"></div>
-        <p style="font-size:.74rem;color:#6b766f;margin:14px 0 0;line-height:1.4">Cuenta los registros del kiosco marcados como atendidos y las citas en estado "Atendida".</p>
-      </div>
+    <div id="vNinos" style="display:none">
+      <label class="et">Señales de alerta en niños y adolescentes</label>
+      <ul class="lista-senales">
+        <li>Cambios bruscos: miedo, llanto, aislamiento o agresividad.</li>
+        <li>Moretones o lesiones que no se explican.</li>
+        <li>Rechazo a ir a un lugar o a estar con una persona.</li>
+        <li>Baja repentina en el colegio o problemas para dormir.</li>
+        <li>Conductas que no corresponden a su edad.</li>
+      </ul>
+      <label class="et">Qué puedes hacer</label>
+      <ul class="lista-senales">
+        <li>Escúchalo con calma, <strong>créele</strong> y dile que no es su culpa.</li>
+        <li>Si está en peligro ahora, llama al <strong>105</strong>.</li>
+        <li>Llama a la <strong>Línea 100</strong> para recibir orientación.</li>
+        <li>Acude a la <strong>DEMUNA</strong> de tu municipalidad o a la comisaría para denunciar y pedir protección.</li>
+        <li>No confrontes tú solo a la persona agresora.</li>
+      </ul>
     </div>
+
+    <a class="btn-cita-ayuda" href="./citas.html">Pedir cita en Familia o medidas de protección</a>
+    <button type="button" class="btn-cerrar" id="btnCerrarViolencia">Cerrar</button>
+    <div class="aviso-emerg">La violencia no es tu culpa. Pide ayuda sin miedo.</div>
   </div>
-
-
+</div>
 
 <script>
+  // ===== CONFIGURACIÓN: número de WhatsApp de la Comisaría (con código de país, sin + ni espacios) =====
+  const WHATSAPP_NUMERO = "51959401110"; // número de WhatsApp de la Comisaría
 
-  const SUPABASE_URL =
-    "https://cthpbxqwsjcgpdfqkdwr.supabase.co";
-
-  const SUPABASE_ANON_KEY =
-    "sb_publishable_qTNkWQAQLrzS2-81BpeDeA_DFDCrVol";
-
-  const VAPID_PUBLIC_KEY =
-    "BHG6sCGAQQmYuGMRmrJ4EYKd55Bzngbc7WQdJuFpjHgFzs-zbQYQeof-yerGrD_yjIqQijnzdvqySvrehpeZgUA";
-
-
-  const AREAS = [
-    "Sección de Delitos, Faltas y Tránsito",
-    "Familia",
-    "Policía comunitaria",
-    "Secretaría",
-    "Comisario",
-    "Copias certificadas y medidas de protección"
-  ];
-
-
-  const supabaseClient =
-    window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
-    );
-
-
-  const vistaLogin =
-    document.getElementById("vistaLogin");
-
-  const vistaPanel =
-    document.getElementById("vistaPanel");
-
-  const btnEntrar =
-    document.getElementById("btnEntrar");
-
-  const btnSalir =
-    document.getElementById("btnSalir");
-
-  const errorLogin =
-    document.getElementById("errorLogin");
-
-  const correoInput =
-    document.getElementById("correo");
-
-  const claveInput =
-    document.getElementById("clave");
-
-  const nombreAreaEl =
-    document.getElementById("nombreArea");
-
-  const subtituloPanel =
-    document.getElementById("subtituloPanel");
-
-  const filtroAdmin =
-    document.getElementById("filtroAdmin");
-
-  const descargaAdmin =
-    document.getElementById("descargaAdmin");
-
-  const listaRegistros =
-    document.getElementById("listaRegistros");
-
-  const listaCitas =
-    document.getElementById("listaCitas");
-
-  const seccionRegistros =
-    document.getElementById("seccionRegistros");
-
-  const seccionCitas =
-    document.getElementById("seccionCitas");
-
-  const btnTabRegistros =
-    document.getElementById("btnTabRegistros");
-
-  const btnTabCitas =
-    document.getElementById("btnTabCitas");
-
-  const btnNotificaciones =
-    document.getElementById("btnNotificaciones");
-
-  const btnMapaDelitos =
-    document.getElementById("btnMapaDelitos");
-
-  const overlayMapa =
-    document.getElementById("overlayMapa");
-
-  const btnCerrarMapa =
-    document.getElementById("btnCerrarMapa");
-
-
-  let miArea = null;
-  let miRol = "usuario";
-  let areaFiltroAdmin = "TODAS";
-
-  let canalRegistros = null;
-
-  let registroPendienteId = null;
-  let filaPendiente = null;
-
-  let registroEditarId = null;
-
-
-  function escaparHTML(texto){
-
-    const div =
-      document.createElement("div");
-
-    div.textContent =
-      texto ?? "";
-
-    return div.innerHTML;
+  const TELEFONO_COMISARIA = ""; // <-- opcional: ej. "044123456" (solo números)
+  if(TELEFONO_COMISARIA){
+    const t=document.getElementById("telComisaria");
+    t.href="tel:"+TELEFONO_COMISARIA; t.style.display="flex";
+    document.getElementById("telComisariaNum").textContent=TELEFONO_COMISARIA;
   }
 
-
-  function formatoHora(fechaISO){
-
-    if(!fechaISO){
-      return "";
-    }
-
-    return new Date(fechaISO).toLocaleString(
-      "es-PE",
-      {
-        day:"2-digit",
-        month:"short",
-        hour:"2-digit",
-        minute:"2-digit"
-      }
-    );
-  }
-
-
-  function formatoFechaCita(fecha){
-
-    if(!fecha){
-      return "";
-    }
-
-    const partes =
-      fecha.split("-");
-
-    if(partes.length !== 3){
-      return fecha;
-    }
-
-    return `${partes[2]}/${partes[1]}/${partes[0]}`;
-  }
-
-
-  function formatoHoraCita(hora){
-
-    if(!hora){
-      return "";
-    }
-
-    return hora.substring(0,5);
-  }
-
-
-  function reproducirAviso(){
-
+  // ===== AVISOS (se editan desde el panel del personal) =====
+  (async function cargarAvisos(){
     try{
-
-      const AudioContext =
-        window.AudioContext ||
-        window.webkitAudioContext;
-
-      if(!AudioContext){
-        return;
+      const U = "https://cthpbxqwsjcgpdfqkdwr.supabase.co";
+      const K = "sb_publishable_qTNkWQAQLrzS2-81BpeDeA_DFDCrVol";
+      const r = await fetch(U + "/rest/v1/avisos?select=texto,creado_en&order=creado_en.desc&limit=5",
+        { headers:{ apikey:K, Authorization:"Bearer " + K } });
+      if(!r.ok) return;
+      const datos = await r.json();
+      if(!datos.length) return;
+      const cont = document.getElementById("avisos");
+      const esc = t => { const d=document.createElement("div"); d.textContent=t; return d.innerHTML; };
+      const icono = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4h3l5 4V6L7 10z"/><path d="M16 9a4 4 0 010 6"/></svg>';
+      const tarjetas = datos.map(a => {
+        const f = new Date(a.creado_en).toLocaleDateString("es-PE",{timeZone:"America/Lima"});
+        return '<div class="aviso">' + icono + '<div><div class="a-txt">' + esc(a.texto) + '</div><div class="a-fecha">' + f + '</div></div></div>';
+      }).join("");
+      cont.innerHTML = '<div class="pista' + (datos.length === 1 ? ' uno' : '') + '">' + tarjetas + '</div>';
+      cont.style.display = "block";
+      if(datos.length > 1){
+        const pts = document.getElementById("puntos");
+        pts.innerHTML = datos.map((_, i) => '<i' + (i === 0 ? ' class="on"' : '') + '></i>').join("");
+        pts.style.display = "flex";
+        cont.addEventListener("scroll", () => {
+          const t = cont.querySelector(".aviso");
+          const paso = t.offsetWidth + 10;
+          const idx = Math.round(cont.scrollLeft / paso);
+          pts.querySelectorAll("i").forEach((p, i) => p.classList.toggle("on", i === idx));
+        }, { passive:true });
       }
+    }catch(e){}
+  })();
 
-      const ctx =
-        new AudioContext();
+  document.getElementById("btnAbrirInclusiva").addEventListener("click", () => document.getElementById("modalInclusiva").classList.add("activo"));
+  document.getElementById("btnCerrarInclusiva").addEventListener("click", () => document.getElementById("modalInclusiva").classList.remove("activo"));
 
-      const osc =
-        ctx.createOscillator();
-
-      const gain =
-        ctx.createGain();
-
-      osc.type = "sine";
-
-      osc.frequency.setValueAtTime(
-        880,
-        ctx.currentTime
-      );
-
-      osc.frequency.setValueAtTime(
-        660,
-        ctx.currentTime + .12
-      );
-
-      gain.gain.setValueAtTime(
-        .15,
-        ctx.currentTime
-      );
-
-      gain.gain.exponentialRampToValueAtTime(
-        .001,
-        ctx.currentTime + .4
-      );
-
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-
-      osc.start();
-
-      osc.stop(
-        ctx.currentTime + .4
-      );
-
-    }catch(error){
-
-      console.error(
-        "Error de audio:",
-        error
-      );
-
+  // ===== MENSAJES DEL DÍA (vial / valores / prevenir robos): cambian cada día, hora de Lima =====
+  (function(){
+    const DATOS = {
+      vial:{
+        titulo:"Seguridad vial · Consejo del día", cuerpoIcono:"vial",
+        items:[
+          "Usa siempre el cinturón de seguridad, en el asiento delantero y en el de atrás.",
+          "Si conduces moto, usa casco bien abrochado. Es la protección que más vidas salva.",
+          "Si vas a beber, no conduzcas. Designa a un conductor sobrio o pide un taxi.",
+          "No uses el celular mientras conduces. Una mirada a la pantalla basta para un accidente.",
+          "Cruza siempre por las esquinas y por el paso peatonal, nunca entre vehículos.",
+          "Respeta la luz roja del semáforo, aunque no veas venir a nadie.",
+          "Antes de cruzar, mira a ambos lados, aunque la calle sea de un solo sentido.",
+          "Los niños deben viajar en el asiento trasero y con sistema de retención adecuado.",
+          "Mantén la distancia de seguridad con el vehículo de adelante. Evita pegarte.",
+          "Adecúa tu velocidad a la lluvia, la neblina y la noche. Frenar toma más distancia.",
+          "Revisa tus llantas, luces y frenos antes de salir de viaje.",
+          "Cede el paso a peatones, adultos mayores y personas con discapacidad.",
+          "Antes de girar o cambiar de carril, usa siempre las luces direccionales.",
+          "Si estás cansado o con sueño, detente a descansar. El sueño al volante es peligroso.",
+          "Motociclista: usa ropa clara o reflectante para que te vean de noche.",
+          "Ciclista: usa casco, luces y respeta las señales como cualquier otro vehículo.",
+          "Peatón: no cruces mirando el celular ni con audífonos a todo volumen.",
+          "No manejes si tomaste medicinas que dan sueño. Pregunta a tu médico o farmacéutico.",
+          "Respeta los límites de velocidad: están pensados para proteger a todos.",
+          "Lleva siempre contigo tu licencia, tarjeta de propiedad y SOAT vigente.",
+          "No estaciones sobre veredas, rampas ni pasos peatonales.",
+          "Con niños, camina del lado de la pista y tómalos de la mano al cruzar.",
+          "Al detenerte, deja libre el paso peatonal. Esa franja es para quien camina.",
+          "En una moto, nunca lleves más pasajeros de los permitidos ni sin casco.",
+          "Si ves un accidente, llama al 105 y no muevas a los heridos si no es necesario.",
+          "Ceder el paso es de personas amables, no de personas lentas.",
+          "Respeta las señales de tránsito: te avisan de peligros que no ves.",
+          "Antes de abrir la puerta de tu auto, mira por el espejo. Puede venir una moto o bicicleta.",
+          "Maneja con calma. Llegar unos minutos tarde es mejor que no llegar.",
+          "Educar en seguridad vial es tarea de todos. Comparte este consejo con tu familia."
+        ]
+      },
+      valor:{
+        titulo:"Valores ciudadanos · Mensaje del día",
+        items:[
+          "El respeto empieza por saludar y escuchar. Un buen trato cambia el día de otros.",
+          "La honestidad vale más que cualquier ventaja. Haz lo correcto aunque nadie te vea.",
+          "Ayudar a un vecino fortalece a toda la comunidad.",
+          "La puntualidad es una forma de respeto hacia los demás.",
+          "Cuidar lo público, como parques, bancas y postes, es cuidar lo que es de todos.",
+          "Dialogar resuelve más que gritar. Escucha antes de responder.",
+          "La solidaridad se practica todos los días, no solo en emergencias.",
+          "Respetar la fila y los turnos es respetar a las personas.",
+          "Una ciudad limpia empieza en tu puerta. Cuida tu calle.",
+          "Enseña con el ejemplo: los niños aprenden más de lo que ven que de lo que oyen.",
+          "La tolerancia es aceptar que otros piensen distinto sin dejar de respetarlos.",
+          "Decir la verdad construye confianza, en casa y en la comunidad.",
+          "Ceder el asiento a un adulto mayor o a una embarazada es un gesto que se agradece.",
+          "El buen vecino cuida y no molesta: baja el volumen y respeta el descanso.",
+          "Las normas existen para que todos podamos convivir en paz.",
+          "Denunciar con responsabilidad ayuda a proteger a tu comunidad.",
+          "Agradecer es gratis y alegra a quien lo recibe. Dilo hoy.",
+          "Trata a todos con la misma dignidad, sin importar su origen, edad o condición.",
+          "La seguridad se construye entre vecinos y policía. Participa en tu comunidad.",
+          "Un pequeño gesto de amabilidad puede cambiar el día de alguien.",
+          "Respetar a las mujeres, a los niños y a los adultos mayores es base de una sociedad justa.",
+          "Resolver los problemas sin violencia es una muestra de fortaleza.",
+          "Cuidar el medio ambiente es cuidar a las próximas generaciones.",
+          "Tu palabra vale: cumple lo que prometes.",
+          "La educación empieza en casa. Conversa con tus hijos sobre respeto y valores."
+        ]
+      },
+      robo:{
+        titulo:"Prevención de robos · Consejo del día",
+        items:[
+          "No uses el celular en la calle si no es necesario. Guárdalo en un bolsillo interior.",
+          "Evita caminar de noche por zonas oscuras o solitarias. Prefiere calles iluminadas y con gente.",
+          "Al salir de casa, asegúrate de cerrar bien puertas y ventanas.",
+          "No muestres joyas, dinero ni objetos de valor en público.",
+          "Si te asaltan, no te resistas. Tu vida vale más que tus cosas. Luego llama al 105.",
+          "Pide a tu vecino que revise tu casa si viajas, y evita publicar tu viaje en redes sociales.",
+          "Antes de subir a un taxi, anota la placa y compártela con un familiar.",
+          "En el transporte público, lleva la mochila adelante y tus cosas a la vista.",
+          "No dejes objetos de valor a la vista dentro del auto, ni siquiera por un momento.",
+          "Estaciona en lugares iluminados y vigilados, y siempre cierra con seguro.",
+          "Conoce a tus vecinos: una comunidad unida es la mejor alarma contra el delito.",
+          "Retira dinero del cajero en horas de mucha afluencia y revisa que nadie te siga.",
+          "No abras la puerta a desconocidos. Verifica quién es antes de abrir.",
+          "Instala buena iluminación en la entrada de tu casa y negocio.",
+          "Guarda una copia de tu DNI y anota el código IMEI de tu celular, ayuda a recuperarlo.",
+          "Desconfía de ofertas demasiado buenas: pueden ser estafas por teléfono o internet.",
+          "Nunca compartas claves, códigos o datos de tu tarjeta por llamada o mensaje.",
+          "Si notas movimientos sospechosos en tu cuadra, avisa al 105.",
+          "No dejes a tus hijos solos con el celular o la mochila a la vista en la calle.",
+          "Si usas bicicleta o moto, asegúrala con candado, incluso si te ausentas unos minutos.",
+          "Evita caminar mirando el celular o con audífonos: pierdes atención del entorno.",
+          "Ten a mano los números de emergencia: 105 Policía, 116 Bomberos, 106 SAMU.",
+          "En tu negocio, no guardes grandes cantidades de dinero y varía tus rutas al depositar.",
+          "Participa en las juntas vecinales y acude a la Policía Comunitaria de tu sector.",
+          "Denunciar ayuda a prevenir: cada denuncia permite a la policía actuar mejor."
+        ]
+      }
+    };
+    const ICONOS = {
+      vial:'<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M7 17l1.6-6.5h6.8L17 17M9 11V8h6v3"/></svg>',
+      valor:'<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-9.7A4 4 0 0112 8a4 4 0 017 2.3C19 15.6 12 20 12 20z"/></svg>',
+      robo:'<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8.2-7 10-4-1.8-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>'
+    };
+    const hoy = new Date().toLocaleDateString("en-CA", { timeZone:"America/Lima" });
+    const [y, mo, d] = hoy.split("-").map(Number);
+    const dias = Math.floor(Date.UTC(y, mo - 1, d) / 86400000);
+    const caja = document.getElementById("vial");
+    function mostrar(k){
+      const info = DATOS[k];
+      document.getElementById("vialTitulo").textContent = info.titulo;
+      document.getElementById("vialTexto").textContent = info.items[dias % info.items.length];
+      document.getElementById("vialIcono").innerHTML = ICONOS[k];
+      caja.classList.remove("k-vial","k-valor","k-robo");
+      caja.classList.add("k-" + k);
+      document.querySelectorAll("#vialTabs button").forEach(b => b.classList.toggle("on", b.dataset.k === k));
     }
-
-  }
-
-
-  if("serviceWorker" in navigator){
-
-    navigator.serviceWorker
-      .register("./sw.js")
-      .then(() => {
-        console.log(
-          "Service Worker registrado."
-        );
-      })
-      .catch(error => {
-        console.error(
-          "Error registrando Service Worker:",
-          error
-        );
-      });
-
-  }
-
-
-  btnEntrar.addEventListener(
-    "click",
-    iniciarSesion
-  );
-
-
-  correoInput.addEventListener(
-    "keydown",
-    evento => {
-
-      if(evento.key === "Enter"){
-        iniciarSesion();
-      }
-
-    }
-  );
-
-
-  claveInput.addEventListener(
-    "keydown",
-    evento => {
-
-      if(evento.key === "Enter"){
-        iniciarSesion();
-      }
-
-    }
-  );
-
-
-  async function iniciarSesion(){
-
-    const correo =
-      correoInput.value.trim();
-
-    const clave =
-      claveInput.value;
-
-    errorLogin.textContent = "";
-
-
-    if(!correo){
-
-      errorLogin.textContent =
-        "Ingrese su correo.";
-
-      correoInput.focus();
-
-      return;
-    }
-
-
-    if(!clave){
-
-      errorLogin.textContent =
-        "Ingrese su contraseña.";
-
-      claveInput.focus();
-
-      return;
-    }
-
-
-    btnEntrar.disabled = true;
-
-    btnEntrar.textContent =
-      "Ingresando...";
-
-
-    try{
-
-      const {
-        data,
-        error
-      } =
-        await supabaseClient.auth.signInWithPassword({
-          email:correo,
-          password:clave
-        });
-
-
-      if(error){
-
-        console.error(
-          "Error de Supabase:",
-          error
-        );
-
-        errorLogin.textContent =
-          "Correo o contraseña incorrectos.";
-
-        return;
-      }
-
-
-      if(!data.user){
-
-        errorLogin.textContent =
-          "No se pudo obtener el usuario.";
-
-        return;
-      }
-
-
-      await entrarAlPanel();
-
-
-    }catch(error){
-
-      console.error(
-        "Error inesperado:",
-        error
-      );
-
-      errorLogin.textContent =
-        "Ocurrió un error al iniciar sesión.";
-
-    }finally{
-
-      btnEntrar.disabled = false;
-
-      btnEntrar.textContent =
-        "Ingresar";
-
-    }
-
-  }
-
-
-  async function iniciar(){
-
-    try{
-
-      const {
-        data,
-        error
-      } =
-        await supabaseClient.auth.getSession();
-
-
-      if(error){
-
-        console.error(
-          "Error obteniendo sesión:",
-          error
-        );
-
-        return;
-      }
-
-
-      if(data.session){
-
-        await entrarAlPanel();
-
-      }
-
-    }catch(error){
-
-      console.error(
-        "Error comprobando sesión:",
-        error
-      );
-
-    }
-
-  }
-
-
-  async function entrarAlPanel(){
-
-    try{
-
-      const {
-        data,
-        error:userError
-      } =
-        await supabaseClient.auth.getUser();
-
-
-      const user =
-        data.user;
-
-
-      if(userError || !user){
-
-        errorLogin.textContent =
-          "No se pudo obtener el usuario.";
-
-        return;
-      }
-
-
-      const {
-        data:perfil,
-        error
-      } =
-        await supabaseClient
-          .from("perfiles")
-          .select(
-            "area, nombre_area_visible, rol"
-          )
-          .eq("id",user.id)
-          .single();
-
-
-      if(error || !perfil){
-
-        console.error(
-          "Error obteniendo perfil:",
-          error
-        );
-
-        errorLogin.textContent =
-          "No se pudo obtener el área de esta cuenta.";
-
-        return;
-      }
-
-
-      miArea =
-        perfil.area;
-
-      miRol =
-        perfil.rol || "usuario";
-
-      document.getElementById("btnAvisos").style.display =
-        miRol === "admin" ? "" : "none";
-
-      document.getElementById("btnEstadisticas").style.display =
-        miRol === "admin" ? "" : "none";
-
-      areaFiltroAdmin =
-        "TODAS";
-
-
-      if(miRol === "admin"){
-
-        nombreAreaEl.textContent =
-          perfil.nombre_area_visible ||
-          "Administrador";
-
-        subtituloPanel.textContent =
-          "Vista administrativa: selecciona un área para filtrar.";
-
-        filtroAdmin.style.display =
-          "flex";
-
-        descargaAdmin.style.display =
-          "flex";
-
-        activarBotonFiltro(
-          "TODAS"
-        );
-
-      }else{
-
-        nombreAreaEl.textContent =
-          perfil.nombre_area_visible ||
-          perfil.area ||
-          "Registros";
-
-        subtituloPanel.textContent =
-          "Se actualiza automáticamente al llegar un nuevo registro.";
-
-        filtroAdmin.style.display =
-          "none";
-
-        descargaAdmin.style.display =
-          "none";
-
-      }
-
-
-      vistaLogin.style.display =
-        "none";
-
-      vistaPanel.style.display =
-        "block";
-
-
-      await cargarRegistros();
-
-      await cargarCitas();
-
-      escucharRegistros();
-
-
-    }catch(error){
-
-      console.error(
-        "Error entrando al panel:",
-        error
-      );
-
-      errorLogin.textContent =
-        "No se pudo abrir el panel.";
-
-    }
-
-  }
-
-
-  function activarBotonFiltro(area){
-
-    document
-      .querySelectorAll(".filtro-area")
-      .forEach(boton => {
-
-        boton.classList.toggle(
-          "activo",
-          boton.dataset.area === area
-        );
-
-      });
-
-  }
-
-
-  document
-    .querySelectorAll(".filtro-area")
-    .forEach(boton => {
-
-      boton.addEventListener(
-        "click",
-        async () => {
-
-          areaFiltroAdmin =
-            boton.dataset.area;
-
-          activarBotonFiltro(
-            areaFiltroAdmin
-          );
-
-          await cargarRegistros();
-
-          await cargarCitas();
-
-        }
-      );
-
+    document.querySelectorAll("#vialTabs button").forEach(b => b.addEventListener("click", () => mostrar(b.dataset.k)));
+    mostrar("vial");
+  })();
+
+  document.getElementById("btnAbrirViolencia").addEventListener("click", () => document.getElementById("modalViolencia").classList.add("activo"));
+  document.getElementById("btnCerrarViolencia").addEventListener("click", () => document.getElementById("modalViolencia").classList.remove("activo"));
+
+  document.querySelectorAll("#vtabs button").forEach(b => b.addEventListener("click", () => {
+    document.querySelectorAll("#vtabs button").forEach(x => x.classList.toggle("on", x === b));
+    document.getElementById("vMujer").style.display = b.dataset.v === "mujer" ? "block" : "none";
+    document.getElementById("vNinos").style.display = b.dataset.v === "ninos" ? "block" : "none";
+  }));
+
+  const modal = document.getElementById("modalPanico");
+  const gpsEstado = document.getElementById("gpsEstado");
+  const errPanico = document.getElementById("errPanico");
+  const btnEnviar = document.getElementById("btnEnviarPanico");
+  let tipoSel = "";
+
+  document.getElementById("btnCerrarPanico").addEventListener("click", () => modal.classList.remove("activo"));
+
+  document.querySelectorAll(".tipo").forEach(b => {
+    b.addEventListener("click", () => {
+      document.querySelectorAll(".tipo").forEach(x => x.classList.remove("sel"));
+      b.classList.add("sel");
+      tipoSel = b.dataset.t;
+      errPanico.textContent = "";
     });
-
-
-  btnTabRegistros.addEventListener(
-    "click",
-    async () => {
-
-      btnTabRegistros.classList.add("activa");
-      btnTabCitas.classList.remove("activa");
-
-      seccionRegistros.style.display =
-        "block";
-
-      seccionCitas.style.display =
-        "none";
-
-      await cargarRegistros();
-
-    }
-  );
-
-
-  btnTabCitas.addEventListener(
-    "click",
-    async () => {
-
-      btnTabCitas.classList.add("activa");
-      btnTabRegistros.classList.remove("activa");
-
-      seccionRegistros.style.display =
-        "none";
-
-      seccionCitas.style.display =
-        "block";
-
-      await cargarCitas();
-
-    }
-  );
-
-
-  btnSalir.addEventListener(
-    "click",
-    async () => {
-
-      try{
-
-        if(canalRegistros){
-
-          await supabaseClient
-            .removeChannel(
-              canalRegistros
-            );
-
-          canalRegistros = null;
-
-        }
-
-
-        await supabaseClient.auth.signOut();
-
-        location.reload();
-
-
-      }catch(error){
-
-        console.error(
-          "Error cerrando sesión:",
-          error
-        );
-
-      }
-
-    }
-  );
-
-
-  /* ==========================
-     AVISOS PARA EL MENÚ
-  ========================== */
-
-  const overlayAvisos = document.getElementById("overlayAvisos");
-  const listaAvisos = document.getElementById("listaAvisos");
-  const msgAviso = document.getElementById("msgAviso");
-  let miUserId = null;
-
-  function fechaLimaHoy(){
-    return new Date().toLocaleDateString("en-CA",{timeZone:"America/Lima"});
-  }
-
-  async function cargarAvisos(){
-    listaAvisos.innerHTML = '<div class="aviso-item"><div class="txt">Cargando...</div></div>';
-    const { data: ses } = await supabaseClient.auth.getSession();
-    miUserId = ses && ses.session ? ses.session.user.id : null;
-
-    const { data, error } = await supabaseClient
-      .from("avisos").select("*").order("creado_en",{ascending:false}).limit(30);
-
-    if(error){
-      console.error(error);
-      listaAvisos.innerHTML = '<div class="aviso-item"><div class="txt">No se pudieron cargar los avisos.</div></div>';
-      return;
-    }
-    if(!data.length){
-      listaAvisos.innerHTML = '<div class="aviso-item"><div class="txt">Aún no hay avisos.</div></div>';
-      return;
-    }
-    const hoy = fechaLimaHoy();
-    listaAvisos.innerHTML = data.map(a => {
-      const vencido = a.vence_en && a.vence_en < hoy;
-      const puede = miRol === "admin" || a.creado_por === miUserId;
-      const fecha = new Date(a.creado_en).toLocaleDateString("es-PE",{timeZone:"America/Lima"});
-      const meta = escaparHTML((a.area || "") + " · " + fecha)
-        + (a.vence_en ? " · hasta " + escaparHTML(a.vence_en.split("-").reverse().join("/")) : "")
-        + (vencido ? " · <strong>vencido</strong>" : "");
-      return '<div class="aviso-item"><div><div class="txt">' + escaparHTML(a.texto) + '</div><div class="meta">' + meta + '</div></div>'
-        + (puede ? '<button class="quitar" data-id="' + a.id + '">Quitar</button>' : '') + '</div>';
-    }).join("");
-  }
-
-  document.getElementById("btnAvisos").addEventListener("click", () => {
-    msgAviso.textContent = "";
-    overlayAvisos.style.display = "flex";
-    cargarAvisos();
-  });
-  document.getElementById("btnCerrarAvisos").addEventListener("click", () => {
-    overlayAvisos.style.display = "none";
-  });
-  overlayAvisos.addEventListener("click", e => {
-    if(e.target === overlayAvisos) overlayAvisos.style.display = "none";
   });
 
-  document.getElementById("btnPublicarAviso").addEventListener("click", async () => {
-    const btn = document.getElementById("btnPublicarAviso");
-    const texto = document.getElementById("avisoTexto").value.trim();
-    const vence = document.getElementById("avisoVence").value;
-    msgAviso.style.color = "#a13a2a";
-    if(!texto){ msgAviso.textContent = "Escribe el aviso."; return; }
-    if(vence && vence < fechaLimaHoy()){ msgAviso.textContent = "La fecha no puede ser anterior a hoy."; return; }
-    btn.disabled = true;
-    const { error } = await supabaseClient.from("avisos").insert({
-      texto, area: miArea || null, vence_en: vence || null
+  function pedirPosicion(opts){
+    return new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(p => resolve(p.coords), e => reject(e), opts);
     });
-    btn.disabled = false;
-    if(error){
-      console.error(error);
-      msgAviso.textContent = "No se pudo publicar el aviso.";
-      return;
-    }
-    document.getElementById("avisoTexto").value = "";
-    document.getElementById("avisoVence").value = "";
-    msgAviso.style.color = "#3c7a56";
-    msgAviso.textContent = "Aviso publicado.";
-    cargarAvisos();
-  });
-
-  listaAvisos.addEventListener("click", async e => {
-    const b = e.target.closest(".quitar");
-    if(!b) return;
-    b.disabled = true;
-    const { error } = await supabaseClient.from("avisos").delete().eq("id", b.dataset.id);
-    if(error){ console.error(error); msgAviso.style.color="#a13a2a"; msgAviso.textContent = "No se pudo quitar el aviso."; b.disabled=false; return; }
-    cargarAvisos();
-  });
-
-
-  /* ==========================
-     ESTADÍSTICAS (solo admin)
-  ========================== */
-
-  const overlayEstad = document.getElementById("overlayEstad");
-
-  async function cargarEstadisticas(){
-    const resumen = document.getElementById("estadResumen");
-    const areas = document.getElementById("estadAreas");
-    const msg = document.getElementById("estadMsg");
-    msg.textContent = "";
-    resumen.innerHTML = "Cargando...";
-    areas.innerHTML = "";
-
-    const { data, error } = await supabaseClient.rpc("estadisticas_admin");
-    if(error || !data){
-      console.error(error);
-      resumen.innerHTML = "";
-      msg.textContent = "No se pudieron cargar las estadísticas.";
-      return;
-    }
-    const nf = new Intl.NumberFormat("es-PE");
-    const caja = (n, l) => '<div style="background:#eef0e4;border-radius:12px;padding:12px 4px"><div style="font-family:Fraunces,Georgia,serif;font-size:1.6rem;font-weight:600;color:#0b3d24">' + nf.format(n) + '</div><div style="font-size:.72rem;color:#5c6b63">' + l + '</div></div>';
-    resumen.innerHTML = caja(data.hoy, "Hoy") + caja(data.mes, "Este mes") + caja(data.total, "En total");
-
-    if(!data.por_area.length){
-      areas.innerHTML = '<div class="aviso-item"><div class="txt">Aún no hay personas atendidas.</div></div>';
-      return;
-    }
-    areas.innerHTML = data.por_area.map(a =>
-      '<div class="aviso-item"><div class="txt">' + escaparHTML(a.area || "Sin área") +
-      '</div><div style="text-align:right;font-size:.8rem;white-space:nowrap"><b>' + nf.format(a.mes) + '</b> este mes<br><span style="color:#6b766f">' + nf.format(a.total) + ' en total</span></div></div>'
-    ).join("");
   }
 
-  document.getElementById("btnEstadisticas").addEventListener("click", () => {
-    overlayEstad.style.display = "flex";
-    cargarEstadisticas();
-  });
-  document.getElementById("btnCerrarEstad").addEventListener("click", () => {
-    overlayEstad.style.display = "none";
-  });
-  overlayEstad.addEventListener("click", e => {
-    if(e.target === overlayEstad) overlayEstad.style.display = "none";
-  });
-
-
-  /* ==========================
-     MAPA DE DELITOS (nuevo)
-  ========================== */
-
-
-  btnMapaDelitos.addEventListener(
-    "click",
-    () => {
-
-      overlayMapa.style.display =
-        "flex";
-
-    }
-  );
-
-
-  btnCerrarMapa.addEventListener(
-    "click",
-    () => {
-
-      overlayMapa.style.display =
-        "none";
-
-    }
-  );
-
-
-  overlayMapa.addEventListener(
-    "click",
-    evento => {
-
-      if(evento.target === overlayMapa){
-
-        overlayMapa.style.display =
-          "none";
-
+  // Pide la ubicación de dos formas A LA VEZ (rápida/aproximada y precisa) y usa la primera que responda.
+  // Dentro de la app instalada, el GPS "preciso" puede tardar mucho en interiores; la aproximada responde antes.
+  function obtenerUbicacion(){
+    return new Promise((resolve, reject) => {
+      if(!navigator.geolocation){ const e = new Error("sin-gps"); e.code = 0; reject(e); return; }
+      let terminados = 0, resuelto = false, ultimoError = null, denegado = null;
+      function ok(c){ if(!resuelto){ resuelto = true; resolve(c); } }
+      function fallo(e){
+        terminados++;
+        if(e && e.code === 1) denegado = e;
+        ultimoError = e;
+        if(!resuelto && terminados === 2){ reject(denegado || ultimoError); }
       }
-
-    }
-  );
-
-
-  function pintarFilaRegistro(
-    registro,
-    esNueva
-  ){
-
-    const fila =
-      document.createElement("div");
-
-    fila.className =
-      "fila" +
-      (esNueva ? " nueva" : "");
-
-    fila.id =
-      "reg-" + registro.id;
-
-
-    const nombre =
-      registro.nombre ||
-      "Visitante";
-
-    const dni =
-      registro.dni ||
-      "No registrado";
-
-    const celular =
-      registro.celular ||
-      "";
-
-    const area =
-      registro.area ||
-      "Sin área";
-
-
-    fila.innerHTML = `
-
-      <div class="info-cliente">
-
-        <div class="nombre">
-          ${escaparHTML(nombre)}
-        </div>
-
-        <div class="dato">
-          DNI ${escaparHTML(dni)}
-        </div>
-
-        ${
-          celular
-            ? `
-              <div class="dato">
-                Cel. ${escaparHTML(celular)}
-              </div>
-            `
-            : ""
-        }
-
-        ${
-          miRol === "admin"
-            ? `
-              <div class="area">
-                Área: ${escaparHTML(area)}
-              </div>
-            `
-            : ""
-        }
-
-        <div class="hora">
-          ${formatoHora(registro.creado_en)}
-        </div>
-
-        ${
-          registro.atendido && registro.motivo
-            ? `
-              <div class="motivo-atendido">
-                <strong>Motivo:</strong>
-                ${escaparHTML(registro.motivo)}
-
-                ${
-                  registro.detalle
-                    ? `
-                      <br>
-                      <strong>Detalle:</strong>
-                      ${escaparHTML(registro.detalle)}
-                    `
-                    : ""
-                }
-
-              </div>
-            `
-            : ""
-        }
-
-      </div>
-
-
-      <div class="acciones-registro">
-
-        <button
-          class="btn ${
-            registro.atendido
-              ? "btn-atendido"
-              : "btn-pendiente"
-          }"
-          data-accion="atendido"
-        >
-          ${
-            registro.atendido
-              ? "Atendido"
-              : "Marcar atendido"
-          }
-        </button>
-
-
-        <button
-          class="btn btn-motivo"
-          data-accion="motivo"
-        >
-          ${
-            registro.motivo
-              ? "Editar motivo"
-              : "Motivo"
-          }
-        </button>
-
-
-        <button
-          class="btn btn-editar"
-          data-accion="editar"
-        >
-          Editar
-        </button>
-
-
-        ${
-          miRol === "admin"
-            ? `
-              <button
-                class="btn btn-eliminar"
-                data-accion="eliminar"
-              >
-                Eliminar
-              </button>
-            `
-            : ""
-        }
-
-      </div>
-    `;
-
-
-    fila
-      .querySelector(
-        '[data-accion="atendido"]'
-      )
-      .addEventListener(
-        "click",
-        () => {
-
-          if(!registro.atendido){
-
-            marcarAtendido(
-              registro.id,
-              fila
-            );
-
-          }
-
-        }
-      );
-
-
-    fila
-      .querySelector(
-        '[data-accion="motivo"]'
-      )
-      .addEventListener(
-        "click",
-        () => {
-
-          abrirModalAtendido(
-            registro.id,
-            fila,
-            registro.motivo,
-            registro.detalle
-          );
-
-        }
-      );
-
-
-    fila
-      .querySelector(
-        '[data-accion="editar"]'
-      )
-      .addEventListener(
-        "click",
-        () => {
-
-          abrirModalEditar(
-            registro
-          );
-
-        }
-      );
-
-
-    const botonEliminar =
-      fila.querySelector(
-        '[data-accion="eliminar"]'
-      );
-
-
-    if(botonEliminar){
-
-      botonEliminar.addEventListener(
-        "click",
-        () => {
-
-          eliminarRegistro(
-            registro.id,
-            fila
-          );
-
-        }
-      );
-
-    }
-
-
-    return fila;
-
+      navigator.geolocation.getCurrentPosition(p => ok(p.coords), fallo,
+        { enableHighAccuracy:false, timeout:20000, maximumAge:120000 });
+      navigator.geolocation.getCurrentPosition(p => ok(p.coords), fallo,
+        { enableHighAccuracy:true, timeout:30000, maximumAge:0 });
+    });
   }
 
+  async function diagnosticoGps(e){
+    let permiso = "?";
+    try{ const r = await navigator.permissions.query({ name:"geolocation" }); permiso = r.state; }catch(x){}
+    const modo = (document.referrer || "").indexOf("android-app://") === 0 ? "app" : "web";
+    const standalone = (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) ? "pantalla completa" : "con barra";
+    return "Detalle técnico: error " + (e && e.code !== undefined ? e.code : "?") +
+      (e && e.message ? " (" + e.message + ")" : "") +
+      " · permiso: " + permiso + " · modo: " + modo + " · " + standalone;
+  }
 
-  async function cargarRegistros(){
+  function motivoGps(e){
+    if(!e || e.code === 0) return "Este dispositivo o navegador no permite usar el GPS.";
+    if(e.code === 1) return "El permiso de ubicación está bloqueado para esta app. Actívalo en los ajustes del celular (Ubicación) y vuelve a intentar.";
+    if(e.code === 2) return "No se pudo detectar tu ubicación. Activa el GPS del celular y sal a un lugar abierto.";
+    if(e.code === 3) return "La ubicación tardó demasiado. Revisa que el GPS esté encendido y vuelve a intentar.";
+    return "No se pudo obtener la ubicación.";
+  }
 
-    listaRegistros.innerHTML =
-      '<div class="vacio">Cargando registros...</div>';
+  function abrirWhatsApp(texto){
+    const url = "https://wa.me/" + WHATSAPP_NUMERO + "?text=" + encodeURIComponent(texto);
+    window.location.href = url;
+  }
 
+  // ===== GPS: se comprueba al abrir la ventana, para que la persona lo active ANTES de enviar =====
+  const gpsPasos = document.getElementById("gpsPasos");
+  const btnGps = document.getElementById("btnGps");
+  let ubicacion = null, ubicacionHora = 0, enviarSinGps = false;
 
+  function pasosGps(e){
+    const ios = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const bloqueado = e && e.code === 1;
+    if(ios){
+      return bloqueado
+        ? "<b>Permiso bloqueado.</b> Ve a <b>Ajustes → Privacidad → Localización</b>, activa <b>Localización</b> y permite el acceso a <b>Safari</b> (o a esta app)."
+        : "<b>Activa la ubicación:</b> Ajustes → Privacidad → <b>Localización</b> → actívala. Luego toca el botón de abajo.";
+    }
+    return bloqueado
+      ? "<b>Permiso bloqueado.</b> Abre los <b>ajustes de la app</b> → <b>Permisos → Ubicación</b> y elige <b>Permitir</b>. Luego toca el botón de abajo."
+      : "<b>Enciende el GPS:</b> desliza hacia abajo desde la parte de arriba de la pantalla y toca el ícono <b>Ubicación</b> (o Ajustes → Ubicación → Activar). Luego toca el botón de abajo.";
+  }
+
+  async function comprobarGps(){
+    enviarSinGps = false;
+    document.getElementById("btnSinUbic").style.display = "none";
+    gpsEstado.className = "gps-estado";
+    gpsEstado.textContent = "Buscando tu ubicación...";
+    gpsPasos.style.display = "none";
     try{
-
-      let consulta =
-        supabaseClient
-          .from("registros")
-          .select("*")
-          .order(
-            "creado_en",
-            {
-              ascending:false
-            }
-          )
-          .limit(50);
-
-
-      if(miRol === "admin"){
-
-        if(areaFiltroAdmin !== "TODAS"){
-
-          consulta =
-            consulta.eq(
-              "area",
-              areaFiltroAdmin
-            );
-
-        }
-
-      }else{
-
-        consulta =
-          consulta.eq(
-            "area",
-            miArea
-          );
-
-      }
-
-
-      const {
-        data,
-        error
-      } =
-        await consulta;
-
-
-      if(error){
-
-        console.error(
-          "Error cargando registros:",
-          error
-        );
-
-        listaRegistros.innerHTML =
-          '<div class="vacio">No se pudieron cargar los registros.</div>';
-
-        return;
-      }
-
-
-      listaRegistros.innerHTML = "";
-
-
-      if(!data || data.length === 0){
-
-        listaRegistros.innerHTML =
-          miRol === "admin"
-            ? (
-              areaFiltroAdmin === "TODAS"
-                ? '<div class="vacio">Todavía no hay registros.</div>'
-                : `<div class="vacio">Todavía no hay registros para ${escaparHTML(areaFiltroAdmin)}.</div>`
-            )
-            : '<div class="vacio">Todavía no hay registros para tu área.</div>';
-
-        return;
-      }
-
-
-      data.forEach(
-        registro => {
-
-          listaRegistros.appendChild(
-            pintarFilaRegistro(
-              registro,
-              false
-            )
-          );
-
-        }
-      );
-
-
-    }catch(error){
-
-      console.error(
-        "Error:",
-        error
-      );
-
-      listaRegistros.innerHTML =
-        '<div class="vacio">Ocurrió un error cargando los registros.</div>';
-
-    }
-
-  }
-
-
-  function escucharRegistros(){
-
-    if(canalRegistros){
-
-      supabaseClient
-        .removeChannel(
-          canalRegistros
-        );
-
-    }
-
-
-    canalRegistros =
-      supabaseClient
-        .channel(
-          "registros-en-vivo"
-        )
-        .on(
-          "postgres_changes",
-          {
-            event:"INSERT",
-            schema:"public",
-            table:"registros"
-          },
-          payload => {
-
-            if(
-              miRol !== "admin" &&
-              payload.new.area !== miArea
-            ){
-              return;
-            }
-
-
-            if(
-              miRol === "admin" &&
-              areaFiltroAdmin !== "TODAS" &&
-              payload.new.area !== areaFiltroAdmin
-            ){
-              return;
-            }
-
-
-            if(
-              seccionRegistros.style.display === "none"
-            ){
-              reproducirAviso();
-              return;
-            }
-
-
-            const existente =
-              document.getElementById(
-                "reg-" + payload.new.id
-              );
-
-
-            if(existente){
-              return;
-            }
-
-
-            const vacio =
-              listaRegistros.querySelector(
-                ".vacio"
-              );
-
-
-            if(vacio){
-              vacio.remove();
-            }
-
-
-            listaRegistros.prepend(
-              pintarFilaRegistro(
-                payload.new,
-                true
-              )
-            );
-
-
-            reproducirAviso();
-
-          }
-        )
-        .on(
-          "postgres_changes",
-          {
-            event:"DELETE",
-            schema:"public",
-            table:"registros"
-          },
-          payload => {
-
-            if(
-              !payload.old ||
-              !payload.old.id
-            ){
-              return;
-            }
-
-
-            const fila =
-              document.getElementById(
-                "reg-" + payload.old.id
-              );
-
-
-            if(fila){
-              fila.remove();
-            }
-
-          }
-        )
-        .subscribe(
-          status => {
-
-            console.log(
-              "Estado Realtime:",
-              status
-            );
-
-          }
-        );
-
-  }
-
-
-  /* ==========================
-     CITAS
-  ========================== */
-
-
-  async function cargarCitas(){
-
-    listaCitas.innerHTML =
-      '<div class="vacio">Cargando citas...</div>';
-
-
-    try{
-
-      let consulta =
-        supabaseClient
-          .from("citas")
-          .select("*")
-          .order(
-            "fecha",
-            {ascending:true}
-          )
-          .order(
-            "hora",
-            {ascending:true}
-          )
-          .limit(100);
-
-
-      if(miRol === "admin"){
-
-        if(areaFiltroAdmin !== "TODAS"){
-
-          consulta =
-            consulta.eq(
-              "area",
-              areaFiltroAdmin
-            );
-
-        }
-
-      }else{
-
-        consulta =
-          consulta.eq(
-            "area",
-            miArea
-          );
-
-      }
-
-
-      const {
-        data,
-        error
-      } =
-        await consulta;
-
-
-      if(error){
-
-        console.error(
-          "Error cargando citas:",
-          error
-        );
-
-        listaCitas.innerHTML =
-          '<div class="vacio">No se pudieron cargar las citas.</div>';
-
-        return;
-      }
-
-
-      listaCitas.innerHTML = "";
-
-
-      if(!data || data.length === 0){
-
-        listaCitas.innerHTML =
-          '<div class="vacio">No hay citas para mostrar.</div>';
-
-        return;
-      }
-
-
-      data.forEach(
-        cita => {
-
-          listaCitas.appendChild(
-            pintarCita(cita)
-          );
-
-        }
-      );
-
-
-    }catch(error){
-
-      console.error(
-        "Error:",
-        error
-      );
-
-      listaCitas.innerHTML =
-        '<div class="vacio">Ocurrió un error cargando las citas.</div>';
-
-    }
-
-  }
-
-
-  function claseEstadoCita(estado){
-
-    if(estado === "Pendiente"){
-      return "estado-Pendiente";
-    }
-
-    if(
-      estado === "Llegó" ||
-      estado === "Atendida"
-    ){
-      return "estado-Llegó";
-    }
-
-    if(estado === "Cancelada"){
-      return "estado-Cancelada";
-    }
-
-    return "estado-No";
-
-  }
-
-
-  function pintarCita(cita){
-
-    const fila =
-      document.createElement("div");
-
-    fila.className =
-      "fila";
-
-    fila.id =
-      "cita-" + cita.id;
-
-
-    const estado =
-      cita.estado || "Pendiente";
-
-
-    fila.innerHTML = `
-
-      <div class="info-cliente">
-
-        <div class="nombre">
-          ${escaparHTML(cita.nombre)}
-        </div>
-
-        <div class="dato">
-          DNI ${escaparHTML(cita.dni)}
-        </div>
-
-        ${
-          cita.celular
-            ? `
-              <div class="dato">
-                Cel. ${escaparHTML(cita.celular)}
-              </div>
-            `
-            : ""
-        }
-
-        ${
-          miRol === "admin"
-            ? `
-              <div class="area">
-                Área: ${escaparHTML(cita.area)}
-              </div>
-            `
-            : ""
-        }
-
-        <div class="dato">
-          Motivo: ${escaparHTML(cita.motivo)}
-        </div>
-
-        <div class="hora">
-          📅 ${formatoFechaCita(cita.fecha)}
-          &nbsp; | &nbsp;
-          🕐 ${formatoHoraCita(cita.hora)}
-        </div>
-
-        <span
-          class="estado-cita ${claseEstadoCita(estado)}"
-        >
-          ${escaparHTML(estado)}
-        </span>
-
-        ${
-          cita.llegada_en
-            ? `
-              <div class="dato">
-                Llegada: ${formatoHora(cita.llegada_en)}
-              </div>
-            `
-            : ""
-        }
-
-      </div>
-
-
-      <div class="acciones-cita">
-
-        ${
-          estado === "Pendiente" &&
-          !cita.registro_id
-            ? `
-              <button
-                class="btn btn-llegada"
-                data-accion="llegada"
-              >
-                Registrar llegada
-              </button>
-            `
-            : ""
-        }
-
-
-        ${
-          estado === "Llegó"
-            ? `
-              <button
-                class="btn btn-cita-atendida"
-                data-accion="atendida"
-              >
-                Atendida
-              </button>
-
-              <button
-                class="btn btn-cita-cancelar"
-                data-accion="cancelada"
-              >
-                Cancelada
-              </button>
-
-              <button
-                class="btn btn-cita-no"
-                data-accion="no-asistio"
-              >
-                No asistió
-              </button>
-            `
-            : ""
-        }
-
-
-        ${
-          estado === "Pendiente"
-            ? `
-              <button
-                class="btn btn-cita-cancelar"
-                data-accion="cancelada"
-              >
-                Cancelada
-              </button>
-
-              <button
-                class="btn btn-cita-no"
-                data-accion="no-asistio"
-              >
-                No asistió
-              </button>
-            `
-            : ""
-        }
-
-      </div>
-
-    `;
-
-
-    const botonLlegada =
-      fila.querySelector(
-        '[data-accion="llegada"]'
-      );
-
-
-    if(botonLlegada){
-
-      botonLlegada.addEventListener(
-        "click",
-        () => {
-
-          registrarLlegada(
-            cita.id,
-            fila,
-            botonLlegada
-          );
-
-        }
-      );
-
-    }
-
-
-    const botonAtendida =
-      fila.querySelector(
-        '[data-accion="atendida"]'
-      );
-
-
-    if(botonAtendida){
-
-      botonAtendida.addEventListener(
-        "click",
-        () => {
-
-          cambiarEstadoCita(
-            cita.id,
-            "Atendida"
-          );
-
-        }
-      );
-
-    }
-
-
-    const botonCancelada =
-      fila.querySelector(
-        '[data-accion="cancelada"]'
-      );
-
-
-    if(botonCancelada){
-
-      botonCancelada.addEventListener(
-        "click",
-        () => {
-
-          cambiarEstadoCita(
-            cita.id,
-            "Cancelada"
-          );
-
-        }
-      );
-
-    }
-
-
-    const botonNoAsistio =
-      fila.querySelector(
-        '[data-accion="no-asistio"]'
-      );
-
-
-    if(botonNoAsistio){
-
-      botonNoAsistio.addEventListener(
-        "click",
-        () => {
-
-          cambiarEstadoCita(
-            cita.id,
-            "No asistió"
-          );
-
-        }
-      );
-
-    }
-
-
-    return fila;
-
-  }
-
-
-  async function registrarLlegada(
-    citaId,
-    fila,
-    boton
-  ){
-
-    if(!confirm(
-      "¿Registrar la llegada de esta persona?\n\nSe creará automáticamente un registro en REGISTROS."
-    )){
-      return;
-    }
-
-
-    boton.disabled = true;
-
-    boton.textContent =
-      "Registrando...";
-
-
-    try{
-
-      const {
-        data,
-        error
-      } =
-        await supabaseClient
-          .rpc(
-            "registrar_llegada_cita",
-            {
-              p_cita_id:citaId
-            }
-          );
-
-
-      if(error){
-
-        console.error(
-          "Error registrando llegada:",
-          error
-        );
-
-        alert(
-          error.message ||
-          "No se pudo registrar la llegada."
-        );
-
-        boton.disabled = false;
-
-        boton.textContent =
-          "Registrar llegada";
-
-        return;
-      }
-
-
-      console.log(
-        "Registro creado:",
-        data
-      );
-
-
-      await cargarCitas();
-
-      await cargarRegistros();
-
-
-      alert(
-        "Llegada registrada correctamente.\n\nLa persona ya apareció en REGISTROS."
-      );
-
-
-    }catch(error){
-
-      console.error(
-        "Error:",
-        error
-      );
-
-      alert(
-        "Ocurrió un error al registrar la llegada."
-      );
-
-      boton.disabled = false;
-
-      boton.textContent =
-        "Registrar llegada";
-
-    }
-
-  }
-
-
-  async function cambiarEstadoCita(
-    id,
-    nuevoEstado
-  ){
-
-    let textoConfirmacion =
-      `¿Cambiar el estado de la cita a "${nuevoEstado}"?`;
-
-
-    if(!confirm(textoConfirmacion)){
-      return;
-    }
-
-
-    try{
-
-      const {
-        error
-      } =
-        await supabaseClient
-          .from("citas")
-          .update({
-            estado:nuevoEstado
-          })
-          .eq("id",id);
-
-
-      if(error){
-
-        console.error(
-          "Error cambiando estado:",
-          error
-        );
-
-        alert(
-          "No se pudo cambiar el estado de la cita."
-        );
-
-        return;
-      }
-
-
-      await cargarCitas();
-
-
-    }catch(error){
-
-      console.error(
-        "Error:",
-        error
-      );
-
-      alert(
-        "Ocurrió un error."
-      );
-
-    }
-
-  }
-
-
-  /* ==========================
-     MODAL MOTIVO
-  ========================== */
-
-
-  const overlayAtendido =
-    document.getElementById(
-      "overlayAtendido"
-    );
-
-  const inputMotivoAtendido =
-    document.getElementById(
-      "motivoAtendido"
-    );
-
-  const inputDetalleAtendido =
-    document.getElementById(
-      "detalleAtendido"
-    );
-
-  const errorModal =
-    document.getElementById(
-      "errorModal"
-    );
-
-  const btnCancelarAtendido =
-    document.getElementById(
-      "btnCancelarAtendido"
-    );
-
-  const btnGuardarAtendido =
-    document.getElementById(
-      "btnGuardarAtendido"
-    );
-
-
-  function abrirModalAtendido(
-    id,
-    fila,
-    motivo,
-    detalle
-  ){
-
-    registroPendienteId =
-      id;
-
-    filaPendiente =
-      fila;
-
-    inputMotivoAtendido.value =
-      motivo || "";
-
-    inputDetalleAtendido.value =
-      detalle || "";
-
-    errorModal.textContent =
-      "";
-
-    overlayAtendido.style.display =
-      "flex";
-
-    inputMotivoAtendido.focus();
-
-  }
-
-
-  function cerrarModalAtendido(){
-
-    overlayAtendido.style.display =
-      "none";
-
-    registroPendienteId =
-      null;
-
-    filaPendiente =
-      null;
-
-  }
-
-
-  btnCancelarAtendido.addEventListener(
-    "click",
-    cerrarModalAtendido
-  );
-
-
-  overlayAtendido.addEventListener(
-    "click",
-    evento => {
-
-      if(
-        evento.target ===
-        overlayAtendido
-      ){
-
-        cerrarModalAtendido();
-
-      }
-
-    }
-  );
-
-
-  btnGuardarAtendido.addEventListener(
-    "click",
-    async () => {
-
-      const motivo =
-        inputMotivoAtendido.value.trim();
-
-      const detalle =
-        inputDetalleAtendido.value.trim();
-
-
-      if(!motivo){
-
-        errorModal.textContent =
-          "Ingresa el motivo de la visita.";
-
-        return;
-      }
-
-
-      btnGuardarAtendido.disabled =
-        true;
-
-      btnGuardarAtendido.textContent =
-        "Guardando...";
-
-
-      try{
-
-        const {
-          error
-        } =
-          await supabaseClient
-            .from("registros")
-            .update({
-              motivo:motivo,
-              detalle:detalle || null
-            })
-            .eq(
-              "id",
-              registroPendienteId
-            );
-
-
-        if(error){
-
-          console.error(
-            "Error guardando motivo:",
-            error
-          );
-
-          errorModal.textContent =
-            "No se pudo guardar.";
-
-          return;
-        }
-
-
-        cerrarModalAtendido();
-
-        await cargarRegistros();
-
-
-      }catch(error){
-
-        console.error(
-          "Error:",
-          error
-        );
-
-        errorModal.textContent =
-          "No se pudo guardar.";
-
-      }finally{
-
-        btnGuardarAtendido.disabled =
-          false;
-
-        btnGuardarAtendido.textContent =
-          "Guardar";
-
-      }
-
-    }
-  );
-
-
-  async function marcarAtendido(
-    id,
-    fila
-  ){
-
-    try{
-
-      const {
-        error
-      } =
-        await supabaseClient
-          .from("registros")
-          .update({
-            atendido:true
-          })
-          .eq(
-            "id",
-            id
-          );
-
-
-      if(error){
-
-        console.error(
-          "Error marcando atendido:",
-          error
-        );
-
-        alert(
-          "No se pudo actualizar el registro."
-        );
-
-        return;
-      }
-
-
-      await cargarRegistros();
-
-
-    }catch(error){
-
-      console.error(
-        "Error:",
-        error
-      );
-
-    }
-
-  }
-
-
-  /* ==========================
-     EDITAR REGISTRO
-  ========================== */
-
-
-  const overlayEditar =
-    document.getElementById(
-      "overlayEditar"
-    );
-
-  const editarDni =
-    document.getElementById(
-      "editarDni"
-    );
-
-  const editarNombre =
-    document.getElementById(
-      "editarNombre"
-    );
-
-  const editarCelular =
-    document.getElementById(
-      "editarCelular"
-    );
-
-  const errorEditar =
-    document.getElementById(
-      "errorEditar"
-    );
-
-  const btnCancelarEditar =
-    document.getElementById(
-      "btnCancelarEditar"
-    );
-
-  const btnGuardarEditar =
-    document.getElementById(
-      "btnGuardarEditar"
-    );
-
-
-  function abrirModalEditar(
-    registro
-  ){
-
-    registroEditarId =
-      registro.id;
-
-    editarDni.value =
-      registro.dni || "";
-
-    editarNombre.value =
-      registro.nombre || "";
-
-    editarCelular.value =
-      registro.celular || "";
-
-    errorEditar.textContent =
-      "";
-
-    overlayEditar.style.display =
-      "flex";
-
-    editarDni.focus();
-
-  }
-
-
-  function cerrarModalEditar(){
-
-    overlayEditar.style.display =
-      "none";
-
-    registroEditarId =
-      null;
-
-  }
-
-
-  btnCancelarEditar.addEventListener(
-    "click",
-    cerrarModalEditar
-  );
-
-
-  overlayEditar.addEventListener(
-    "click",
-    evento => {
-
-      if(
-        evento.target ===
-        overlayEditar
-      ){
-
-        cerrarModalEditar();
-
-      }
-
-    }
-  );
-
-
-  btnGuardarEditar.addEventListener(
-    "click",
-    async () => {
-
-      const dni =
-        editarDni.value.trim();
-
-      const nombre =
-        editarNombre.value.trim();
-
-      const celular =
-        editarCelular.value.trim();
-
-
-      if(!dni){
-
-        errorEditar.textContent =
-          "Ingresa el DNI.";
-
-        return;
-      }
-
-
-      if(!nombre){
-
-        errorEditar.textContent =
-          "Ingresa el nombre.";
-
-        return;
-      }
-
-
-      btnGuardarEditar.disabled =
-        true;
-
-      btnGuardarEditar.textContent =
-        "Guardando...";
-
-
-      try{
-
-        const {
-          error
-        } =
-          await supabaseClient
-            .from("registros")
-            .update({
-              dni:dni,
-              nombre:nombre,
-              celular:celular || null
-            })
-            .eq(
-              "id",
-              registroEditarId
-            );
-
-
-        if(error){
-
-          console.error(
-            "Error editando registro:",
-            error
-          );
-
-          errorEditar.textContent =
-            "No se pudieron guardar los cambios.";
-
-          return;
-        }
-
-
-        cerrarModalEditar();
-
-        await cargarRegistros();
-
-
-      }catch(error){
-
-        console.error(
-          "Error:",
-          error
-        );
-
-        errorEditar.textContent =
-          "Ocurrió un error.";
-
-      }finally{
-
-        btnGuardarEditar.disabled =
-          false;
-
-        btnGuardarEditar.textContent =
-          "Guardar cambios";
-
-      }
-
-    }
-  );
-
-
-  /* ==========================
-     ELIMINAR
-  ========================== */
-
-
-  async function eliminarRegistro(
-    id,
-    fila
-  ){
-
-    if(miRol !== "admin"){
-
-      alert(
-        "No tienes permisos para eliminar registros."
-      );
-
-      return;
-    }
-
-
-    if(!confirm(
-      "¿Seguro que deseas eliminar este registro?\n\nEsta acción no se puede deshacer."
-    )){
-      return;
-    }
-
-
-    const boton =
-      fila.querySelector(
-        ".btn-eliminar"
-      );
-
-
-    if(boton){
-
-      boton.disabled =
-        true;
-
-      boton.textContent =
-        "Eliminando...";
-
-    }
-
-
-    try{
-
-      const {
-        error
-      } =
-        await supabaseClient
-          .from("registros")
-          .delete()
-          .eq(
-            "id",
-            id
-          );
-
-
-      if(error){
-
-        console.error(
-          "Error eliminando:",
-          error
-        );
-
-        alert(
-          "No se pudo eliminar el registro."
-        );
-
-        if(boton){
-
-          boton.disabled =
-            false;
-
-          boton.textContent =
-            "Eliminar";
-
-        }
-
-        return;
-      }
-
-
-      fila.remove();
-
-
-    }catch(error){
-
-      console.error(
-        "Error:",
-        error
-      );
-
-      alert(
-        "Ocurrió un error al eliminar."
-      );
-
-    }
-
-  }
-
-
-  /* ==========================
-     BÚSQUEDA
-  ========================== */
-
-
-  const inputBuscar =
-    document.getElementById(
-      "inputBuscar"
-    );
-
-  const btnBuscar =
-    document.getElementById(
-      "btnBuscar"
-    );
-
-  const btnLimpiarBusqueda =
-    document.getElementById(
-      "btnLimpiarBusqueda"
-    );
-
-
-  async function buscarRegistros(){
-
-    const termino =
-      inputBuscar.value.trim();
-
-
-    if(!termino){
-
-      alert(
-        "Escribe un DNI o nombre para buscar."
-      );
-
-      return;
-    }
-
-
-    btnBuscar.disabled =
-      true;
-
-    btnBuscar.textContent =
-      "Buscando...";
-
-
-    listaRegistros.innerHTML =
-      '<div class="vacio">Buscando...</div>';
-
-
-    try{
-
-      let consulta =
-        supabaseClient
-          .from("registros")
-          .select("*")
-          .or(
-            `dni.ilike.%${termino}%,nombre.ilike.%${termino}%`
-          )
-          .order(
-            "creado_en",
-            {ascending:false}
-          )
-          .limit(50);
-
-
-      if(miRol === "admin"){
-
-        if(
-          areaFiltroAdmin !==
-          "TODAS"
-        ){
-
-          consulta =
-            consulta.eq(
-              "area",
-              areaFiltroAdmin
-            );
-
-        }
-
-      }else{
-
-        consulta =
-          consulta.eq(
-            "area",
-            miArea
-          );
-
-      }
-
-
-      const {
-        data,
-        error
-      } =
-        await consulta;
-
-
-      if(error){
-
-        console.error(
-          "Error buscando:",
-          error
-        );
-
-        listaRegistros.innerHTML =
-          '<div class="vacio">No se pudo realizar la búsqueda.</div>';
-
-        return;
-      }
-
-
-      listaRegistros.innerHTML =
-        "";
-
-
-      if(!data || data.length === 0){
-
-        listaRegistros.innerHTML =
-          '<div class="vacio">No se encontraron registros.</div>';
-
-        return;
-      }
-
-
-      data.forEach(
-        registro => {
-
-          listaRegistros.appendChild(
-            pintarFilaRegistro(
-              registro,
-              false
-            )
-          );
-
-        }
-      );
-
-
-      btnLimpiarBusqueda.style.display =
-        "inline-block";
-
-
-    }catch(error){
-
-      console.error(
-        "Error:",
-        error
-      );
-
-      listaRegistros.innerHTML =
-        '<div class="vacio">No se pudo realizar la búsqueda.</div>';
-
-    }finally{
-
-      btnBuscar.disabled =
-        false;
-
-      btnBuscar.textContent =
-        "Buscar";
-
-    }
-
-  }
-
-
-  btnBuscar.addEventListener(
-    "click",
-    buscarRegistros
-  );
-
-
-  inputBuscar.addEventListener(
-    "keydown",
-    evento => {
-
-      if(evento.key === "Enter"){
-        buscarRegistros();
-      }
-
-    }
-  );
-
-
-  btnLimpiarBusqueda.addEventListener(
-    "click",
-    async () => {
-
-      inputBuscar.value =
-        "";
-
-      btnLimpiarBusqueda.style.display =
-        "none";
-
-      await cargarRegistros();
-
-    }
-  );
-
-
-  /* ==========================
-     NOTIFICACIONES
-  ========================== */
-
-
-  btnNotificaciones.addEventListener(
-    "click",
-    activarNotificaciones
-  );
-
-
-    /* App Android: registra el celular en Firebase */
-  async function activarNotificacionesApp(){
-    try{
-      window.AndroidPush.pedirPermiso();
-      let token = "";
-      for(let n = 0; n < 20 && !token; n++){
-        token = window.AndroidPush.obtenerToken();
-        if(!token) await new Promise(r => setTimeout(r, 500));
-      }
-      if(!token){
-        alert("No se pudo obtener el identificador del dispositivo. Revisa tu conexión a internet y vuelve a intentar.");
-        return;
-      }
-      const { error } = await supabaseClient.rpc("registrar_fcm", { p_token: token });
-      if(error){
-        console.error("registrar_fcm:", error);
-        alert("No se pudo guardar el dispositivo.");
-        return;
-      }
-      btnNotificaciones.textContent = "🔔 Notificaciones activadas en este dispositivo";
-      btnNotificaciones.classList.add("activo");
-      btnNotificaciones.disabled = true;
-      if(!window.AndroidPush.permisoOk()){
-        alert("Acepta el permiso de notificaciones cuando Android te lo pida. Si no aparece, actívalo en Ajustes > Apps > SalaverryPNP > Notificaciones.");
-      }
+      const c = await obtenerUbicacion();
+      ubicacion = c; ubicacionHora = Date.now();
+      gpsEstado.className = "gps-estado ok";
+      gpsEstado.textContent = "Ubicación lista (precisión aprox. " + Math.round(c.accuracy) + " m). Ya puedes enviar la alerta.";
+      btnGps.textContent = "Actualizar ubicación";
+      return true;
     }catch(e){
-      console.error(e);
-      alert("No se pudieron activar las notificaciones.");
+      ubicacion = null;
+      gpsEstado.className = "gps-estado mal";
+      gpsEstado.textContent = "Tu ubicación NO está activada. " + motivoGps(e);
+      gpsPasos.innerHTML = pasosGps(e) + '<div id="gpsDiag" style="margin-top:8px;font-size:.72rem;opacity:.85;word-break:break-word"></div>';
+      gpsPasos.style.display = "block";
+      diagnosticoGps(e).then(t => { const d = document.getElementById("gpsDiag"); if(d) d.textContent = t; });
+      if((document.referrer || "").indexOf("android-app://") === 0 || (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches)){
+        gpsPasos.innerHTML += '<div style="margin-top:10px"><a href="intent://comisariasalaverry.github.io/pnpapp/panico.html#Intent;scheme=https;package=com.android.chrome;end" style="display:block;text-align:center;padding:12px;border-radius:10px;background:#a13a2a;color:#fff;font-weight:700;text-decoration:none">Abrir en el navegador para enviar con GPS</a></div>';
+      }
+      btnGps.textContent = "Ya la activé, comprobar de nuevo";
+      return false;
     }
   }
 
+  document.getElementById("btnAbrirPanico").addEventListener("click", () => {
+    modal.classList.add("activo");
+    comprobarGps();
+  });
+  btnGps.addEventListener("click", comprobarGps);
 
-  async function activarNotificaciones(){
+  btnEnviar.addEventListener("click", async () => {
+    errPanico.textContent = "";
+    if(!tipoSel){ errPanico.textContent = "Selecciona qué está pasando."; return; }
 
-    try{
+    btnEnviar.disabled = true;
+    btnEnviar.textContent = "Obteniendo ubicación...";
 
-      if(window.AndroidPush){
-        await activarNotificacionesApp();
-        return;
-      }
-
-
-      if(!("Notification" in window)){
-
-        alert(
-          "Este navegador no soporta notificaciones."
-        );
-
-        return;
-      }
-
-
-      if(
-        !("serviceWorker" in navigator) ||
-        !("PushManager" in window)
-      ){
-
-        alert(
-          "Este navegador no soporta notificaciones push."
-        );
-
-        return;
-      }
-
-
-      if(
-        VAPID_PUBLIC_KEY ===
-        "TU-VAPID-PUBLIC-KEY"
-      ){
-
-        alert(
-          "Las notificaciones push todavía no están configuradas."
-        );
-
-        return;
-      }
-
-
-      const permiso =
-        await Notification.requestPermission();
-
-
-      if(permiso !== "granted"){
-
-        alert(
-          "No se activaron las notificaciones."
-        );
-
-        return;
-      }
-
-
-      const registro =
-        await navigator.serviceWorker.ready;
-
-
-      const suscripcion =
-        await registro.pushManager.subscribe({
-          userVisibleOnly:true,
-          applicationServerKey:
-            urlBase64AUint8Array(
-              VAPID_PUBLIC_KEY
-            )
-        });
-
-
-      const {
-        data,
-        error:userError
-      } =
-        await supabaseClient.auth.getUser();
-
-
-      const user =
-        data.user;
-
-
-      if(userError || !user){
-
-        alert(
-          "No se pudo identificar al usuario."
-        );
-
-        return;
-      }
-
-
-      const areaSuscripcion =
-        miRol === "admin"
-          ? "TODAS"
-          : miArea;
-
-
-      const {
-        error
-      } =
-        await supabaseClient
-          .from("push_suscripciones")
-          .insert({
-            usuario_id:user.id,
-            area:areaSuscripcion,
-            suscripcion:
-              suscripcion.toJSON()
-          });
-
-
-      if(error){
-
-        console.error(
-          "Error guardando suscripción:",
-          error
-        );
-
-        alert(
-          "No se pudo guardar la suscripción."
-        );
-
-        return;
-      }
-
-
-      btnNotificaciones.textContent =
-        "🔔 Notificaciones activadas en este dispositivo";
-
-      btnNotificaciones.classList.add(
-        "activo"
-      );
-
-      btnNotificaciones.disabled =
-        true;
-
-
-    }catch(error){
-
-      console.error(
-        "Error activando notificaciones:",
-        error
-      );
-
-      alert(
-        "Ocurrió un error al activar las notificaciones."
-      );
-
+    // usar la ubicación reciente si existe; si no, intentar de nuevo
+    let c = (ubicacion && Date.now() - ubicacionHora < 60000) ? ubicacion : null;
+    if(!c && !enviarSinGps){
+      const ok = await comprobarGps();
+      c = ok ? ubicacion : null;
     }
 
-  }
-
-
-  function urlBase64AUint8Array(
-    base64String
-  ){
-
-    const padding =
-      "=".repeat(
-        (4 - (
-          base64String.length % 4
-        )) % 4
-      );
-
-
-    const base64 =
-      (
-        base64String + padding
-      )
-      .replace(
-        /-/g,
-        "+"
-      )
-      .replace(
-        /_/g,
-        "/"
-      );
-
-
-    const rawData =
-      atob(base64);
-
-
-    return Uint8Array.from(
-      [...rawData].map(
-        character =>
-          character.charCodeAt(0)
-      )
-    );
-
-  }
-
-
-  /* ==========================
-     CSV
-  ========================== */
-
-
-  const inputFechaDesde =
-    document.getElementById(
-      "fechaDesde"
-    );
-
-  const inputFechaHasta =
-    document.getElementById(
-      "fechaHasta"
-    );
-
-  const btnDescargar =
-    document.getElementById(
-      "btnDescargar"
-    );
-
-
-  const hoy =
-    new Date()
-      .toISOString()
-      .slice(0,10);
-
-
-  inputFechaDesde.value =
-    hoy;
-
-  inputFechaHasta.value =
-    hoy;
-
-
-  btnDescargar.addEventListener(
-    "click",
-    async () => {
-
-      if(miRol !== "admin"){
-
-        alert(
-          "Solo el administrador puede descargar registros."
-        );
-
-        return;
-      }
-
-
-      const desde =
-        inputFechaDesde.value;
-
-      const hasta =
-        inputFechaHasta.value;
-
-
-      if(!desde || !hasta){
-
-        alert(
-          "Selecciona las fechas."
-        );
-
-        return;
-      }
-
-
-      if(desde > hasta){
-
-        alert(
-          "La fecha desde no puede ser posterior a la fecha hasta."
-        );
-
-        return;
-      }
-
-
-      btnDescargar.disabled =
-        true;
-
-      btnDescargar.textContent =
-        "Generando...";
-
-
-      try{
-
-        const inicio =
-          `${desde}T00:00:00-05:00`;
-
-        const fin =
-          `${hasta}T23:59:59-05:00`;
-
-
-        let consulta =
-          supabaseClient
-            .from("registros")
-            .select(
-              "dni,nombre,celular,area,creado_en,atendido,motivo,detalle"
-            )
-            .gte(
-              "creado_en",
-              inicio
-            )
-            .lte(
-              "creado_en",
-              fin
-            )
-            .order(
-              "area",
-              {ascending:true}
-            )
-            .order(
-              "creado_en",
-              {ascending:true}
-            );
-
-
-        if(
-          areaFiltroAdmin !==
-          "TODAS"
-        ){
-
-          consulta =
-            consulta.eq(
-              "area",
-              areaFiltroAdmin
-            );
-
-        }
-
-
-        const {
-          data,
-          error
-        } =
-          await consulta;
-
-
-        if(error){
-
-          console.error(
-            "Error CSV:",
-            error
-          );
-
-          alert(
-            "No se pudo generar el archivo."
-          );
-
-          return;
-        }
-
-
-        if(!data || data.length === 0){
-
-          alert(
-            "No hay registros en ese rango."
-          );
-
-          return;
-        }
-
-
-        const encabezados = [
-          "DNI",
-          "Nombre completo",
-          "Celular",
-          "Área",
-          "Fecha y hora",
-          "Atendido",
-          "Motivo",
-          "Detalle"
-        ];
-
-
-        const filas =
-          data.map(
-            r => [
-              `="${r.dni || ""}"`,
-              r.nombre || "",
-              r.celular
-                ? `="${r.celular}"`
-                : "",
-              r.area || "",
-              new Date(
-                r.creado_en
-              ).toLocaleString(
-                "es-PE"
-              ),
-              r.atendido
-                ? "Sí"
-                : "No",
-              r.motivo || "",
-              r.detalle || ""
-            ]
-          );
-
-
-        const csv =
-          [encabezados,...filas]
-            .map(
-              fila =>
-                fila
-                  .map(
-                    campo =>
-                      `"${String(campo).replace(/"/g,'""')}"`
-                  )
-                  .join(",")
-            )
-            .join("\n");
-
-
-        /* App Android: el WebView no baja archivos "blob", se guarda desde la app */
-        if(window.AndroidPush && window.AndroidPush.guardarArchivo){
-          const nArea = areaFiltroAdmin === "TODAS"
-            ? "TODAS_LAS_AREAS"
-            : areaFiltroAdmin.replace(/\s+/g, "_");
-          const msg = window.AndroidPush.guardarArchivo(
-            `registros_${nArea}_${desde}_a_${hasta}.csv`,
-            "\uFEFF" + csv
-          );
-          alert(msg);
-          return;
-        }
-
-
-        const blob =
-          new Blob(
-            ["\uFEFF" + csv],
-            {
-              type:
-                "text/csv;charset=utf-8;"
-            }
-          );
-
-
-        const url =
-          URL.createObjectURL(
-            blob
-          );
-
-
-        const nombreArea =
-          areaFiltroAdmin === "TODAS"
-            ? "TODAS_LAS_AREAS"
-            : areaFiltroAdmin.replace(
-                /\s+/g,
-                "_"
-              );
-
-
-        const enlace =
-          document.createElement(
-            "a"
-          );
-
-        enlace.href =
-          url;
-
-        enlace.download =
-          `registros_${nombreArea}_${desde}_a_${hasta}.csv`;
-
-        enlace.click();
-
-
-        URL.revokeObjectURL(
-          url
-        );
-
-
-      }finally{
-
-        btnDescargar.disabled =
-          false;
-
-        btnDescargar.textContent =
-          "⬇ Descargar CSV";
-
-      }
-
+    // Sin GPS: avisar y dejar elegir (activar el GPS o enviar igual)
+    if(!c && !enviarSinGps){
+      btnEnviar.disabled = false;
+      btnEnviar.textContent = "Enviar alerta por WhatsApp";
+      errPanico.textContent = "Activa el GPS para que la policía vea dónde estás, o envía la alerta sin ubicación.";
+      const bs = document.getElementById("btnSinUbic");
+      bs.style.display = "block";
+      return;
     }
-  );
 
+    const nombre = document.getElementById("panNombre").value.trim();
+    const detalle = document.getElementById("panDetalle").value.trim();
+    const hora = new Date().toLocaleString("es-PE", { timeZone:"America/Lima" });
 
-  iniciar();
+    let lineas = ["*ALERTA DE PÁNICO*", "Tipo: " + tipoSel];
+    if(nombre) lineas.push("Nombre: " + nombre);
+    if(detalle) lineas.push("Detalle: " + detalle);
+    lineas.push("Hora: " + hora);
+    if(c){
+      lineas.push("Ubicación: https://maps.google.com/?q=" + c.latitude.toFixed(6) + "," + c.longitude.toFixed(6));
+      lineas.push("(precisión aprox. " + Math.round(c.accuracy) + " m)");
+    }else{
+      lineas.push("Ubicación: NO disponible (GPS apagado). Preguntar dónde se encuentra.");
+    }
 
+    btnEnviar.disabled = false;
+    btnEnviar.textContent = "Enviar alerta por WhatsApp";
+    const urlWsp = "https://wa.me/" + WHATSAPP_NUMERO + "?text=" + encodeURIComponent(lineas.join("\n"));
+    errPanico.innerHTML = 'Se abrirá WhatsApp. Toca <strong>Enviar</strong> y podrás seguir hablando ahí.<br>¿No se abrió? <a href="' + urlWsp + '" style="color:#a13a2a;font-weight:700">Toca aquí para abrir el chat</a>';
+    window.location.href = urlWsp;
+  });
+
+  document.getElementById("btnSinUbic").addEventListener("click", () => {
+    enviarSinGps = true;
+    document.getElementById("btnSinUbic").style.display = "none";
+    btnEnviar.click();
+  });
 </script>
 
 </body>
