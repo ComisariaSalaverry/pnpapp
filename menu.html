@@ -164,7 +164,7 @@
   .encabezado h1{ font-size:1.55rem; margin-bottom:4px; }
   .encabezado p{ margin-bottom:18px; font-size:.92rem; }
 
-  .opciones{ padding:20px 18px 22px; gap:12px; }
+  .opciones{ padding:16px 18px 22px; gap:12px; }
   .opcion{
     position:relative; background:#fff; border:1px solid var(--linea);
     border-radius:18px; padding:16px 44px 16px 16px; gap:14px;
@@ -262,7 +262,7 @@
   .cifras .l{ font-size:.7rem; color:rgba(255,255,255,.78); margin-top:3px; }
   .cifras .fila > div + div{ border-left:1px solid rgba(255,255,255,.18); }
 
-  .vial{ margin:0 18px 14px; padding:15px 16px; border-radius:18px; background:#fff8e1;
+  .vial{ margin:16px 18px 0; padding:15px 16px; border-radius:18px; background:#fff8e1;
     border:1px solid #ecd58a; display:flex; gap:14px; align-items:flex-start; }
   .vial .sena{ flex-shrink:0; width:46px; height:46px; border-radius:10px; background:#f2b705; color:#1b1b1b;
     display:flex; align-items:center; justify-content:center; transform:rotate(45deg) scale(.82); box-shadow:0 3px 8px rgba(0,0,0,.18); }
@@ -341,6 +341,21 @@
     <div class="avisos" id="avisos"></div>
     <div class="puntos" id="puntos"></div>
 
+    <div class="vial" id="vial">
+      <div class="vial-tabs" id="vialTabs">
+        <button type="button" data-k="vial" class="on">Seguridad vial</button>
+        <button type="button" data-k="valor">Valores</button>
+        <button type="button" data-k="robo">Prevenir robos</button>
+      </div>
+      <div class="vial-cuerpo">
+        <div class="sena" id="vialIcono"></div>
+        <div>
+          <div class="t1" id="vialTitulo"></div>
+          <div class="t2" id="vialTexto"></div>
+        </div>
+      </div>
+    </div>
+
     <div class="opciones">
 
       <a href="./citas.html" class="opcion cita">
@@ -391,21 +406,6 @@
         </div>
       </button>
 
-    </div>
-
-    <div class="vial" id="vial">
-      <div class="vial-tabs" id="vialTabs">
-        <button type="button" data-k="vial" class="on">Seguridad vial</button>
-        <button type="button" data-k="valor">Valores</button>
-        <button type="button" data-k="robo">Prevenir robos</button>
-      </div>
-      <div class="vial-cuerpo">
-        <div class="sena" id="vialIcono"></div>
-        <div>
-          <div class="t1" id="vialTitulo"></div>
-          <div class="t2" id="vialTexto"></div>
-        </div>
-      </div>
     </div>
 
     <div class="emergencias">
