@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0B3D24">
+<title>Mapas de delito - Comisaría Salaverry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{--tinta:#0d1f14;--musgo:#0b3d24;--lino:#f2f1ec;--linea:#d6d3c4;--rojo:#a13a2a}
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{background:var(--lino);color:var(--tinta);font-family:Inter,Helvetica,Arial,sans-serif}
+  .oculto{display:none !important}
+
+  /* ---- acceso ---- */
+  #vistaLogin{min-height:100%;display:flex;align-items:center;justify-content:center;padding:24px}
+  .tarjeta{width:100%;max-width:400px;background:#fff;border:1px solid var(--linea);border-radius:20px;overflow:hidden;box-shadow:0 18px 44px rgba(13,31,20,.12)}
+  .tarjeta header{background:linear-gradient(135deg,#0b3d24,#14633a);color:#fff;padding:26px 24px 22px}
+  .tarjeta header .ico{width:46px;height:46px;border-radius:13px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+  .tarjeta h1{margin:0;font-family:Fraunces,Georgia,serif;font-size:1.55rem;font-weight:600;line-height:1.15}
+  .tarjeta header p{margin:6px 0 0;font-size:.85rem;opacity:.85}
+  form{padding:22px 24px 26px}
+  label{display:block;font-size:.8rem;font-weight:600;margin:0 0 6px;color:var(--musgo)}
+  input{width:100%;padding:13px 14px;border:2px solid var(--linea);border-radius:12px;font:inherit;font-size:.95rem;margin-bottom:16px;background:#fff}
+  input:focus{outline:none;border-color:var(--musgo)}
+  .btn{width:100%;padding:14px;border:0;border-radius:12px;background:var(--musgo);color:#fff;font:inherit;font-weight:700;font-size:.95rem;cursor:pointer}
+  .btn:disabled{opacity:.6}
+  .error{color:var(--rojo);font-size:.84rem;min-height:20px;text-align:center;margin-top:12px}
+  .pie{font-size:.75rem;color:#5c6b63;text-align:center;margin-top:10px}
+
+  /* ---- visor ---- */
+  #vistaMapa{height:100%;display:flex;flex-direction:column}
+  .barra{background:linear-gradient(135deg,#0b3d24,#14633a);color:#fff;display:flex;align-items:center;gap:12px;padding:12px 14px;padding-top:max(12px,env(safe-area-inset-top))}
+  .barra .ico{width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .barra .tit{flex:1;min-width:0}
+  .barra .tit b{display:block;font-size:1rem;line-height:1.2}
+  .barra .tit span{display:block;font-size:.72rem;opacity:.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .barra a,.barra button{display:inline-flex;align-items:center;gap:6px;color:#fff;text-decoration:none;font:inherit;font-size:.78rem;font-weight:600;padding:8px 11px;border-radius:9px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);cursor:pointer;flex-shrink:0}
+  .tabs{display:flex;gap:8px;overflow-x:auto;padding:10px 12px;background:#fff;border-bottom:1px solid var(--linea);-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{flex-shrink:0;padding:9px 15px;border-radius:999px;border:1.5px solid var(--linea);background:#fff;font:inherit;font-size:.82rem;font-weight:600;color:var(--tinta);cursor:pointer;white-space:nowrap}
+  .tab.activo{background:var(--musgo);border-color:var(--musgo);color:#fff}
+  .cuerpo{position:relative;flex:1;background:#e9ece6;min-height:0}
+  .carga{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#5c6b63;font-size:.88rem;text-align:center;padding:20px}
+  .spinner{width:34px;height:34px;border-radius:50%;border:3px solid #cfd6cb;border-top-color:var(--musgo);animation:g .9s linear infinite}
+  @keyframes g{to{transform:rotate(360deg)}}
+  iframe{position:absolute;inset:0;width:100%;height:100%;border:0;z-index:1}
+  @media(max-width:520px){.barra .ico{display:none}.barra a span{display:none}.barra a{padding:9px}}
+</style>
+</head>
+<body>
+
+<!-- ACCESO -->
+<div id="vistaLogin" class="oculto">
+  <div class="tarjeta">
+    <header>
+      <div class="ico">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+      </div>
+      <h1>Mapas de delito</h1>
+      <p>Comisaría PNP Salaverry · Acceso restringido</p>
+    </header>
+    <form id="formLogin">
+      <label for="correo">Correo</label>
+      <input id="correo" type="email" autocomplete="username" required>
+      <label for="clave">Contraseña</label>
+      <input id="clave" type="password" autocomplete="current-password" required>
+      <button class="btn" id="btnEntrar" type="submit">Ingresar</button>
+      <div class="error" id="errorLogin"></div>
+      <div class="pie">Solo personal autorizado.</div>
+    </form>
+  </div>
+</div>
+
+<!-- VISOR -->
+<div id="vistaMapa" class="oculto">
+  <div class="barra">
+    <div class="ico">
+      <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+    </div>
+    <div class="tit"><b id="tituloMapa">Mapas de delito</b><span>Comisaría PNP Salaverry</span></div>
+    <button id="btnSalir" type="button">Salir</button>
+  </div>
+  <div class="tabs" id="tabs"></div>
+  <div class="cuerpo">
+    <div class="carga" id="carga"><div class="spinner"></div><div id="textoCarga">Cargando mapa…</div></div>
+    <iframe id="marco" title="Mapa" class="oculto"></iframe>
+  </div>
+</div>
+
+<script>
+  const SUPABASE_URL = "https://cthpbxqwsjcgpdfqkdwr.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_qTNkWQAQLrzS2-81BpeDeA_DFDCrVol";
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const $ = id => document.getElementById(id);
+  const vistaLogin = $("vistaLogin"), vistaMapa = $("vistaMapa");
+
+  function mostrar(v){
+    vistaLogin.classList.toggle("oculto", v !== "login");
+    vistaMapa.classList.toggle("oculto", v !== "mapa");
+  }
+
+  async function iniciar(){
+    const { data } = await sb.auth.getSession();
+    if(!data.session){ mostrar("login"); return; }
+    await abrirMapas();
+  }
+
+  async function abrirMapas(){
+    mostrar("mapa");
+    $("carga").classList.remove("oculto");
+    $("textoCarga").textContent = "Cargando mapas…";
+    const { data, error } = await sb.rpc("mapas_delito");
+    if(error || !data || !data.length){
+      await sb.auth.signOut();
+      mostrar("login");
+      $("errorLogin").textContent = "Tu cuenta no tiene acceso a los mapas. Pide autorización a la comisaría.";
+      return;
+    }
+    const tabs = $("tabs");
+    tabs.innerHTML = "";
+    data.forEach((m, i) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "tab"; b.textContent = m.nombre;
+      b.addEventListener("click", () => elegir(m, b));
+      tabs.appendChild(b);
+      if(i === 0) elegir(m, b);
+    });
+  }
+
+  function elegir(m, boton){
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("activo"));
+    boton.classList.add("activo");
+    boton.scrollIntoView({ inline:"center", block:"nearest", behavior:"smooth" });
+    $("tituloMapa").textContent = m.nombre;
+    const marco = $("marco");
+    marco.classList.add("oculto");
+    $("carga").classList.remove("oculto");
+    $("textoCarga").textContent = "Cargando mapa…";
+    marco.onload = () => { marco.classList.remove("oculto"); $("carga").classList.add("oculto"); };
+    marco.src = "https://www.google.com/maps/d/embed?mid=" + encodeURIComponent(m.mid) + "&ehbc=0B3D24";
+  }
+
+  $("formLogin").addEventListener("submit", async e => {
+    e.preventDefault();
+    const btn = $("btnEntrar"), err = $("errorLogin");
+    err.textContent = ""; btn.disabled = true; btn.textContent = "Ingresando…";
+    const { error } = await sb.auth.signInWithPassword({ email: $("correo").value.trim(), password: $("clave").value });
+    btn.disabled = false; btn.textContent = "Ingresar";
+    if(error){ err.textContent = "Correo o contraseña incorrectos."; return; }
+    $("clave").value = "";
+    await abrirMapas();
+  });
+
+  $("btnSalir").addEventListener("click", async () => {
+    await sb.auth.signOut();
+    $("marco").src = "about:blank";
+    mostrar("login");
+  });
+
+  iniciar();
+</script>
+</body>
+</html>
