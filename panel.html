@@ -696,6 +696,136 @@
         padding:5px 0;
       }
     }
+  
+    /* ===== Mejoras visuales: botones de cabecera y mapa ===== */
+
+    .acciones-cabecera{
+      flex-wrap:wrap;
+    }
+
+    .btn-mapa-delitos{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      background:var(--musgo);
+      border:1px solid var(--musgo);
+      color:#fff;
+      padding:10px 16px;
+      border-radius:10px;
+      font-weight:600;
+      font-size:.88rem;
+      letter-spacing:.01em;
+      transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+
+    .btn-mapa-delitos svg{flex-shrink:0}
+
+    .btn-mapa-delitos:hover{
+      background:#0f4a2c;
+      box-shadow:0 6px 16px rgba(11,61,36,.22);
+      transform:translateY(-1px);
+    }
+
+    .btn-mapa-delitos:active{transform:translateY(0)}
+
+    .caja-mapa{
+      max-width:1000px;
+      height:88vh;
+      border-radius:18px;
+      box-shadow:0 24px 60px rgba(13,31,20,.35);
+    }
+
+    .cab-mapa-nuevo{
+      gap:12px;
+      padding:14px 16px;
+      background:linear-gradient(135deg,#0b3d24,#14633a);
+    }
+
+    .cab-icono{
+      width:40px;height:40px;
+      display:flex;align-items:center;justify-content:center;
+      border-radius:12px;
+      background:rgba(255,255,255,.14);
+      flex-shrink:0;
+    }
+
+    .cab-textos{flex:1;min-width:0}
+
+    .cab-titulo{font-size:1.05rem;font-weight:700;line-height:1.2}
+
+    .cab-sub{
+      font-size:.74rem;font-weight:500;opacity:.8;margin-top:2px;
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    }
+
+    .btn-grande{
+      display:inline-flex;align-items:center;gap:6px;
+      color:#fff;text-decoration:none;
+      font-size:.78rem;font-weight:600;
+      padding:8px 12px;border-radius:9px;
+      background:rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.25);
+      flex-shrink:0;
+    }
+
+    .btn-grande:hover{background:rgba(255,255,255,.24)}
+
+    .cab-mapa-nuevo .btn-cerrar-mapa{
+      width:36px;height:36px;
+      display:flex;align-items:center;justify-content:center;
+      border-radius:10px;
+      background:rgba(255,255,255,.14);
+      padding:0;flex-shrink:0;
+    }
+
+    .cab-mapa-nuevo .btn-cerrar-mapa:hover{background:rgba(255,255,255,.26)}
+
+    .mapa-cuerpo{position:relative;flex:1;display:flex;background:#e9ece6}
+
+    .mapa-cuerpo .iframe-mapa{position:relative;z-index:1;height:100%}
+
+    .mapa-carga{
+      position:absolute;inset:0;z-index:0;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      gap:12px;color:#5c6b63;font-size:.88rem;
+    }
+
+    .mapa-spinner{
+      width:34px;height:34px;border-radius:50%;
+      border:3px solid #cfd6cb;border-top-color:var(--musgo);
+      animation:girarMapa .9s linear infinite;
+    }
+
+    @keyframes girarMapa{to{transform:rotate(360deg)}}
+
+    @media(max-width:600px){
+      #overlayMapa{padding:0}
+
+      #overlayMapa .caja-mapa{
+        width:100%;height:100vh;height:100dvh;
+        max-width:none;border-radius:0;
+      }
+
+      .cab-mapa-nuevo{padding:12px}
+      .cab-icono{display:none}
+      .btn-grande span{display:none}
+      .btn-grande{padding:9px}
+      .btn-mapa-delitos{padding:10px 12px;font-size:.82rem}
+    }
+  
+    .mapa-tabs{
+      display:flex;gap:8px;overflow-x:auto;padding:10px 12px;
+      background:#fff;border-bottom:1px solid var(--linea);
+      -webkit-overflow-scrolling:touch;scrollbar-width:none;flex-shrink:0;
+    }
+    .mapa-tabs::-webkit-scrollbar{display:none}
+    .mapa-tab{
+      flex-shrink:0;padding:8px 14px;border-radius:999px;
+      border:1.5px solid var(--linea);background:#fff;color:var(--tinta);
+      font:inherit;font-size:.8rem;font-weight:600;cursor:pointer;white-space:nowrap;
+    }
+    .mapa-tab.activo{background:var(--musgo);border-color:var(--musgo);color:#fff}
   </style>
 
   <link rel="manifest" href="./manifest.json">
@@ -830,14 +960,14 @@
           id="btnMapaDelitos"
           class="btn-mapa-delitos"
         >
-          🗺️ Mapa de delitos
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>Mapa de delitos</span>
         </button>
 
         <button
           id="btnAvisos"
           class="btn-mapa-delitos"
         >
-          📢 Avisos
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 6a9 9 0 0 1 0 12"/></svg><span>Avisos</span>
         </button>
 
         <button
@@ -845,7 +975,7 @@
           class="btn-mapa-delitos"
           style="display:none;"
         >
-          📊 Estadísticas
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-7"/><path d="M22 20H2"/></svg><span>Estadísticas</span>
         </button>
 
         <button
@@ -994,7 +1124,7 @@
         id="btnNotificaciones"
         class="btn-notificaciones"
       >
-        🔔 Activar notificaciones en este dispositivo
+        Activar notificaciones en este dispositivo
       </button>
 
 
@@ -1169,26 +1299,41 @@
 
     <div class="caja-mapa">
 
-      <div class="cabecera-mapa">
+      <div class="cabecera-mapa cab-mapa-nuevo">
 
-        <span>
-          🗺️ Mapa de delitos
-        </span>
+        <div class="cab-icono"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></div>
+
+        <div class="cab-textos">
+          <div class="cab-titulo">Mapa de delitos</div>
+          <div class="cab-sub">Zonas de incidencia · Comisaría Salaverry</div>
+        </div>
+
 
         <button
           id="btnCerrarMapa"
           class="btn-cerrar-mapa"
-        >
-          ✕
-        </button>
+          aria-label="Cerrar"
+        ><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
 
       </div>
 
-      <iframe
-        src="https://www.google.com/maps/d/embed?mid=1PtgLD1_svGb2oP02_-aTo_TXZRQsdhM"
-        class="iframe-mapa"
-        loading="lazy"
-      ></iframe>
+      <div class="mapa-tabs" id="mapaTabs"></div>
+
+      <div class="mapa-cuerpo">
+
+        <div class="mapa-carga" id="mapaCarga">
+          <div class="mapa-spinner"></div>
+          <div>Cargando mapa…</div>
+        </div>
+
+        <iframe
+          id="marcoMapa"
+          class="iframe-mapa"
+          title="Mapa de delitos"
+          onload="document.getElementById('mapaCarga').style.display='none'"
+        ></iframe>
+
+      </div>
 
     </div>
 
@@ -2036,12 +2181,56 @@
   ========================== */
 
 
+  let mapasListos = false;
+
+  async function cargarMapas(){
+
+    if(mapasListos) return;
+
+    const tabs = document.getElementById("mapaTabs");
+    const carga = document.getElementById("mapaCarga");
+
+    const { data, error } = await supabaseClient.rpc("mapas_delito");
+
+    if(error || !data || !data.length){
+      carga.querySelector("div:last-child").textContent =
+        "No se pudieron cargar los mapas. Revisa tu conexión y vuelve a abrir.";
+      return;
+    }
+
+    mapasListos = true;
+    tabs.innerHTML = "";
+
+    data.forEach((m, i) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "mapa-tab";
+      b.textContent = m.nombre;
+      b.addEventListener("click", () => elegirMapa(m, b));
+      tabs.appendChild(b);
+      if(i === 0) elegirMapa(m, b);
+    });
+
+  }
+
+  function elegirMapa(m, boton){
+    document.querySelectorAll(".mapa-tab").forEach(t => t.classList.remove("activo"));
+    boton.classList.add("activo");
+    boton.scrollIntoView({ inline:"center", block:"nearest", behavior:"smooth" });
+    document.querySelector(".cab-titulo").textContent = m.nombre;
+    document.getElementById("mapaCarga").style.display = "flex";
+    document.getElementById("marcoMapa").src =
+      "https://www.google.com/maps/d/embed?mid=" + encodeURIComponent(m.mid) + "&ehbc=0B3D24";
+  }
+
   btnMapaDelitos.addEventListener(
     "click",
     () => {
 
       overlayMapa.style.display =
         "flex";
+
+      cargarMapas();
 
     }
   );
@@ -3850,7 +4039,7 @@
         alert("No se pudo guardar el dispositivo.");
         return;
       }
-      btnNotificaciones.textContent = "🔔 Notificaciones activadas en este dispositivo";
+      btnNotificaciones.textContent = "Notificaciones activadas en este dispositivo";
       btnNotificaciones.classList.add("activo");
       btnNotificaciones.disabled = true;
       if(!window.AndroidPush.permisoOk()){
@@ -3993,7 +4182,7 @@
 
 
       btnNotificaciones.textContent =
-        "🔔 Notificaciones activadas en este dispositivo";
+        "Notificaciones activadas en este dispositivo";
 
       btnNotificaciones.classList.add(
         "activo"
