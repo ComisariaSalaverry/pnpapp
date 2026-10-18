@@ -65,8 +65,8 @@
       <p>Comisaría PNP Salaverry · Acceso restringido</p>
     </header>
     <form id="formLogin">
-      <label for="correo">Correo</label>
-      <input id="correo" type="email" autocomplete="username" required>
+      <label for="correo">Usuario</label>
+      <input id="correo" type="text" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" required>
       <label for="clave">Contraseña</label>
       <input id="clave" type="password" autocomplete="current-password" required>
       <button class="btn" id="btnEntrar" type="submit">Ingresar</button>
@@ -98,6 +98,13 @@
   const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   const $ = id => document.getElementById(id);
+
+  // El usuario se escribe sin dominio (ej. oficialdeenlace1). Internamente se completa el correo.
+  const DOMINIO = "@pnp.pe";
+  function correoDe(u){
+    u = String(u).trim().toLowerCase();
+    return u.includes("@") ? u : u + DOMINIO;
+  }
   const vistaLogin = $("vistaLogin"), vistaMapa = $("vistaMapa");
 
   function mostrar(v){
@@ -150,9 +157,9 @@
     e.preventDefault();
     const btn = $("btnEntrar"), err = $("errorLogin");
     err.textContent = ""; btn.disabled = true; btn.textContent = "Ingresando…";
-    const { error } = await sb.auth.signInWithPassword({ email: $("correo").value.trim(), password: $("clave").value });
+    const { error } = await sb.auth.signInWithPassword({ email: correoDe($("correo").value), password: $("clave").value });
     btn.disabled = false; btn.textContent = "Ingresar";
-    if(error){ err.textContent = "Correo o contraseña incorrectos."; return; }
+    if(error){ err.textContent = "Usuario o contraseña incorrectos."; return; }
     $("clave").value = "";
     await abrirMapas();
   });
